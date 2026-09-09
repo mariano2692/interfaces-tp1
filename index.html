@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NeoArcade — TPE1 Interfaces de Usuario e Interacción</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Orbitron:wght@600;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --fondo:#0E0B16;
+    --superficie:#1B1830;
+    --borde:#2A2745;
+    --primario:#7B2FF7;
+    --secundario:#16E0F2;
+    --acento:#FFD23F;
+    --texto:#EDECF5;
+    --texto-sec:#8B88AD;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--fondo);color:var(--texto);font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.6}
+  body{
+    min-height:100vh;
+    display:flex;align-items:center;justify-content:center;
+    padding:48px 24px;
+    background:
+      radial-gradient(900px 500px at 15% -10%, rgba(123,47,247,.28), transparent 60%),
+      radial-gradient(800px 500px at 100% 110%, rgba(22,224,242,.20), transparent 55%),
+      var(--fondo);
+  }
+  .card{
+    width:100%;max-width:720px;
+    background:var(--superficie);
+    border:1px solid var(--borde);
+    border-radius:20px;
+    padding:48px 44px;
+    box-shadow:0 30px 80px rgba(0,0,0,.45);
+  }
+  .logo{
+    font-family:"Press Start 2P",monospace;
+    font-size:22px;letter-spacing:.5px;
+    margin-bottom:28px;
+  }
+  .logo .neo{color:#fff}
+  .logo .arcade{color:var(--secundario)}
+  h1{
+    font-family:"Orbitron",sans-serif;font-weight:800;
+    font-size:26px;line-height:1.25;margin-bottom:10px;
+  }
+  .materia{color:var(--texto-sec);font-size:15px;margin-bottom:4px}
+  .alumno{color:var(--texto);font-size:15px;font-weight:600;margin-bottom:28px}
+  .desc{color:var(--texto-sec);font-size:15px;margin-bottom:32px}
+  .flujo{
+    background:var(--fondo);
+    border:1px solid var(--borde);
+    border-radius:12px;
+    padding:16px 18px;
+    font-size:14px;color:var(--texto-sec);
+    margin-bottom:32px;
+  }
+  .flujo b{color:var(--texto)}
+  .flujo .paso{color:var(--secundario);font-weight:600}
+  .acciones{display:flex;flex-direction:column;gap:14px}
+  a.btn{
+    display:flex;align-items:center;justify-content:space-between;
+    text-decoration:none;
+    padding:16px 22px;border-radius:12px;
+    font-family:"Orbitron",sans-serif;font-weight:600;font-size:15px;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  a.btn .arrow{font-family:"Inter",sans-serif;font-weight:400}
+  a.btn.primario{
+    background:var(--acento);color:var(--fondo);
+  }
+  a.btn.primario:hover{
+    transform:translateY(-2px);
+    box-shadow:0 0 0 2px var(--secundario), 0 0 28px rgba(22,224,242,.55);
+  }
+  a.btn.secundario{
+    background:transparent;color:var(--texto);
+    border:2px solid var(--primario);
+  }
+  a.btn.secundario:hover{
+    transform:translateY(-2px);
+    background:rgba(123,47,247,.15);
+  }
+  .pie{
+    margin-top:32px;padding-top:20px;border-top:1px solid var(--borde);
+    font-size:13px;color:var(--texto-sec);
+  }
+  .pie a{color:var(--secundario)}
+</style>
+</head>
+<body>
+  <main class="card">
+    <div class="logo"><span class="neo">Neo</span><span class="arcade">Arcade</span></div>
+
+    <h1>Prototipo de alta fidelidad — Plataforma de juegos online</h1>
+    <p class="materia">Interfaces de Usuario e Interacción · TUDAI · UNICEN</p>
+    <p class="materia">Ejercicio Entregable N.º 1 — Proceso de diseño de interfaz de usuario</p>
+    <p class="alumno">Mariano Menéndez</p>
+
+    <p class="desc">
+      NeoArcade es una plataforma de juegos online con estética pixel arcade
+      (fondo oscuro, neón y tipografía geométrica). El prototipo es navegable
+      en Figma, modo Desktop, e incluye Design System (Atomic Design), tres
+      pantallas y el flujo de navegación obligatorio.
+    </p>
+
+    <div class="flujo">
+      <b>Flujo del prototipo:</b><br>
+      <span class="paso">Registro / Login</span> &rarr;
+      <span class="paso">Home</span> (card «Peg Solitaire») &rarr;
+      <span class="paso">Juego — Peg Solitaire</span> (el logo del header vuelve al Home)
+    </div>
+
+    <div class="acciones">
+      <a class="btn primario" href="https://www.figma.com/proto/1yc0szqKdlawHS3z0d8a9H/TP1---NeoArcade---Menendez?node-id=30-39&p=f&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1" target="_blank" rel="noopener">
+        Ver prototipo — Modo Presentación <span class="arrow">&rarr;</span>
+      </a>
+      <a class="btn secundario" href="https://www.figma.com/design/1yc0szqKdlawHS3z0d8a9H/TP1---NeoArcade---Menendez?node-id=0-1" target="_blank" rel="noopener">
+        Ver archivo en Figma — Modo Editor <span class="arrow">&rarr;</span>
+      </a>
+    </div>
+
+    <p class="pie">
+      Permisos del archivo de Figma: cualquiera con el enlace puede verlo, sin
+      necesidad de iniciar sesión.
+    </p>
+  </main>
+</body>
+</html>

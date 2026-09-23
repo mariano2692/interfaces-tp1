@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Peg Solitaire: Invasión Pixel — NeoArcade</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Orbitron:wght@600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/comun.css">
+  <link rel="stylesheet" href="css/juego.css">
+</head>
+<body>
+
+  <header id="header"></header>
+
+  <main class="juego contenedor">
+    <nav class="migas texto-chico" aria-label="Estás en">
+      <a href="home.html">Inicio</a>
+      <span aria-hidden="true">›</span>
+      <a href="home.html#puzzle">Puzzle</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">Peg Solitaire</span>
+    </nav>
+
+    <!-- Zona de juego + panel de ayuda -->
+    <section class="juego__zona">
+      <div class="tablero" id="tablero-contenedor">
+        <div class="tablero__estado">
+          <span>Fichas: <b id="fichas">32</b></span>
+          <span class="tablero__mensaje" id="mensaje" role="status">Elegí una ficha para mover</span>
+        </div>
+        <div class="grilla" id="grilla" aria-label="Tablero de Peg Solitaire"></div>
+      </div>
+
+      <aside class="panel-juego">
+        <h2 class="texto-enfasis">¿Cómo se juega?</h2>
+        <p class="panel-juego__texto">
+          Saltá una ficha por encima de otra para eliminarla. Solo en horizontal o vertical,
+          nunca en diagonal. Ganás si dejás una sola ficha en el tablero.
+        </p>
+
+        <div class="panel-juego__divisor"></div>
+
+        <h2 class="texto-enfasis">Controles</h2>
+        <button class="control" id="reiniciar" type="button">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+          Reiniciar
+        </button>
+        <button class="control" id="pantalla-completa" type="button">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+          Pantalla completa
+        </button>
+
+        <div class="panel-juego__divisor"></div>
+
+        <div class="compartir">
+          <button class="boton boton--secundario boton--ancho" id="abrir-compartir" type="button" aria-expanded="false" aria-controls="popover-compartir">Compartir</button>
+          <div class="compartir__popover" id="popover-compartir" hidden>
+            <p class="texto-chico compartir__titulo">Compartir Peg Solitaire</p>
+            <button class="compartir__opcion" type="button" id="copiar-enlace">🔗 Copiar enlace</button>
+            <a class="compartir__opcion" id="compartir-whatsapp" target="_blank" rel="noopener">💬 WhatsApp</a>
+            <a class="compartir__opcion" id="compartir-email">✉️ Email</a>
+            <a class="compartir__opcion" id="compartir-x" target="_blank" rel="noopener">𝕏 X</a>
+            <a class="compartir__opcion" id="compartir-facebook" target="_blank" rel="noopener">📘 Facebook</a>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- Ficha del juego -->
+    <section class="ficha">
+      <h1 class="titulo-seccion">Peg Solitaire: Invasión Pixel</h1>
+      <p class="ficha__texto">
+        Una flota de invasores pixelados aterrizó en el tablero y tu misión es sacarlos de a uno.
+        Cada salto elimina a un invasor, pero cuidado: si te quedás sin movimientos antes de tiempo,
+        la invasión gana.
+      </p>
+      <p class="ficha__texto">
+        Es el clásico Peg Solitaire inglés de 33 casilleros, con la estética arcade de NeoArcade.
+        Ideal para partidas cortas: pensá cada movimiento y buscá terminar con una sola ficha en el centro.
+      </p>
+
+      <div class="galeria">
+        <figure class="galeria__item">
+          <div class="galeria__marco" data-estado="inicial"></div>
+          <figcaption class="texto-chico">Tablero inicial</figcaption>
+        </figure>
+        <figure class="galeria__item">
+          <div class="galeria__marco" data-estado="salto"></div>
+          <figcaption class="texto-chico">Salto de ficha</figcaption>
+        </figure>
+        <figure class="galeria__item">
+          <div class="galeria__marco" data-estado="final"></div>
+          <figcaption class="texto-chico">¡Última ficha!</figcaption>
+        </figure>
+      </div>
+
+      <figure class="video">
+        <button class="video__marco" type="button" id="video" aria-label="Reproducir trailer">
+          <img src="img/peg-solitaire.svg" alt="">
+          <span class="video__play" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="64" height="64"><circle cx="12" cy="12" r="11" fill="rgba(14,11,22,.7)" stroke="#EDECF5" stroke-width="1.5"/><path d="M10 8l6 4-6 4z" fill="#EDECF5"/></svg>
+          </span>
+        </button>
+        <figcaption class="texto-chico">Trailer — Invasión Pixel</figcaption>
+      </figure>
+    </section>
+
+    <!-- Comunidad -->
+    <section class="comunidad">
+      <h2 class="titulo-seccion">Comunidad</h2>
+
+      <form class="resena" id="form-resena" novalidate>
+        <p class="texto-enfasis">Dejá tu reseña</p>
+        <div class="estrellas" id="estrellas" role="radiogroup" aria-label="Puntaje">
+          <button type="button" role="radio" aria-checked="false" aria-label="1 estrella" data-valor="1">★</button>
+          <button type="button" role="radio" aria-checked="false" aria-label="2 estrellas" data-valor="2">★</button>
+          <button type="button" role="radio" aria-checked="false" aria-label="3 estrellas" data-valor="3">★</button>
+          <button type="button" role="radio" aria-checked="false" aria-label="4 estrellas" data-valor="4">★</button>
+          <button type="button" role="radio" aria-checked="false" aria-label="5 estrellas" data-valor="5">★</button>
+        </div>
+        <div class="campo">
+          <label class="campo__label" for="resena-texto">Tu opinión</label>
+          <div class="campo__caja">
+            <textarea id="resena-texto" rows="3" placeholder="Contanos qué te pareció el juego..."></textarea>
+          </div>
+          <p class="campo__error">ⓘ Elegí un puntaje y escribí al menos 10 caracteres</p>
+        </div>
+        <button class="boton boton--primario" type="submit">Publicar reseña</button>
+      </form>
+
+      <ul class="comentarios" id="comentarios"></ul>
+    </section>
+  </main>
+
+  <div class="home__carruseles juego__similares" id="similares"></div>
+
+  <footer id="footer"></footer>
+
+  <script src="data/juegos-respaldo.js"></script>
+  <script src="js/datos.js"></script>
+  <script src="js/comun.js"></script>
+  <script src="js/juego.js"></script>
+</body>
+</html>

@@ -1,0 +1,439 @@
+/* =========================================================
+   Página de juego — Peg Solitaire (solo desktop, según enunciado)
+   ========================================================= */
+
+.juego {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  padding-top: 24px;
+}
+
+/* ---------- Breadcrumbs ---------- */
+
+.migas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--texto-secundario);
+}
+
+.migas a {
+  text-decoration: none;
+}
+
+.migas a:hover {
+  color: var(--secundario);
+  text-decoration: underline;
+}
+
+.migas [aria-current] {
+  color: var(--texto);
+}
+
+/* ---------- Zona de juego ---------- */
+
+.juego__zona {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  margin-top: -24px;
+}
+
+@media (min-width: 1024px) {
+  .juego__zona {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.tablero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 24px;
+  background: var(--superficie);
+  border: 1px solid var(--primario);
+  border-radius: var(--radio-grande);
+}
+
+.tablero:fullscreen {
+  justify-content: center;
+  border: none;
+  border-radius: 0;
+}
+
+.tablero__estado {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  color: var(--texto-secundario);
+}
+
+.tablero__estado b {
+  color: var(--texto);
+}
+
+.tablero__mensaje--victoria {
+  color: var(--exito);
+  font-weight: 600;
+}
+
+.grilla {
+  --casilla: 56px;
+  display: grid;
+  grid-template-columns: repeat(7, var(--casilla));
+  grid-template-rows: repeat(7, var(--casilla));
+  gap: 12px;
+}
+
+.casilla {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background: var(--fondo);
+  border: 2px solid transparent;
+  border-radius: 50%;
+  cursor: default;
+  transition: border-color var(--transicion), box-shadow var(--transicion);
+}
+
+.casilla--ficha {
+  cursor: pointer;
+}
+
+.casilla--ficha:hover {
+  border-color: var(--secundario-sombra-20);
+}
+
+.casilla--seleccionada {
+  border-color: var(--secundario);
+  box-shadow: 0 0 16px rgba(22, 224, 242, 0.5);
+}
+
+.casilla--destino {
+  border: 2px dashed var(--primario-luz-20);
+  cursor: pointer;
+}
+
+.casilla--destino:hover {
+  background: var(--primario-sombra-60);
+}
+
+.invasor {
+  width: 60%;
+  height: 60%;
+  color: var(--secundario);
+}
+
+.casilla--nueva .invasor {
+  animation: aterrizar 350ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.casilla--eliminada {
+  animation: explotar 350ms ease-out;
+}
+
+@keyframes aterrizar {
+  from { transform: translateY(-16px) scale(0.6); opacity: 0; }
+}
+
+@keyframes explotar {
+  0% { box-shadow: 0 0 0 0 var(--error); }
+  100% { box-shadow: 0 0 0 16px transparent; }
+}
+
+/* Mini tableros de la galería */
+.grilla--mini {
+  --casilla: 22px;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.grilla--mini .casilla {
+  border-width: 1px;
+}
+
+/* ---------- Panel lateral ---------- */
+
+.panel-juego {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-grande);
+}
+
+.panel-juego__texto {
+  color: var(--texto-secundario);
+}
+
+.panel-juego__divisor {
+  height: 1px;
+  background: var(--borde);
+}
+
+.control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  margin-inline: -12px;
+  background: none;
+  border: none;
+  border-radius: var(--radio);
+  cursor: pointer;
+  text-align: left;
+  transition: background-color var(--transicion), color var(--transicion);
+}
+
+.control:hover {
+  background: var(--borde);
+  color: var(--secundario);
+}
+
+.compartir {
+  position: relative;
+  margin-top: auto;
+}
+
+.compartir__popover {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 8px);
+  z-index: 10;
+  width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  animation: subir-popover 200ms ease-out;
+}
+
+.compartir__popover[hidden] {
+  display: none;
+}
+
+@keyframes subir-popover {
+  from { opacity: 0; transform: translateY(8px); }
+}
+
+.compartir__titulo {
+  padding: 8px 12px;
+  color: var(--texto-secundario);
+  border-bottom: 1px solid var(--borde);
+}
+
+.compartir__opcion {
+  padding: 10px 12px;
+  background: none;
+  border: none;
+  border-radius: var(--radio);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--transicion);
+}
+
+.compartir__opcion:hover {
+  background: var(--borde);
+}
+
+/* ---------- Ficha del juego ---------- */
+
+.ficha {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.ficha__texto {
+  max-width: 840px;
+  color: var(--texto-secundario);
+}
+
+.galeria {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.galeria__item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--texto-secundario);
+}
+
+.galeria__marco {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 9;
+  background: var(--superficie);
+  border-radius: 12px;
+  transition: transform var(--transicion);
+}
+
+.galeria__marco:hover {
+  transform: scale(1.02);
+}
+
+.video {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 760px;
+  color: var(--texto-secundario);
+}
+
+.video__marco {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  padding: 0;
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--fondo);
+  cursor: pointer;
+}
+
+.video__marco img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: brightness(0.6);
+}
+
+.video__play {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transition: transform var(--transicion);
+}
+
+.video__marco:hover .video__play {
+  transform: scale(1.15);
+}
+
+/* ---------- Comunidad ---------- */
+
+.comunidad {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.resena {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  max-width: 760px;
+  padding: 24px;
+  background: var(--superficie);
+  border-radius: 12px;
+}
+
+.resena .campo {
+  align-self: stretch;
+}
+
+.resena textarea {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  resize: vertical;
+  font: inherit;
+  color: inherit;
+}
+
+.resena textarea::placeholder {
+  color: var(--texto-secundario);
+}
+
+.estrellas {
+  display: flex;
+  gap: 4px;
+}
+
+.estrellas button {
+  padding: 0 2px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--borde);
+  cursor: pointer;
+  transition: color 150ms ease-out, transform 150ms ease-out;
+}
+
+.estrellas button.encendida {
+  color: var(--acento);
+}
+
+.estrellas button:hover {
+  transform: scale(1.2);
+}
+
+.comentarios {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 760px;
+  list-style: none;
+}
+
+.comentario {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 12px;
+  padding: 16px;
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+}
+
+.comentario .avatar {
+  grid-row: span 3;
+}
+
+.comentario__cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.comentario__fecha {
+  color: var(--texto-secundario);
+}
+
+.comentario__puntaje {
+  color: var(--acento);
+  letter-spacing: 2px;
+}
+
+.comentario__texto {
+  color: var(--texto-secundario);
+}
+
+.comentario--nuevo {
+  animation: publicar 500ms ease-out;
+}
+
+@keyframes publicar {
+  0% { opacity: 0; transform: translateY(-12px); border-color: var(--secundario); }
+  60% { opacity: 1; transform: none; border-color: var(--secundario); }
+}
+
+.juego__similares {
+  margin-top: 56px;
+}

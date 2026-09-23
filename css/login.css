@@ -1,0 +1,271 @@
+/* =========================================================
+   Login / Registro
+   ========================================================= */
+
+.pagina-login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+  background:
+    radial-gradient(800px 500px at 10% -10%, rgba(123, 47, 247, 0.25), transparent 60%),
+    radial-gradient(700px 500px at 100% 110%, rgba(22, 224, 242, 0.15), transparent 55%),
+    var(--fondo);
+}
+
+.recuadro {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 40px;
+  background: var(--superficie);
+  border: 2px solid var(--primario);
+  border-radius: var(--radio-grande);
+  overflow: hidden;
+}
+
+.recuadro > .logo {
+  align-self: center;
+}
+
+/* ---------- Tabs ---------- */
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+}
+
+.tab {
+  position: relative;
+  padding: 8px 0;
+  background: none;
+  border: none;
+  font-weight: 600;
+  color: var(--texto-secundario);
+  cursor: pointer;
+  transition: color var(--transicion);
+}
+
+.tab::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--primario);
+  transform: scaleX(0);
+  transition: transform var(--transicion);
+}
+
+.tab:hover {
+  color: var(--texto);
+}
+
+.tab--activa {
+  color: var(--texto);
+}
+
+.tab--activa::after {
+  transform: scaleX(1);
+}
+
+/* ---------- Sociales y divisor ---------- */
+
+.sociales {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.divisor {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--texto-secundario);
+}
+
+.divisor::before,
+.divisor::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--borde);
+}
+
+/* ---------- Formulario ---------- */
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formulario .boton--primario {
+  margin-top: 4px;
+}
+
+.link-olvido {
+  align-self: flex-end;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--secundario);
+  text-decoration: none;
+}
+
+.link-olvido:hover {
+  text-decoration: underline;
+}
+
+/* Ícono de ojo: se dibuja con CSS para no depender de imágenes */
+.campo__ojo::before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.campo__ojo[aria-pressed="true"] {
+  color: var(--secundario);
+}
+
+/* ---------- reCAPTCHA (no funcional, colores propios de Google) ---------- */
+
+.recaptcha {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  align-self: flex-start;
+  padding: 14px;
+  background: #F9F9F9;
+  border: 1px solid #D3D3D3;
+  border-radius: 4px;
+  color: #202124;
+  cursor: pointer;
+}
+
+.recaptcha input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.recaptcha__check {
+  width: 24px;
+  height: 24px;
+  background: #FFF;
+  border: 2px solid #B0B0B0;
+  border-radius: 2px;
+  transition: border-color var(--transicion);
+}
+
+.recaptcha input:checked + .recaptcha__check {
+  border-color: transparent;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230F9D58' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12l5 5L20 6'/%3E%3C/svg%3E") center / 22px no-repeat;
+}
+
+.recaptcha input:focus-visible + .recaptcha__check {
+  outline: 2px solid var(--secundario);
+  outline-offset: 2px;
+}
+
+/* ---------- Animación de registro correcto ---------- */
+
+.exito {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 40px;
+  text-align: center;
+  background: var(--superficie);
+  animation: aparecer 300ms ease-out both;
+}
+
+.exito[hidden] {
+  display: none;
+}
+
+.exito__icono {
+  width: 96px;
+  height: 96px;
+  fill: none;
+  stroke: var(--exito);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: pulso 600ms ease-out 1100ms both;
+}
+
+.exito__circulo {
+  stroke-dasharray: 151;
+  stroke-dashoffset: 151;
+  animation: trazar 600ms ease-in-out 200ms forwards;
+}
+
+.exito__tilde {
+  stroke-dasharray: 36;
+  stroke-dashoffset: 36;
+  animation: trazar 400ms ease-out 750ms forwards;
+}
+
+.exito .titulo-seccion {
+  animation: subir 400ms ease-out 900ms both;
+}
+
+.exito__texto {
+  color: var(--texto-secundario);
+  animation: subir 400ms ease-out 1050ms both;
+}
+
+@keyframes aparecer {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes trazar {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes pulso {
+  0% { transform: scale(1); filter: none; }
+  50% { transform: scale(1.12); filter: drop-shadow(0 0 16px var(--exito)); }
+  100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(61, 220, 151, 0.5)); }
+}
+
+@keyframes subir {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Error al enviar: el recuadro "niega con la cabeza" */
+.recuadro--sacudir {
+  animation: sacudir 400ms ease-in-out;
+}
+
+@keyframes sacudir {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 1ms !important;
+  }
+}

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar sesión — NeoArcade</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Orbitron:wght@600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/login.css">
+</head>
+<body class="pagina-login">
+
+  <main class="recuadro" id="recuadro">
+    <a class="logo" href="login.html">Neo<span>Arcade</span></a>
+
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tab-registro" aria-selected="false" aria-controls="form-registro">Crear cuenta</button>
+      <button class="tab tab--activa" role="tab" id="tab-login" aria-selected="true" aria-controls="form-login">Iniciar sesión</button>
+    </div>
+
+    <div class="sociales">
+      <button class="boton boton--social boton--ancho" type="button" data-social>
+        <svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true">
+          <path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.6-.4-3.9z"/>
+          <path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
+          <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/>
+          <path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.6-.4-3.9z"/>
+        </svg>
+        Continuar con Google
+      </button>
+      <button class="boton boton--social boton--ancho" type="button" data-social>
+        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="12" fill="#1877F2"/>
+          <path fill="#fff" d="M15.1 12.9l.4-2.8h-2.7V8.3c0-.8.4-1.5 1.6-1.5h1.2V4.4s-1.1-.2-2.2-.2c-2.2 0-3.7 1.4-3.7 3.8v2.1H7.3v2.8h2.4V20h3.1v-7.1h2.3z"/>
+        </svg>
+        Continuar con Facebook
+      </button>
+    </div>
+
+    <div class="divisor"><span>o</span></div>
+
+    <!-- Iniciar sesión (pestaña por defecto) -->
+    <form class="formulario" id="form-login" role="tabpanel" aria-labelledby="tab-login" novalidate>
+      <div class="campo">
+        <label class="campo__label" for="login-mail">Correo electrónico</label>
+        <div class="campo__caja">
+          <input type="email" id="login-mail" placeholder="ejemplo@gmail.com" autocomplete="email" required>
+        </div>
+        <p class="campo__error">ⓘ Ingresá un correo electrónico válido</p>
+      </div>
+
+      <div class="campo">
+        <label class="campo__label" for="login-pass">Contraseña</label>
+        <div class="campo__caja">
+          <input type="password" id="login-pass" placeholder="Mínimo 8 caracteres" autocomplete="current-password" minlength="8" required>
+          <button class="campo__ojo" type="button" aria-label="Mostrar contraseña"></button>
+        </div>
+        <p class="campo__error">ⓘ La contraseña tiene al menos 8 caracteres</p>
+      </div>
+
+      <a class="link-olvido" href="#">¿Olvidaste tu contraseña?</a>
+
+      <button class="boton boton--primario boton--ancho" type="submit">Iniciar sesión</button>
+    </form>
+
+    <!-- Crear cuenta -->
+    <form class="formulario" id="form-registro" role="tabpanel" aria-labelledby="tab-registro" novalidate hidden>
+      <div class="campo">
+        <label class="campo__label" for="reg-nombre">Nombre y apellido</label>
+        <div class="campo__caja">
+          <input type="text" id="reg-nombre" placeholder="Ej: María González" autocomplete="name" required>
+        </div>
+        <p class="campo__error">ⓘ Ingresá tu nombre y apellido</p>
+      </div>
+
+      <div class="campo">
+        <label class="campo__label" for="reg-nick">Nickname (opcional)</label>
+        <div class="campo__caja">
+          <input type="text" id="reg-nick" placeholder="Ej: Dragonslayer9" autocomplete="nickname">
+        </div>
+      </div>
+
+      <div class="campo">
+        <label class="campo__label" for="reg-edad">Edad</label>
+        <div class="campo__caja">
+          <input type="number" id="reg-edad" placeholder="Ej: 18" min="1" max="120" required>
+        </div>
+        <p class="campo__error">ⓘ Ingresá una edad válida</p>
+      </div>
+
+      <div class="campo">
+        <label class="campo__label" for="reg-mail">Correo electrónico</label>
+        <div class="campo__caja">
+          <input type="email" id="reg-mail" placeholder="ejemplo@gmail.com" autocomplete="email" required>
+        </div>
+        <p class="campo__error">ⓘ Ingresá un correo electrónico válido</p>
+      </div>
+
+      <div class="campo">
+        <label class="campo__label" for="reg-pass">Contraseña</label>
+        <div class="campo__caja">
+          <input type="password" id="reg-pass" placeholder="Mínimo 8 caracteres" autocomplete="new-password" minlength="8" required>
+          <button class="campo__ojo" type="button" aria-label="Mostrar contraseña"></button>
+        </div>
+        <p class="campo__error">ⓘ La contraseña tiene que tener al menos 8 caracteres</p>
+      </div>
+
+      <div class="campo">
+        <label class="campo__label" for="reg-pass2">Repetir contraseña</label>
+        <div class="campo__caja">
+          <input type="password" id="reg-pass2" placeholder="Volver a escribir la contraseña" autocomplete="new-password" required>
+          <button class="campo__ojo" type="button" aria-label="Mostrar contraseña"></button>
+        </div>
+        <p class="campo__error">ⓘ Las contraseñas no coinciden</p>
+      </div>
+
+      <div class="campo" id="campo-captcha">
+        <label class="recaptcha">
+          <input type="checkbox" id="reg-captcha">
+          <span class="recaptcha__check" aria-hidden="true"></span>
+          No soy un robot
+        </label>
+        <p class="campo__error">ⓘ Confirmá que no sos un robot</p>
+      </div>
+
+      <button class="boton boton--primario boton--ancho" type="submit">Crear cuenta</button>
+    </form>
+
+    <!-- Animación de registro / ingreso correcto -->
+    <div class="exito" id="exito" hidden>
+      <svg class="exito__icono" viewBox="0 0 52 52" aria-hidden="true">
+        <circle class="exito__circulo" cx="26" cy="26" r="24"/>
+        <path class="exito__tilde" d="M15 27l7 7 15-15"/>
+      </svg>
+      <p class="titulo-seccion" id="exito-titulo">¡Cuenta creada!</p>
+      <p class="exito__texto" id="exito-texto">Te estamos llevando a NeoArcade…</p>
+    </div>
+  </main>
+
+  <script src="js/login.js"></script>
+</body>
+</html>

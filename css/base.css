@@ -1,0 +1,304 @@
+/* =========================================================
+   NeoArcade — Design System en código
+   Tokens tomados 1:1 del Figma (paleta, tipografía, componentes)
+   ========================================================= */
+
+:root {
+  /* Primario (violeta) — base + 3 luces + 3 sombras */
+  --primario: #7B2FF7;
+  --primario-luz-20: #9559F9;
+  --primario-luz-40: #B082FA;
+  --primario-luz-60: #CAACFC;
+  --primario-sombra-20: #6226C6;
+  --primario-sombra-40: #4A1C94;
+  --primario-sombra-60: #311363;
+
+  /* Secundario (cyan) */
+  --secundario: #16E0F2;
+  --secundario-luz-20: #45E6F5;
+  --secundario-luz-40: #73ECF7;
+  --secundario-luz-60: #A2F3FA;
+  --secundario-sombra-20: #12B3C2;
+  --secundario-sombra-40: #0D8691;
+  --secundario-sombra-60: #095A61;
+
+  /* Acento (amarillo) — reservado a CTAs */
+  --acento: #FFD23F;
+  --acento-luz-20: #FFDB65;
+  --acento-luz-40: #FFE48C;
+  --acento-luz-60: #FFEDB2;
+  --acento-sombra-20: #CCA832;
+  --acento-sombra-40: #997E26;
+  --acento-sombra-60: #665419;
+
+  /* Neutros */
+  --fondo: #0E0B16;
+  --superficie: #1B1830;
+  --borde: #2A2745;
+  --texto: #EDECF5;
+  --texto-secundario: #8B88AD;
+
+  /* Semántico */
+  --error: #FF4D6D;
+  --exito: #3DDC97;
+
+  /* Tipografía */
+  --fuente-titulos: "Orbitron", sans-serif;
+  --fuente-texto: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --fuente-logo: "Press Start 2P", monospace;
+
+  /* Forma y movimiento */
+  --radio: 8px;
+  --radio-grande: 16px;
+  --transicion: 200ms ease-out;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--fuente-texto);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+/* Que ningún display de componente le gane al atributo hidden */
+[hidden] {
+  display: none !important;
+}
+
+h1,
+h2,
+h3 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--secundario);
+  outline-offset: 2px;
+}
+
+/* ---------- Tipografía (Text Styles del DS) ---------- */
+
+.titulo-h1 {
+  font-family: var(--fuente-titulos);
+  font-weight: 700;
+  font-size: 48px;
+  line-height: 56px;
+}
+
+.titulo-seccion {
+  font-family: var(--fuente-titulos);
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 32px;
+}
+
+.texto-enfasis {
+  font-weight: 600;
+}
+
+.texto-chico {
+  font-size: 13px;
+  line-height: 18px;
+}
+
+/* ---------- Logo ---------- */
+
+.logo {
+  font-family: var(--fuente-logo);
+  font-size: 20px;
+  line-height: 1;
+  text-decoration: none;
+  color: var(--texto);
+}
+
+.logo span {
+  color: var(--secundario);
+}
+
+/* ---------- Botones ----------
+   Cada variante tiene un hover distinto (TPE2, punto 2):
+   1. Primario: se eleva + glow cyan
+   2. Secundario: relleno violeta que barre de izquierda a derecha
+   3. Social: el borde se ilumina y el ícono rebota
+   ------------------------------- */
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: var(--radio);
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 20px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform var(--transicion), box-shadow var(--transicion),
+    background-color var(--transicion), border-color var(--transicion);
+}
+
+.boton--ancho {
+  width: 100%;
+}
+
+/* 1. Primario (violeta, igual que el componente Boton del Figma) */
+.boton--primario {
+  background: var(--primario);
+  color: #FFF;
+}
+
+.boton--primario:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 2px var(--secundario), 0 0 24px rgba(22, 224, 242, 0.55);
+}
+
+.boton--primario:active {
+  transform: translateY(0);
+  background: var(--primario-sombra-20);
+}
+
+/* 2. Secundario */
+.boton--secundario {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: transparent;
+  color: var(--texto);
+  border: 2px solid var(--primario);
+}
+
+.boton--secundario::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--primario);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 300ms ease-out;
+}
+
+.boton--secundario:hover::before {
+  transform: scaleX(1);
+}
+
+/* 3. Social (Google / Facebook) */
+.boton--social {
+  background: transparent;
+  color: var(--texto);
+  border: 1px solid var(--borde);
+}
+
+.boton--social:hover {
+  border-color: var(--secundario);
+  background: var(--superficie);
+}
+
+.boton--social:hover svg {
+  animation: rebote 500ms ease-out;
+}
+
+@keyframes rebote {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.25) rotate(-8deg); }
+  70% { transform: scale(0.95) rotate(4deg); }
+  100% { transform: scale(1); }
+}
+
+/* ---------- Campo (Input del DS) ---------- */
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.campo__label {
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.campo__caja {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  background: var(--fondo);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  transition: border-color var(--transicion), box-shadow var(--transicion);
+}
+
+.campo__caja:focus-within {
+  border-color: var(--primario);
+  box-shadow: 0 0 0 1px var(--primario);
+}
+
+.campo__caja input {
+  flex: 1;
+  min-width: 0;
+  background: none;
+  border: none;
+  outline: none;
+}
+
+.campo__caja input::placeholder {
+  color: var(--texto-secundario);
+}
+
+.campo__ojo {
+  display: flex;
+  background: none;
+  border: none;
+  color: var(--texto-secundario);
+  cursor: pointer;
+}
+
+.campo__ojo:hover {
+  color: var(--texto);
+}
+
+.campo__error {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--error);
+}
+
+.campo--error .campo__caja {
+  border-color: var(--error);
+}
+
+.campo--error .campo__error {
+  display: flex;
+}

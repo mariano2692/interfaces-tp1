@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inicio — NeoArcade</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Orbitron:wght@600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/comun.css">
+  <link rel="stylesheet" href="css/home.css">
+</head>
+<body class="cargando">
+
+  <!-- Loading simulado de 5 segundos (sin GIF: keyframes CSS + % calculado en JS) -->
+  <div class="carga" id="carga" role="progressbar" aria-label="Cargando NeoArcade" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+    <p class="logo carga__logo">Neo<span>Arcade</span></p>
+    <div class="carga__pixeles" aria-hidden="true">
+      <span></span><span></span><span></span>
+      <span></span><span></span><span></span>
+      <span></span><span></span><span></span>
+    </div>
+    <p class="carga__porcentaje"><span id="porcentaje">0</span>%</p>
+    <div class="carga__barra"><div class="carga__relleno" id="relleno"></div></div>
+    <p class="carga__texto" id="carga-texto">Cargando juegos…</p>
+  </div>
+
+  <header id="header"></header>
+
+  <main class="home">
+    <section class="slider" id="slider" aria-roledescription="carrusel" aria-label="Juegos destacados">
+      <div class="slider__peek slider__peek--izq" aria-hidden="true"><img alt=""></div>
+      <div class="slider__escenario" id="slider-escenario"></div>
+      <div class="slider__peek slider__peek--der" aria-hidden="true"><img alt=""></div>
+      <button class="slider__flecha slider__flecha--izq" id="slider-anterior" aria-label="Destacado anterior"></button>
+      <button class="slider__flecha slider__flecha--der" id="slider-siguiente" aria-label="Destacado siguiente"></button>
+      <div class="slider__indicadores" id="slider-indicadores"></div>
+    </section>
+
+    <div class="home__carruseles" id="carruseles"></div>
+  </main>
+
+  <footer id="footer"></footer>
+
+  <script src="data/juegos-respaldo.js"></script>
+  <script src="js/datos.js"></script>
+  <script src="js/comun.js"></script>
+  <script src="js/home.js"></script>
+</body>
+</html>

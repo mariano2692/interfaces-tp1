@@ -1,0 +1,398 @@
+"use strict";
+
+/* =========================================================
+   Partes compartidas entre Home y Juego:
+   header, menú de categorías, menú de cuenta, carrito,
+   footer, cards y carruseles.
+   ========================================================= */
+
+const svg = (contenido, extra = "") =>
+  `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${contenido}</svg>`;
+
+const ICONOS = {
+  menu: svg('<path d="M4 6h16M4 12h16M4 18h16"/>'),
+  cerrar: svg('<path d="M6 6l12 12M18 6L6 18"/>'),
+  buscar: svg('<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>'),
+  carrito: svg('<circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.7 12.4a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6"/>'),
+  flecha: svg('<path d="M6 9l6 6 6-6"/>'),
+  izquierda: svg('<path d="M15 18l-6-6 6-6"/>'),
+  derecha: svg('<path d="M9 18l6-6-6-6"/>'),
+  tacho: svg('<path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v6M14 11v6"/>'),
+  inicio: svg('<path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/>'),
+  biblioteca: svg('<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>'),
+  perfil: svg('<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>'),
+  joystick: svg('<rect x="2" y="7" width="20" height="12" rx="6"/><path d="M7 11v4M5 13h4"/><circle cx="16" cy="12" r="1"/><circle cx="18" cy="14" r="1"/>'),
+  corazon: svg('<path d="M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-3 4.5 4.5 0 0 1 8 3c0 6-8 11-8 11z"/>'),
+  config: svg('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>'),
+  salir: svg('<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>'),
+  estrella: svg('<path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18.3 5.5 22l1.7-7.4-5.7-5 7.5-.7z"/>', 'fill="currentColor" stroke="none"'),
+  instagram: svg('<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>'),
+  x: svg('<path d="M4 4l16 16M20 4L4 20"/>'),
+  discord: svg('<path d="M8 17c-3 0-5-1-5-1 0-5 1.5-9 3-10.5C7.5 5 9 4.5 9 4.5l.5 1.5h5l.5-1.5s1.5.5 3 1c1.5 1.5 3 5.5 3 10.5 0 0-2 1-5 1l-1-2"/><circle cx="9" cy="12" r="1.2" fill="currentColor"/><circle cx="15" cy="12" r="1.2" fill="currentColor"/><path d="M8 15.5c2.5 1 5.5 1 8 0"/>'),
+  youtube: svg('<rect x="2" y="5" width="20" height="14" rx="4"/><path d="M10 9l5 3-5 3z" fill="currentColor"/>'),
+};
+
+const USUARIO = { nick: "Dragonslayer9", inicial: "D" };
+
+const CATEGORIAS_MENU = [
+  { nombre: "Acción", ancla: "accion" },
+  { nombre: "Disparos", ancla: "disparos" },
+  { nombre: "RPG", ancla: "rpg" },
+  { nombre: "Aventura", ancla: "aventura" },
+  { nombre: "Indie", ancla: "indie" },
+  { nombre: "Puzzle y plataformas", ancla: "puzzle" },
+];
+
+/* ---------- Header ---------- */
+
+function crearHeader() {
+  const header = document.getElementById("header");
+  header.className = "header";
+  header.innerHTML = `
+    <button class="header__icono" id="abrir-categorias" aria-label="Abrir menú de categorías" aria-expanded="false" aria-controls="panel-categorias">${ICONOS.menu}</button>
+    <a class="logo header__logo" href="home.html">Neo<span>Arcade</span></a>
+    <form class="buscador" role="search" onsubmit="return false">
+      <span class="buscador__icono">${ICONOS.buscar}</span>
+      <input type="search" placeholder="Buscar juegos" aria-label="Buscar juegos">
+    </form>
+    <div class="header__acciones">
+      <button class="header__icono" id="abrir-carrito" aria-label="Abrir carrito">
+        ${ICONOS.carrito}
+        <span class="contador" id="contador-carrito" hidden>0</span>
+      </button>
+      <button class="cuenta" id="abrir-cuenta" aria-label="Abrir menú de cuenta" aria-expanded="false" aria-controls="menu-cuenta">
+        <span class="avatar">${USUARIO.inicial}</span>
+        <span class="cuenta__flecha">${ICONOS.flecha}</span>
+      </button>
+    </div>`;
+}
+
+/* ---------- Paneles: categorías, cuenta y carrito ---------- */
+
+function crearPaneles() {
+  const itemsCategorias = CATEGORIAS_MENU.map(
+    (c) => `<a class="panel__item" href="home.html#${c.ancla}">${c.nombre}</a>`
+  ).join("");
+
+  document.body.insertAdjacentHTML(
+    "beforeend",
+    `
+    <div class="scrim" id="scrim" hidden></div>
+
+    <nav class="panel panel--izquierda" id="panel-categorias" aria-label="Categorías" hidden>
+      <a class="panel__item" href="home.html">${ICONOS.inicio} Inicio</a>
+      <a class="panel__item" href="#">${ICONOS.biblioteca} Biblioteca</a>
+      <div class="panel__divisor"></div>
+      <p class="panel__grupo">Categorías</p>
+      ${itemsCategorias}
+    </nav>
+
+    <div class="menu-cuenta" id="menu-cuenta" hidden>
+      <div class="menu-cuenta__usuario">
+        <span class="avatar avatar--grande">${USUARIO.inicial}</span>
+        <span class="texto-enfasis">${USUARIO.nick}</span>
+      </div>
+      <div class="panel__divisor"></div>
+      <a class="panel__item" href="#">${ICONOS.perfil} Mi perfil</a>
+      <a class="panel__item" href="#">${ICONOS.joystick} Mis juegos</a>
+      <a class="panel__item" href="#">${ICONOS.corazon} Favoritos</a>
+      <a class="panel__item" href="#">${ICONOS.config} Configuración</a>
+      <div class="panel__divisor"></div>
+      <a class="panel__item" href="login.html">${ICONOS.salir} Cerrar sesión</a>
+    </div>
+
+    <aside class="panel panel--derecha carrito" id="panel-carrito" aria-label="Tu carrito" hidden>
+      <div class="carrito__cabecera">
+        <h2 class="titulo-seccion">Tu carrito</h2>
+        <button class="header__icono" id="cerrar-carrito" aria-label="Cerrar carrito">${ICONOS.cerrar}</button>
+      </div>
+      <ul class="carrito__lista" id="carrito-lista"></ul>
+      <div class="carrito__pie">
+        <div class="carrito__total"><span>Total</span><span class="texto-enfasis" id="carrito-total">USD 0,00</span></div>
+        <button class="boton boton--primario boton--ancho" id="finalizar-compra">Finalizar compra</button>
+      </div>
+    </aside>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>`
+  );
+}
+
+// Solo un panel abierto a la vez; se cierra con el scrim, con Esc o con clic afuera
+let panelAbierto = null;
+
+function abrirPanel(id, disparador) {
+  cerrarPanel();
+  const panel = document.getElementById(id);
+  panel.hidden = false;
+  panelAbierto = { panel, disparador };
+  disparador?.setAttribute("aria-expanded", "true");
+  if (panel.classList.contains("panel")) document.getElementById("scrim").hidden = false;
+}
+
+function cerrarPanel() {
+  if (!panelAbierto) return;
+  panelAbierto.panel.hidden = true;
+  panelAbierto.disparador?.setAttribute("aria-expanded", "false");
+  document.getElementById("scrim").hidden = true;
+  panelAbierto = null;
+}
+
+function conectarPaneles() {
+  const alternar = (id, boton) => () =>
+    panelAbierto?.panel.id === id ? cerrarPanel() : abrirPanel(id, boton);
+
+  const btnCategorias = document.getElementById("abrir-categorias");
+  const btnCuenta = document.getElementById("abrir-cuenta");
+  const btnCarrito = document.getElementById("abrir-carrito");
+
+  btnCategorias.addEventListener("click", alternar("panel-categorias", btnCategorias));
+  btnCuenta.addEventListener("click", alternar("menu-cuenta", btnCuenta));
+  btnCarrito.addEventListener("click", alternar("panel-carrito", btnCarrito));
+  document.getElementById("cerrar-carrito").addEventListener("click", cerrarPanel);
+  document.getElementById("scrim").addEventListener("click", cerrarPanel);
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") cerrarPanel();
+  });
+
+  // El menú de cuenta no tiene scrim: se cierra al hacer clic afuera
+  document.addEventListener("click", (e) => {
+    if (panelAbierto?.panel.id !== "menu-cuenta") return;
+    if (!panelAbierto.panel.contains(e.target) && !btnCuenta.contains(e.target)) cerrarPanel();
+  });
+
+  // Los links a categorías cierran el panel al navegar dentro del Home
+  document.querySelectorAll("#panel-categorias a").forEach((a) => a.addEventListener("click", cerrarPanel));
+}
+
+/* ---------- Toast ---------- */
+
+let temporizadorToast;
+
+function mostrarToast(mensaje) {
+  const toast = document.getElementById("toast");
+  toast.textContent = mensaje;
+  toast.classList.remove("toast--visible");
+  void toast.offsetWidth;
+  toast.classList.add("toast--visible");
+  clearTimeout(temporizadorToast);
+  temporizadorToast = setTimeout(() => toast.classList.remove("toast--visible"), 2600);
+}
+
+/* ---------- Carrito (se guarda en el navegador para compartirlo entre páginas) ---------- */
+
+const CLAVE_CARRITO = "neoarcade-carrito";
+let carrito = [];
+
+function leerCarrito() {
+  try {
+    carrito = JSON.parse(localStorage.getItem(CLAVE_CARRITO)) || [];
+  } catch {
+    carrito = [];
+  }
+}
+
+function guardarCarrito() {
+  try {
+    localStorage.setItem(CLAVE_CARRITO, JSON.stringify(carrito));
+  } catch {
+    /* sin almacenamiento: el carrito vive solo en esta página */
+  }
+}
+
+function agregarAlCarrito(juego) {
+  if (carrito.some((item) => item.id === juego.id)) {
+    mostrarToast(`${juego.nombre} ya está en tu carrito`);
+    return;
+  }
+  carrito.push({ id: juego.id, nombre: juego.nombre, imagen: juego.imagen, precio: juego.precio.final });
+  guardarCarrito();
+  renderizarCarrito(true);
+  mostrarToast(`Agregaste ${juego.nombre} al carrito`);
+}
+
+function renderizarCarrito(animar = false) {
+  const lista = document.getElementById("carrito-lista");
+  const contador = document.getElementById("contador-carrito");
+  const total = carrito.reduce((suma, item) => suma + item.precio, 0);
+
+  lista.innerHTML = carrito.length
+    ? carrito
+        .map(
+          (item) => `
+      <li class="carrito__item">
+        <img src="${item.imagen}" alt="" loading="lazy">
+        <div class="carrito__datos">
+          <span class="carrito__nombre">${item.nombre}</span>
+          <span class="texto-enfasis">${formatearPrecio(item.precio)}</span>
+        </div>
+        <button class="header__icono carrito__quitar" data-quitar="${item.id}" aria-label="Quitar ${item.nombre}">${ICONOS.tacho}</button>
+      </li>`
+        )
+        .join("")
+    : `<li class="carrito__vacio">Tu carrito está vacío. Tocá <b>Comprar</b> en cualquier juego para sumarlo.</li>`;
+
+  document.getElementById("carrito-total").textContent = formatearPrecio(total);
+  document.getElementById("finalizar-compra").disabled = carrito.length === 0;
+
+  contador.hidden = carrito.length === 0;
+  contador.textContent = carrito.length;
+  if (animar) {
+    contador.classList.remove("contador--latido");
+    void contador.offsetWidth;
+    contador.classList.add("contador--latido");
+  }
+}
+
+function conectarCarrito() {
+  leerCarrito();
+  renderizarCarrito();
+
+  document.getElementById("carrito-lista").addEventListener("click", (e) => {
+    const boton = e.target.closest("[data-quitar]");
+    if (!boton) return;
+    carrito = carrito.filter((item) => String(item.id) !== boton.dataset.quitar);
+    guardarCarrito();
+    renderizarCarrito();
+  });
+
+  document.getElementById("finalizar-compra").addEventListener("click", () => {
+    const cantidad = carrito.length;
+    carrito = [];
+    guardarCarrito();
+    renderizarCarrito();
+    cerrarPanel();
+    mostrarToast(`¡Compra realizada! ${cantidad === 1 ? "El juego ya está" : "Los juegos ya están"} en tu biblioteca`);
+  });
+}
+
+/* ---------- Footer ---------- */
+
+function crearFooter() {
+  const footer = document.getElementById("footer");
+  footer.className = "footer";
+  const columna = (titulo, links) => `
+    <div class="footer__columna">
+      <p class="footer__titulo">${titulo}</p>
+      ${links.map(([texto, href]) => `<a href="${href}">${texto}</a>`).join("")}
+    </div>`;
+
+  footer.innerHTML = `
+    <div class="footer__columnas">
+      <div class="footer__marca">
+        <a class="logo" href="home.html">Neo<span>Arcade</span></a>
+        <p class="texto-chico">Tu arcade de juegos online.</p>
+      </div>
+      ${columna("Categorías", CATEGORIAS_MENU.map((c) => [c.nombre, `home.html#${c.ancla}`]))}
+      ${columna("Plataforma", [["Inicio", "home.html"], ["Catálogo", "#"], ["Novedades", "#"]])}
+      ${columna("Ayuda", [["Preguntas frecuentes", "#"], ["Contacto", "#"], ["Soporte", "#"]])}
+      ${columna("Legales", [["Política de privacidad", "#"], ["Términos y condiciones", "#"]])}
+      <div class="footer__columna">
+        <p class="footer__titulo">Seguinos</p>
+        <div class="footer__redes">
+          <a href="#" aria-label="Instagram">${ICONOS.instagram}</a>
+          <a href="#" aria-label="X">${ICONOS.x}</a>
+          <a href="#" aria-label="Discord">${ICONOS.discord}</a>
+          <a href="#" aria-label="YouTube">${ICONOS.youtube}</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer__divisor"></div>
+    <p class="texto-chico footer__copy">© 2026 NeoArcade. Todos los derechos reservados.</p>`;
+}
+
+/* ---------- Card de juego ---------- */
+
+function crearCard(juego) {
+  const { precio } = juego;
+  const esNuevo = juego.anio >= 2019;
+
+  let precioHtml = `<span class="precio precio--gratis">Gratis</span>`;
+  if (!precio.gratis) {
+    precioHtml = precio.descuento
+      ? `<span class="precio"><s>${formatearPrecio(precio.lista)}</s>${formatearPrecio(precio.final)}</span>`
+      : `<span class="precio">${formatearPrecio(precio.final)}</span>`;
+  }
+
+  const boton = precio.gratis
+    ? `<button class="card-boton card-boton--jugar" data-jugar="${juego.id}">Jugar</button>`
+    : `<button class="card-boton card-boton--comprar" data-comprar="${juego.id}">Comprar</button>`;
+
+  let badge = "";
+  if (precio.descuento) badge = `<span class="badge badge--oferta">-${precio.descuento}%</span>`;
+  else if (esNuevo) badge = `<span class="badge">Nuevo</span>`;
+
+  const imagen = `<img src="${juego.imagen}" alt="${juego.nombre}" loading="lazy">${badge}`;
+
+  return `
+    <article class="card">
+      ${juego.url
+        ? `<a class="card__imagen" href="${juego.url}">${imagen}</a>`
+        : `<div class="card__imagen">${imagen}</div>`}
+      <div class="card__contenido">
+        <h3 class="card__titulo" title="${juego.nombre}">${juego.nombre}</h3>
+        <div class="card__meta">${precioHtml}${boton}</div>
+      </div>
+    </article>`;
+}
+
+/* ---------- Carrusel de cards ---------- */
+
+function crearCarrusel({ titulo, ancla, juegos }) {
+  return `
+    <section class="carrusel" id="${ancla}" aria-labelledby="titulo-${ancla}">
+      <div class="carrusel__cabecera">
+        <h2 class="titulo-seccion" id="titulo-${ancla}">${titulo}</h2>
+        <a class="carrusel__ver-todos" href="#${ancla}">Ver todos</a>
+      </div>
+      <div class="carrusel__cuerpo">
+        <button class="carrusel__flecha carrusel__flecha--izq" aria-label="Anteriores" disabled>${ICONOS.izquierda}</button>
+        <div class="carrusel__pista">${juegos.map(crearCard).join("")}</div>
+        <button class="carrusel__flecha carrusel__flecha--der" aria-label="Siguientes">${ICONOS.derecha}</button>
+      </div>
+    </section>`;
+}
+
+function conectarCarruseles(contenedor) {
+  contenedor.querySelectorAll(".carrusel").forEach((carrusel) => {
+    const pista = carrusel.querySelector(".carrusel__pista");
+    const izq = carrusel.querySelector(".carrusel__flecha--izq");
+    const der = carrusel.querySelector(".carrusel__flecha--der");
+
+    const actualizar = () => {
+      izq.disabled = pista.scrollLeft <= 4;
+      der.disabled = pista.scrollLeft + pista.clientWidth >= pista.scrollWidth - 4;
+    };
+    const mover = (sentido) => pista.scrollBy({ left: sentido * pista.clientWidth * 0.9, behavior: "smooth" });
+
+    izq.addEventListener("click", () => mover(-1));
+    der.addEventListener("click", () => mover(1));
+    pista.addEventListener("scroll", actualizar, { passive: true });
+    actualizar();
+  });
+}
+
+// Comprar / Jugar desde cualquier card de la página
+function conectarBotonesDeCards(juegos) {
+  const porId = new Map(juegos.map((j) => [String(j.id), j]));
+  document.addEventListener("click", (e) => {
+    const comprar = e.target.closest("[data-comprar]");
+    const jugar = e.target.closest("[data-jugar]");
+    if (comprar) agregarAlCarrito(porId.get(comprar.dataset.comprar));
+    if (jugar) {
+      const juego = porId.get(jugar.dataset.jugar);
+      if (juego.url) window.location.href = juego.url;
+      else mostrarToast(`${juego.nombre} se agregó a tu biblioteca`);
+    }
+  });
+}
+
+/* ---------- Inicio común ---------- */
+
+function iniciarComun() {
+  crearHeader();
+  crearPaneles();
+  crearFooter();
+  conectarPaneles();
+  conectarCarrito();
+}

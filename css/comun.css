@@ -602,6 +602,8 @@
 
 /* En mobile se desliza con el dedo; las flechas aparecen desde tablet */
 .carrusel__pista {
+  position: relative;
+  perspective: 1200px;
   display: flex;
   gap: 16px;
   padding: 8px 16px 16px;
@@ -609,6 +611,27 @@
   scroll-snap-type: x mandatory;
   scroll-padding-inline: 16px;
   scrollbar-width: none;
+}
+
+/* Entrada de cards al avanzar con las flechas (keyframes con %, permitidos por el enunciado) */
+.card--entra-der {
+  animation: card-entra-der 550ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.card--entra-izq {
+  animation: card-entra-izq 550ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes card-entra-der {
+  0% { opacity: 0; transform: translateX(64px) scale(0.9) rotateY(-12deg); }
+  60% { opacity: 1; }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes card-entra-izq {
+  0% { opacity: 0; transform: translateX(-64px) scale(0.9) rotateY(12deg); }
+  60% { opacity: 1; }
+  100% { opacity: 1; transform: none; }
 }
 
 .carrusel__pista::-webkit-scrollbar {

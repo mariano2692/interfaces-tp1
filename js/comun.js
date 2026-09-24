@@ -359,6 +359,31 @@ function crearCarrusel({ titulo, ancla, juegos }) {
     </section>`;
 }
 
+// Además del desplazamiento, las cards que quedan a la vista entran escalonadas
+// desde el lado hacia el que se avanza
+function animarEntrada(pista, destino, sentido) {
+  const visibles = [...pista.children].filter(
+    (card) => card.offsetLeft + card.offsetWidth > destino && card.offsetLeft < destino + pista.clientWidth
+  );
+  const clase = sentido > 0 ? "card--entra-der" : "card--entra-izq";
+  const orden = sentido > 0 ? visibles : visibles.reverse();
+
+  orden.forEach((card, i) => {
+    card.classList.remove("card--entra-der", "card--entra-izq");
+    void card.offsetWidth; // reinicia la animación si se hace clic seguido
+    card.style.animationDelay = `${i * 70}ms`;
+    card.classList.add(clase);
+    card.addEventListener(
+      "animationend",
+      () => {
+        card.classList.remove(clase);
+        card.style.animationDelay = "";
+      },
+      { once: true }
+    );
+  });
+}
+
 function conectarCarruseles(contenedor) {
   contenedor.querySelectorAll(".carrusel").forEach((carrusel) => {
     const pista = carrusel.querySelector(".carrusel__pista");
@@ -369,7 +394,12 @@ function conectarCarruseles(contenedor) {
       izq.disabled = pista.scrollLeft <= 4;
       der.disabled = pista.scrollLeft + pista.clientWidth >= pista.scrollWidth - 4;
     };
-    const mover = (sentido) => pista.scrollBy({ left: sentido * pista.clientWidth * 0.9, behavior: "smooth" });
+    const mover = (sentido) => {
+      const maximo = pista.scrollWidth - pista.clientWidth;
+      const destino = Math.max(0, Math.min(pista.scrollLeft + sentido * pista.clientWidth * 0.9, maximo));
+      pista.scrollTo({ left: destino, behavior: "smooth" });
+      animarEntrada(pista, destino, sentido);
+    };
 
     izq.addEventListener("click", () => mover(-1));
     der.addEventListener("click", () => mover(1));

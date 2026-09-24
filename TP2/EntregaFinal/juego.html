@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Orbitron:wght@600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/base.css?v=2">
   <link rel="stylesheet" href="css/comun.css?v=3">
-  <link rel="stylesheet" href="css/juego.css?v=3">
+  <link rel="stylesheet" href="css/juego.css?v=4">
 </head>
 <body>
 
@@ -86,43 +86,64 @@
       </aside>
     </section>
 
-    <!-- Ficha del juego -->
+    <!-- De qué trata: descripción, galería y video -->
     <section class="ficha">
-      <h2 class="titulo-seccion">Acerca del juego</h2>
-      <p class="ficha__texto">
-        Una flota de invasores pixelados aterrizó en el tablero y tu misión es sacarlos de a uno.
-        Cada salto elimina a un invasor, pero cuidado: si te quedás sin movimientos antes de tiempo,
-        la invasión gana.
-      </p>
-      <p class="ficha__texto">
-        Es el clásico Peg Solitaire inglés de 33 casilleros, con la estética arcade de NeoArcade.
-        Ideal para partidas cortas: pensá cada movimiento y buscá terminar con una sola ficha en el centro.
-      </p>
+      <h2 class="titulo-seccion">¿De qué trata este juego?</h2>
+      <div class="ficha__texto">
+        <p>
+          Los invasores pixelados ocuparon cada casillero del tablero. Tu misión: hacerlos desaparecer
+          saltando una ficha por encima de otra —en horizontal o vertical— hasta que quede una sola en pie.
+        </p>
+        <p>
+          Una versión arcade del clásico Peg Solitaire inglés, con tablero en cruz de 33 casilleros.
+          Cuántas menos fichas dejes, mejor tu puntaje. Dejá una sola y ganás la partida.
+        </p>
+      </div>
 
       <div class="galeria">
         <figure class="galeria__item">
-          <div class="galeria__marco" data-estado="inicial"></div>
+          <img src="img/galeria-1.png" alt="Tablero de madera con los invasores al comenzar la partida" loading="lazy">
           <figcaption class="texto-chico">Tablero inicial</figcaption>
         </figure>
         <figure class="galeria__item">
-          <div class="galeria__marco" data-estado="salto"></div>
+          <img src="img/galeria-2.png" alt="Invasores saltando sobre el tablero" loading="lazy">
           <figcaption class="texto-chico">Salto de ficha</figcaption>
         </figure>
         <figure class="galeria__item">
-          <div class="galeria__marco" data-estado="final"></div>
+          <img src="img/galeria-3.png" alt="Tablero con los invasores ordenados por color" loading="lazy">
           <figcaption class="texto-chico">¡Última ficha!</figcaption>
         </figure>
       </div>
 
-      <figure class="video">
-        <button class="video__marco" type="button" id="video" aria-label="Reproducir trailer">
-          <img src="img/peg-solitaire.svg" alt="">
-          <span class="video__play" aria-hidden="true">
-            <svg viewBox="0 0 24 24" width="64" height="64"><circle cx="12" cy="12" r="11" fill="rgba(14,11,22,.7)" stroke="#EDECF5" stroke-width="1.5"/><path d="M10 8l6 4-6 4z" fill="#EDECF5"/></svg>
-          </span>
-        </button>
-        <figcaption class="texto-chico">Trailer — Invasión Pixel</figcaption>
-      </figure>
+      <div class="ficha__media">
+        <figure class="video">
+          <button class="video__marco" type="button" id="video" aria-label="Reproducir trailer">
+            <img src="img/trailer.png" alt="" loading="lazy">
+            <span class="video__play" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="56" height="56"><circle cx="12" cy="12" r="11" fill="rgba(14,11,22,.6)" stroke="#EDECF5" stroke-width="1.5"/><path d="M10 8l6 4-6 4z" fill="#EDECF5"/></svg>
+            </span>
+          </button>
+          <figcaption class="texto-chico">Trailer — Invasión Pixel</figcaption>
+        </figure>
+
+        <div class="relacionados">
+          <h3 class="texto-enfasis">Enlaces relacionados</h3>
+          <ul class="relacionados__links">
+            <li><a href="#">Cómo se juega el Peg Solitaire</a></li>
+            <li><a href="#">Estrategias para dejar una sola ficha</a></li>
+            <li><a href="home.html#puzzle">Más juegos de puzzle</a></li>
+            <li><a href="home.html">Otros juegos de NeoArcade Studio</a></li>
+          </ul>
+
+          <h3 class="texto-enfasis">Detalles del juego</h3>
+          <dl class="relacionados__detalles">
+            <div><dt>Desarrollador:</dt> <dd>NeoArcade Studio</dd></div>
+            <div><dt>Categoría:</dt> <dd>Puzzle</dd></div>
+            <div><dt>Lanzamiento:</dt> <dd>2024</dd></div>
+            <div><dt>Jugadores:</dt> <dd>1</dd></div>
+          </dl>
+        </div>
+      </div>
     </section>
 
     <!-- Comunidad -->
@@ -159,6 +180,6 @@
   <script src="data/juegos-respaldo.js?v=2"></script>
   <script src="js/datos.js?v=2"></script>
   <script src="js/comun.js?v=2"></script>
-  <script src="js/juego.js?v=3"></script>
+  <script src="js/juego.js?v=4"></script>
 </body>
 </html>

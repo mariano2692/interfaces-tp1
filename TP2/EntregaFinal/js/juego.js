@@ -206,33 +206,6 @@ function dibujarMinis() {
   });
 }
 
-/* ---------- Galería: capturas del tablero en distintos momentos ---------- */
-
-function dibujarGaleria() {
-  const estados = {
-    inicial: tableroInicial(),
-    salto: (() => {
-      const t = tableroInicial();
-      // Dos saltos: (1,3) → (3,3) y después (2,1) → (2,3)
-      t[1][3] = false;
-      t[2][3] = false;
-      t[3][3] = true;
-      t[2][1] = false;
-      t[2][2] = false;
-      t[2][3] = true;
-      return t;
-    })(),
-    final: tableroInicial().map((fila, f) => fila.map((v, c) => (v === null ? null : f === CENTRO && c === CENTRO))),
-  };
-
-  document.querySelectorAll(".galeria__marco").forEach((marco) => {
-    const grilla = document.createElement("div");
-    grilla.className = "grilla grilla--mini";
-    dibujarGrilla(grilla, estados[marco.dataset.estado]);
-    marco.appendChild(grilla);
-  });
-}
-
 /* ---------- Compartir ---------- */
 
 function iniciarCompartir() {
@@ -337,7 +310,6 @@ async function iniciarPaginaJuego() {
   iniciarComun();
   iniciarJuego();
   dibujarMinis();
-  dibujarGaleria();
   iniciarCompartir();
   iniciarComunidad();
 

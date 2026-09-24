@@ -200,17 +200,6 @@
   transform: translate(-50%, -50%) scale(1.15);
 }
 
-/* Mini tableros de la galería (se siguen usando abajo) */
-.grilla--mini {
-  --casilla: 22px;
-  gap: 6px;
-  pointer-events: none;
-}
-
-.grilla--mini .casilla {
-  border-width: 1px;
-}
-
 /* ---------- Botones debajo del tablero ---------- */
 
 .juego__botones {
@@ -349,23 +338,26 @@
   box-shadow: 0 0 4px var(--secundario);
 }
 
-/* ---------- Ficha del juego ---------- */
+/* ---------- De qué trata: descripción, galería y video ---------- */
 
 .ficha {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 32px;
 }
 
 .ficha__texto {
-  max-width: 840px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 680px;
   color: var(--texto-secundario);
 }
 
 .galeria {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
 }
 
 .galeria__item {
@@ -375,24 +367,32 @@
   color: var(--texto-secundario);
 }
 
-.galeria__marco {
-  display: grid;
-  place-items: center;
+.galeria__item img {
+  width: 100%;
   aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 4px;
   background: var(--superficie);
-  border-radius: 12px;
-  transition: transform var(--transicion);
+  transition: transform var(--transicion), box-shadow var(--transicion);
 }
 
-.galeria__marco:hover {
-  transform: scale(1.02);
+.galeria__item img:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 24px rgba(123, 47, 247, 0.35);
+}
+
+/* Video a la izquierda y enlaces + detalles al costado */
+.ficha__media {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(220px, 1fr);
+  gap: 24px;
+  align-items: start;
 }
 
 .video {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-width: 760px;
   color: var(--texto-secundario);
 }
 
@@ -403,15 +403,14 @@
   border: none;
   border-radius: 12px;
   overflow: hidden;
-  background: var(--fondo);
+  background: var(--superficie);
   cursor: pointer;
 }
 
 .video__marco img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  filter: brightness(0.6);
+  object-fit: cover;
 }
 
 .video__play {
@@ -424,6 +423,44 @@
 
 .video__marco:hover .video__play {
   transform: scale(1.15);
+}
+
+.relacionados {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.relacionados__links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+  list-style: none;
+}
+
+.relacionados__links a {
+  color: var(--texto-secundario);
+  text-decoration: none;
+  transition: color var(--transicion);
+}
+
+.relacionados__links a:hover {
+  color: var(--secundario);
+}
+
+.relacionados__detalles {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--texto-secundario);
+}
+
+.relacionados__detalles dt,
+.relacionados__detalles dd {
+  display: inline;
 }
 
 /* ---------- Comunidad ---------- */

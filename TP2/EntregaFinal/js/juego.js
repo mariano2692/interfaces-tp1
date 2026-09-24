@@ -44,89 +44,166 @@ function dibujarGrilla(grilla, estado, extra = {}) {
   );
 }
 
+const DIRECCIONES = [[-2, 0], [2, 0], [0, -2], [0, 2]];
+
 function iniciarJuego() {
+  const contenedor = document.getElementById("tablero-contenedor");
   const grilla = document.getElementById("grilla");
-  const contador = document.getElementById("fichas");
   const mensaje = document.getElementById("mensaje");
+  const botonJugar = document.getElementById("jugar");
   let estado = tableroInicial();
   let seleccion = null;
   let ultimoMovimiento = null;
+  let jugando = false;
+  let arrastre = null;
 
-  const DIRECCIONES = [[-2, 0], [2, 0], [0, -2], [0, 2]];
-
-  function destinosDe(f, c) {
-    return DIRECCIONES.map(([df, dc]) => [f + df, c + dc, f + df / 2, c + dc / 2]).filter(
+  const destinosDe = (f, c) =>
+    DIRECCIONES.map(([df, dc]) => [f + df, c + dc, f + df / 2, c + dc / 2]).filter(
       ([df, dc, mf, mc]) => estado[df]?.[dc] === false && estado[mf]?.[mc] === true
     );
-  }
-
-  const quedanMovimientos = () =>
-    estado.some((fila, f) => fila.some((v, c) => v && destinosDe(f, c).length > 0));
+  const quedanMovimientos = () => estado.some((fila, f) => fila.some((v, c) => v && destinosDe(f, c).length > 0));
+  const esDestino = (f, c) => seleccion !== null && destinosDe(...seleccion).some(([df, dc]) => df === f && dc === c);
+  const posicion = (casilla) => [Number(casilla.dataset.f), Number(casilla.dataset.c)];
+  const casillaEn = (x, y) => document.elementFromPoint(x, y)?.closest("#grilla .casilla");
 
   function render() {
-    const destinos = seleccion ? destinosDe(...seleccion) : [];
     dibujarGrilla(grilla, estado, {
       decorar(casilla, f, c) {
-        if (seleccion && seleccion[0] === f && seleccion[1] === c) casilla.classList.add("casilla--seleccionada");
-        if (destinos.some(([df, dc]) => df === f && dc === c)) casilla.classList.add("casilla--destino");
+        casilla.tabIndex = jugando ? 0 : -1;
+        if (seleccion?.[0] === f && seleccion[1] === c) casilla.classList.add("casilla--seleccionada");
+        if (esDestino(f, c)) casilla.classList.add("casilla--destino");
         if (ultimoMovimiento?.destino[0] === f && ultimoMovimiento.destino[1] === c) casilla.classList.add("casilla--nueva");
         if (ultimoMovimiento?.comida[0] === f && ultimoMovimiento.comida[1] === c) casilla.classList.add("casilla--eliminada");
       },
     });
 
     const fichas = estado.flat().filter(Boolean).length;
-    contador.textContent = fichas;
     mensaje.classList.remove("tablero__mensaje--victoria");
-
-    if (fichas === 1) {
+    if (!jugando) mensaje.textContent = "";
+    else if (fichas === 1) {
       mensaje.textContent = "¡Ganaste! Detuviste la invasión";
       mensaje.classList.add("tablero__mensaje--victoria");
-    } else if (!quedanMovimientos()) {
-      mensaje.textContent = "No quedan movimientos. Probá de nuevo";
-    } else {
-      if (!seleccion) mensaje.textContent = "Elegí una ficha para mover";
-      else mensaje.textContent = destinos.length ? "Elegí a dónde saltar" : "Esa ficha no puede saltar. Probá con otra";
-    }
+    } else if (!quedanMovimientos()) mensaje.textContent = `Sin movimientos. Quedaron ${fichas} fichas`;
+    else mensaje.textContent = `Fichas: ${fichas}`;
   }
 
-  grilla.addEventListener("click", (e) => {
+  function saltar(f, c) {
+    const [sf, sc] = seleccion;
+    const comida = [(sf + f) / 2, (sc + c) / 2];
+    estado[sf][sc] = false;
+    estado[comida[0]][comida[1]] = false;
+    estado[f][c] = true;
+    ultimoMovimiento = { destino: [f, c], comida };
+    seleccion = null;
+  }
+
+  // Mouse y dedo: se aprieta sobre una ficha y se arrastra a un casillero válido.
+  // Si se suelta sin arrastrar, la ficha queda elegida y se puede tocar el destino después.
+  grilla.addEventListener("pointerdown", (e) => {
     const casilla = e.target.closest(".casilla");
-    if (!casilla) return;
-    const f = Number(casilla.dataset.f);
-    const c = Number(casilla.dataset.c);
+    if (!casilla || !jugando || e.button !== 0) return;
+    e.preventDefault();
+    const [f, c] = posicion(casilla);
     ultimoMovimiento = null;
 
-    if (casilla.classList.contains("casilla--destino")) {
-      const [sf, sc] = seleccion;
-      const comida = [(sf + f) / 2, (sc + c) / 2];
-      estado[sf][sc] = false;
-      estado[comida[0]][comida[1]] = false;
-      estado[f][c] = true;
-      ultimoMovimiento = { destino: [f, c], comida };
-      seleccion = null;
-    } else if (estado[f][c]) {
-      const misma = seleccion && seleccion[0] === f && seleccion[1] === c;
-      seleccion = misma ? null : [f, c];
-    } else {
-      seleccion = null;
+    if (esDestino(f, c)) {
+      saltar(f, c);
+      render();
+      return;
     }
+    seleccion = estado[f][c] ? [f, c] : null;
     render();
+    if (!seleccion || destinosDe(f, c).length === 0) return;
+
+    const fantasma = document.createElement("div");
+    fantasma.className = "arrastrada";
+    fantasma.innerHTML = INVASOR;
+    fantasma.hidden = true;
+    document.body.appendChild(fantasma);
+    arrastre = { fantasma, inicioX: e.clientX, inicioY: e.clientY, movido: false };
+    document.addEventListener("pointermove", moverArrastre);
+    document.addEventListener("pointerup", soltarArrastre, { once: true });
   });
 
-  document.getElementById("reiniciar").addEventListener("click", () => {
+  function moverArrastre(e) {
+    const { fantasma, inicioX, inicioY } = arrastre;
+    if (!arrastre.movido && Math.hypot(e.clientX - inicioX, e.clientY - inicioY) > 6) {
+      arrastre.movido = true;
+      fantasma.hidden = false;
+      grilla.querySelector(".casilla--seleccionada")?.classList.add("casilla--origen");
+    }
+    fantasma.style.left = `${e.clientX}px`;
+    fantasma.style.top = `${e.clientY}px`;
+
+    grilla.querySelectorAll(".casilla--sobre").forEach((el) => el.classList.remove("casilla--sobre"));
+    const sobre = casillaEn(e.clientX, e.clientY);
+    if (sobre?.classList.contains("casilla--destino")) sobre.classList.add("casilla--sobre");
+  }
+
+  function soltarArrastre(e) {
+    document.removeEventListener("pointermove", moverArrastre);
+    const { fantasma, movido } = arrastre;
+    fantasma.remove();
+    arrastre = null;
+    if (!movido) return; // fue un toque: la ficha queda elegida
+
+    const destino = casillaEn(e.clientX, e.clientY);
+    if (destino && esDestino(...posicion(destino))) saltar(...posicion(destino));
+    render();
+  }
+
+  // Teclado (Enter o espacio sobre una casilla): el click que genera el teclado tiene detail 0
+  grilla.addEventListener("click", (e) => {
+    const casilla = e.target.closest(".casilla");
+    if (!casilla || !jugando || e.detail !== 0) return;
+    const [f, c] = posicion(casilla);
+    ultimoMovimiento = null;
+    if (esDestino(f, c)) saltar(f, c);
+    else if (estado[f][c]) seleccion = seleccion?.[0] === f && seleccion[1] === c ? null : [f, c];
+    else seleccion = null;
+    render();
+    grilla.querySelector(`[data-f="${f}"][data-c="${c}"]`)?.focus();
+  });
+
+  // "Jugar" habilita el tablero; después funciona como "Reiniciar"
+  botonJugar.addEventListener("click", () => {
     estado = tableroInicial();
     seleccion = null;
     ultimoMovimiento = null;
+    jugando = true;
+    contenedor.classList.add("tablero--jugando");
+    botonJugar.textContent = "Reiniciar";
     render();
   });
 
-  document.getElementById("pantalla-completa").addEventListener("click", () => {
-    const contenedor = document.getElementById("tablero-contenedor");
-    if (document.fullscreenElement) document.exitFullscreen();
-    else contenedor.requestFullscreen?.();
-  });
-
   render();
+}
+
+/* ---------- Mini tableros de las instrucciones ---------- */
+
+function dibujarMinis() {
+  const conTipo = (tipo) => tableroInicial().map((fila) => fila.map((v) => (v === null ? null : tipo)));
+  const objetivo = conTipo("hueco");
+  objetivo[CENTRO][CENTRO] = "resalte";
+
+  // Antes: la ficha resaltada salta por encima de su vecina hacia el centro vacío
+  const antes = conTipo("ficha");
+  antes[CENTRO][CENTRO] = "hueco";
+  antes[CENTRO][1] = "resalte";
+
+  // Después: ocupó el centro y la ficha saltada desapareció
+  const despues = conTipo("ficha");
+  despues[CENTRO][1] = "hueco";
+  despues[CENTRO][2] = "hueco";
+  despues[CENTRO][CENTRO] = "resalte";
+
+  const estados = { objetivo, antes, despues };
+  document.querySelectorAll(".mini").forEach((mini) => {
+    mini.innerHTML = estados[mini.dataset.mini]
+      .flat()
+      .map((tipo) => (tipo ? `<span class="mini__${tipo}"></span>` : "<span></span>"))
+      .join("");
+  });
 }
 
 /* ---------- Galería: capturas del tablero en distintos momentos ---------- */
@@ -259,6 +336,7 @@ function iniciarComunidad() {
 async function iniciarPaginaJuego() {
   iniciarComun();
   iniciarJuego();
+  dibujarMinis();
   dibujarGaleria();
   iniciarCompartir();
   iniciarComunidad();

@@ -29,7 +29,7 @@
 }
 
 @keyframes salir-carga {
-  to { opacity: 0; transform: scale(1.05); visibility: hidden; }
+  100% { opacity: 0; transform: scale(1.05); visibility: hidden; }
 }
 
 .carga__logo {
@@ -146,8 +146,8 @@
 }
 
 @keyframes acercar {
-  from { transform: scale(1); }
-  to { transform: scale(1.08); }
+  0% { transform: scale(1); }
+  100% { transform: scale(1.08); }
 }
 
 .slide::after {
@@ -215,7 +215,7 @@
 .slide--activo .slide__info > :nth-child(4) { animation-delay: 240ms; }
 
 @keyframes subir-texto {
-  from { opacity: 0; transform: translateY(16px); }
+  0% { opacity: 0; transform: translateY(16px); }
 }
 
 /* Transiciones entre slides: el que sale se aleja y se desenfoca, el que entra llega desde el costado */
@@ -295,8 +295,8 @@
 }
 
 @keyframes llenar {
-  from { transform: scaleX(0); }
-  to { transform: scaleX(1); }
+  0% { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
 }
 
 @media (min-width: 768px) {
@@ -365,7 +365,7 @@
   }
 
   @keyframes cambio-peek {
-    from { opacity: 0; transform: scale(1.15); }
+    0% { opacity: 0; transform: scale(1.15); }
   }
 
   .slider__escenario {

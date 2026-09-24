@@ -149,7 +149,7 @@
 }
 
 @keyframes aterrizar {
-  from { transform: translateY(-16px) scale(0.6); opacity: 0; }
+  0% { transform: translateY(-16px) scale(0.6); opacity: 0; }
 }
 
 @keyframes explotar {
@@ -235,7 +235,7 @@
 }
 
 @keyframes subir-popover {
-  from { opacity: 0; transform: translateY(8px); }
+  0% { opacity: 0; transform: translateY(8px); }
 }
 
 .compartir__titulo {

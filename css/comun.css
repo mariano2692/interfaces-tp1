@@ -233,15 +233,15 @@
 }
 
 @keyframes entrar-izquierda {
-  from { transform: translateX(-100%); }
+  0% { transform: translateX(-100%); }
 }
 
 @keyframes entrar-derecha {
-  from { transform: translateX(100%); }
+  0% { transform: translateX(100%); }
 }
 
 @keyframes fundido {
-  from { opacity: 0; }
+  0% { opacity: 0; }
 }
 
 .panel__item {
@@ -306,7 +306,7 @@
 }
 
 @keyframes desplegar {
-  from { opacity: 0; transform: scale(0.95) translateY(-8px); }
+  0% { opacity: 0; transform: scale(0.95) translateY(-8px); }
 }
 
 @media (min-width: 768px) {
@@ -394,7 +394,7 @@
 }
 
 @keyframes subir-item {
-  from { opacity: 0; transform: translateY(8px); }
+  0% { opacity: 0; transform: translateY(8px); }
 }
 
 /* ---------- Toast ---------- */

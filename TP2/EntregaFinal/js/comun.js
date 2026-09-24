@@ -104,7 +104,7 @@ function crearPaneles() {
       <a class="panel__item" href="#">${ICONOS.corazon} Favoritos</a>
       <a class="panel__item" href="#">${ICONOS.config} Configuración</a>
       <div class="panel__divisor"></div>
-      <a class="panel__item" href="login.html">${ICONOS.salir} Cerrar sesión</a>
+      <a class="panel__item" href="index.html">${ICONOS.salir} Cerrar sesión</a>
     </div>
 
     <aside class="panel panel--derecha carrito" id="panel-carrito" aria-label="Tu carrito" hidden>

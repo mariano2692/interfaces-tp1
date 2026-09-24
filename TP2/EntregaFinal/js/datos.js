@@ -66,6 +66,7 @@ function normalizar(juego) {
     anio: Number((juego.released || "").slice(0, 4)),
     rating: juego.rating,
     generos: juego.genres.map((g) => GENEROS_ES[g.name] || g.name),
+    plataformas: (juego.platforms || [{ name: "Web" }]).map((p) => p.name),
     precio: calcularPrecio(juego),
     url: juego.url || null,
   };

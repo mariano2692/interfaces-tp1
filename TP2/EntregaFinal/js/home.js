@@ -6,7 +6,8 @@
 
 const DURACION_CARGA = 5000;
 const DURACION_SLIDE = 6000;
-const IDS_DESTACADOS = [28, 3328, 41494, 58175, 9767]; // RDR2, The Witcher 3, Cyberpunk 2077, God of War, Hollow Knight
+// Igual que el mainSlider del Figma: 3 destacados, el primero al centro y los otros dos como peeks
+const IDS_DESTACADOS = [28, 3328, 58175]; // Red Dead Redemption 2, The Witcher 3, God of War
 
 /* ---------- Loading simulado ---------- */
 
@@ -48,6 +49,46 @@ function simularCarga() {
   });
 }
 
+/* ---------- Ficha rápida ("Ver info" del slider) ---------- */
+
+function abrirFicha(juego, disparador) {
+  const ficha = document.getElementById("ficha");
+  const { precio } = juego;
+  const accion = precio.gratis
+    ? `<button class="boton boton--primario" data-jugar="${juego.id}">Jugar gratis</button>`
+    : `<button class="boton boton--primario" data-comprar="${juego.id}">Comprar · ${formatearPrecio(precio.final)}</button>`;
+
+  ficha.innerHTML = `
+    <img class="ficha-rapida__imagen" src="${juego.imagen}" alt="">
+    <div class="ficha-rapida__cuerpo">
+      <h2 class="titulo-seccion">${juego.nombre}</h2>
+      <dl class="ficha-rapida__datos">
+        <dt>Géneros</dt><dd>${juego.generos.join(", ")}</dd>
+        <dt>Lanzamiento</dt><dd>${juego.anio}</dd>
+        <dt>Plataformas</dt><dd>${juego.plataformas.join(", ")}</dd>
+        <dt>Puntaje</dt><dd class="ficha-rapida__rating">${ICONOS.estrella} ${juego.rating.toFixed(1)} / 5</dd>
+      </dl>
+      <div class="ficha-rapida__acciones">
+        ${accion}
+        <button class="boton boton--secundario" data-cerrar-ficha>Cerrar</button>
+      </div>
+    </div>
+    <button class="header__icono ficha-rapida__cerrar" data-cerrar-ficha aria-label="Cerrar">${ICONOS.cerrar}</button>`;
+
+  ficha.showModal();
+  ficha.addEventListener("close", () => disparador.focus(), { once: true });
+}
+
+function conectarFicha() {
+  const ficha = document.getElementById("ficha");
+  ficha.addEventListener("click", (e) => {
+    // Clic en el fondo oscuro (fuera de la ficha) o en un botón de cerrar
+    if (e.target === ficha || e.target.closest("[data-cerrar-ficha]")) ficha.close();
+    // Comprar desde la ficha: la compra la maneja conectarBotonesDeCards; acá solo se cierra
+    if (e.target.closest("[data-comprar], [data-jugar]")) ficha.close();
+  });
+}
+
 /* ---------- Slider principal ---------- */
 
 function crearSlider(destacados) {
@@ -58,29 +99,18 @@ function crearSlider(destacados) {
   const peekDer = slider.querySelector(".slider__peek--der");
 
   slider.style.setProperty("--duracion-slide", `${DURACION_SLIDE}ms`);
-  document.getElementById("slider-anterior").innerHTML = ICONOS.izquierda;
-  document.getElementById("slider-siguiente").innerHTML = ICONOS.derecha;
 
   escenario.innerHTML = destacados
-    .map((juego, i) => {
-      const { precio } = juego;
-      const accion = precio.gratis
-        ? `<button class="boton boton--primario" data-jugar="${juego.id}">Jugar gratis</button>`
-        : `<button class="boton boton--primario" data-comprar="${juego.id}">Comprar · ${formatearPrecio(precio.final)}</button>`;
-      return `
+    .map(
+      (juego, i) => `
         <article class="slide" aria-roledescription="slide" aria-label="${i + 1} de ${destacados.length}">
           <img class="slide__fondo" src="${juego.imagenGrande}" alt="">
           <div class="slide__info">
-            <p class="slide__generos">${juego.generos.slice(0, 2).join(" · ")}</p>
             <h2 class="slide__titulo">${juego.nombre}</h2>
-            <p class="slide__rating">${ICONOS.estrella} ${juego.rating.toFixed(1)} / 5</p>
-            <div class="slide__acciones">
-              ${accion}
-              <button class="boton boton--secundario" data-ver="${juego.id}">Ver más</button>
-            </div>
+            <button class="boton-info" data-info="${juego.id}">Ver info</button>
           </div>
-        </article>`;
-    })
+        </article>`
+    )
     .join("");
 
   indicadores.innerHTML = destacados
@@ -153,8 +183,6 @@ function crearSlider(destacados) {
     activo.classList.add("indicador--activo");
   }
 
-  document.getElementById("slider-siguiente").addEventListener("click", siguiente);
-  document.getElementById("slider-anterior").addEventListener("click", anterior);
   peekDer.addEventListener("click", siguiente);
   peekIzq.addEventListener("click", anterior);
   indicadores.addEventListener("click", (e) => {
@@ -187,10 +215,9 @@ function crearSlider(destacados) {
     if (e.key === "ArrowLeft") anterior();
   });
 
-  // "Ver más": por ahora solo el Peg Solitaire tiene página propia
   escenario.addEventListener("click", (e) => {
-    const ver = e.target.closest("[data-ver]");
-    if (ver) mostrarToast("La ficha de este juego estará disponible pronto");
+    const info = e.target.closest("[data-info]");
+    if (info) abrirFicha(destacados.find((j) => String(j.id) === info.dataset.info), info);
   });
 
   slides[0].classList.add("slide--activo");
@@ -255,6 +282,7 @@ async function iniciarHome() {
   contenedor.innerHTML = armarFilas(juegos).map(crearCarrusel).join("");
   conectarCarruseles(contenedor);
   conectarBotonesDeCards(juegos);
+  conectarFicha();
 
   await carga;
   arrancarSlider();

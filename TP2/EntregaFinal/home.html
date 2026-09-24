@@ -30,16 +30,16 @@
 
   <main class="home">
     <section class="slider" id="slider" aria-roledescription="carrusel" aria-label="Juegos destacados">
-      <div class="slider__peek slider__peek--izq" aria-hidden="true"><img alt=""></div>
+      <button class="slider__peek slider__peek--izq" aria-label="Destacado anterior"><img alt=""></button>
       <div class="slider__escenario" id="slider-escenario"></div>
-      <div class="slider__peek slider__peek--der" aria-hidden="true"><img alt=""></div>
-      <button class="slider__flecha slider__flecha--izq" id="slider-anterior" aria-label="Destacado anterior"></button>
-      <button class="slider__flecha slider__flecha--der" id="slider-siguiente" aria-label="Destacado siguiente"></button>
+      <button class="slider__peek slider__peek--der" aria-label="Destacado siguiente"><img alt=""></button>
       <div class="slider__indicadores" id="slider-indicadores"></div>
     </section>
 
     <div class="home__carruseles" id="carruseles"></div>
   </main>
+
+  <dialog class="ficha-rapida" id="ficha" aria-label="Información del juego"></dialog>
 
   <footer id="footer"></footer>
 

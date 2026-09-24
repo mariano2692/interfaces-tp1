@@ -55,8 +55,10 @@ function crearHeader() {
   const header = document.getElementById("header");
   header.className = "header";
   header.innerHTML = `
-    <button class="header__icono" id="abrir-categorias" aria-label="Abrir menú de categorías" aria-expanded="false" aria-controls="panel-categorias">${ICONOS.menu}</button>
-    <a class="logo header__logo" href="home.html">Neo<span>Arcade</span></a>
+    <div class="header__marca">
+      <button class="header__icono" id="abrir-categorias" aria-label="Abrir menú de categorías" aria-expanded="false" aria-controls="panel-categorias">${ICONOS.menu}</button>
+      <a class="logo header__logo" href="home.html">Neo<span>Arcade</span></a>
+    </div>
     <form class="buscador" role="search" onsubmit="return false">
       <span class="buscador__icono">${ICONOS.buscar}</span>
       <input type="search" placeholder="Buscar juegos" aria-label="Buscar juegos">
@@ -67,7 +69,7 @@ function crearHeader() {
         <span class="contador" id="contador-carrito" hidden>0</span>
       </button>
       <button class="cuenta" id="abrir-cuenta" aria-label="Abrir menú de cuenta" aria-expanded="false" aria-controls="menu-cuenta">
-        <span class="avatar">${USUARIO.inicial}</span>
+        <span class="avatar"><img src="img/avatar.png" alt="" onerror="this.remove()">${USUARIO.inicial}</span>
         <span class="cuenta__flecha">${ICONOS.flecha}</span>
       </button>
     </div>`;
@@ -95,7 +97,7 @@ function crearPaneles() {
 
     <div class="menu-cuenta" id="menu-cuenta" hidden>
       <div class="menu-cuenta__usuario">
-        <span class="avatar avatar--grande">${USUARIO.inicial}</span>
+        <span class="avatar avatar--grande"><img src="img/avatar.png" alt="" onerror="this.remove()">${USUARIO.inicial}</span>
         <span class="texto-enfasis">${USUARIO.nick}</span>
       </div>
       <div class="panel__divisor"></div>
@@ -274,37 +276,110 @@ function conectarCarrito() {
 
 /* ---------- Footer ---------- */
 
+const PAGOS = [
+  ["Visa", '<svg viewBox="0 0 40 24"><text x="20" y="16.5" text-anchor="middle" font-family="Arial, sans-serif" font-weight="900" font-style="italic" font-size="11" fill="#1A1F71">VISA</text></svg>'],
+  ["Mastercard", '<svg viewBox="0 0 40 24"><circle cx="16" cy="12" r="7" fill="#EB001B"/><circle cx="24" cy="12" r="7" fill="#F79E1B" fill-opacity=".9"/></svg>'],
+  ["Bitcoin", '<svg viewBox="0 0 40 24"><circle cx="20" cy="12" r="9" fill="#F7931A"/><text x="20" y="16" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="12" fill="#FFF">₿</text></svg>'],
+  ["Ethereum", '<svg viewBox="0 0 40 24"><circle cx="20" cy="12" r="9" fill="#8A92B2"/><path d="M20 5l-4.5 7.3L20 15l4.5-2.7z" fill="#FFF"/><path d="M20 16l-4.5-2.7L20 19l4.5-5.7z" fill="#E0E3F0"/></svg>'],
+  ["Bitcoin Cash", '<svg viewBox="0 0 40 24"><circle cx="20" cy="12" r="9" fill="#0AC18E"/><text x="20" y="16" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="12" fill="#0E0B16">₿</text></svg>'],
+  ["Google Pay", '<svg viewBox="0 0 40 24"><path d="M28 12.2c0-.6 0-1.1-.1-1.6H20v3.1h4.5a3.9 3.9 0 0 1-1.7 2.5v2.1h2.7c1.6-1.5 2.5-3.6 2.5-6.1z" fill="#4285F4"/><path d="M20 20c2.3 0 4.2-.8 5.5-2.1l-2.7-2.1c-.7.5-1.7.8-2.8.8-2.2 0-4-1.5-4.7-3.4h-2.8v2.2A8 8 0 0 0 20 20z" fill="#34A853"/><path d="M15.3 13.2a4.8 4.8 0 0 1 0-3.1V7.9h-2.8a8 8 0 0 0 0 7.2z" fill="#FBBC05"/><path d="M20 7.2c1.2 0 2.3.4 3.2 1.2l2.4-2.4A8 8 0 0 0 12.5 7.9l2.8 2.2c.7-2 2.5-2.9 4.7-2.9z" fill="#EA4335"/></svg>'],
+  ["Amazon Pay", '<svg viewBox="0 0 40 24"><text x="20" y="14" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="14" fill="#EDECF5">a</text><path d="M13 16c4 2.5 10 2.5 14 0" fill="none" stroke="#FF9900" stroke-width="1.6" stroke-linecap="round"/><path d="M25.5 14.8l1.8 1.1-1.2 1.7" fill="none" stroke="#FF9900" stroke-width="1.4" stroke-linecap="round"/></svg>'],
+];
+
+const TIENDAS = [
+  ["App Store", '<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.5 2-3.6 2.1-3.7a4.6 4.6 0 0 0-3.6-2c-1.5-.2-3 .9-3.8.9s-2-.9-3.3-.9A4.9 4.9 0 0 0 3.7 9.4c-1.8 3.1-.5 7.6 1.3 10.1.8 1.2 1.8 2.6 3.1 2.5 1.3 0 1.7-.8 3.3-.8s2 .8 3.3.8 2.1-1.2 2.9-2.4a10 10 0 0 0 1.3-2.7 4.3 4.3 0 0 1-2.5-4.3zM13.9 5.2A4.3 4.3 0 0 0 15 2a4.4 4.4 0 0 0-2.9 1.5 4.1 4.1 0 0 0-1 3.1 3.6 3.6 0 0 0 2.8-1.4z"/></svg>'],
+  ["Google Play", '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M4 3l10 9-10 9z"/><path d="M4 3l13 7.5-3 1.5M4 21l13-7.5-3-1.5M17 10.5l3 1.5-3 1.5"/></svg>'],
+];
+
 function crearFooter() {
   const footer = document.getElementById("footer");
   footer.className = "footer";
   const columna = (titulo, links) => `
-    <div class="footer__columna">
+    <nav class="footer__columna" aria-label="${titulo}">
       <p class="footer__titulo">${titulo}</p>
-      ${links.map(([texto, href]) => `<a href="${href}">${texto}</a>`).join("")}
-    </div>`;
+      ${links.map(([texto, href = "#"]) => `<a href="${href}">${texto}</a>`).join("")}
+    </nav>`;
 
   footer.innerHTML = `
-    <div class="footer__columnas">
-      <div class="footer__marca">
-        <a class="logo" href="home.html">Neo<span>Arcade</span></a>
-        <p class="texto-chico">Tu arcade de juegos online.</p>
-      </div>
-      ${columna("Categorías", CATEGORIAS_MENU.map((c) => [c.nombre, `home.html#${c.ancla}`]))}
-      ${columna("Plataforma", [["Inicio", "home.html"], ["Catálogo", "#"], ["Novedades", "#"]])}
-      ${columna("Ayuda", [["Preguntas frecuentes", "#"], ["Contacto", "#"], ["Soporte", "#"]])}
-      ${columna("Legales", [["Política de privacidad", "#"], ["Términos y condiciones", "#"]])}
-      <div class="footer__columna">
-        <p class="footer__titulo">Seguinos</p>
-        <div class="footer__redes">
-          <a href="#" aria-label="Instagram">${ICONOS.instagram}</a>
-          <a href="#" aria-label="X">${ICONOS.x}</a>
-          <a href="#" aria-label="Discord">${ICONOS.discord}</a>
-          <a href="#" aria-label="YouTube">${ICONOS.youtube}</a>
+    <div class="footer__bloque footer__principal">
+      ${columna("Categorías", [
+        ["Todos los juegos", "home.html"], ["Más vendidos"], ["Mejor puntuados", "home.html#mas-jugados"],
+        ["Últimos lanzamientos"], ["Próximamente"], ["Free to play"], ["Ofertas especiales"],
+        ["Exclusivos de la plataforma"], ["Basados en tus gustos"], ["Multijugador"],
+        ["Recomendado para vos", "home.html#recomendados"], ["Single player"], ["Multi player"],
+      ])}
+      ${columna("Información", [
+        ["Acerca de nosotros"], ["Comunidad"], ["Foro"], ["Cupones de descuento"], ["Trabajá con nosotros"], ["Centro de ayuda"],
+      ])}
+      ${columna("Géneros", [
+        ["Acción", "home.html#accion"], ["Aventura", "home.html#aventura"], ["Rol RPG", "home.html#rpg"], ["Estrategia"],
+        ["Simulación"], ["Deportes"], ["Carreras"], ["Pelea"], ["Terror"], ["Battle royale"],
+        ["Shooter", "home.html#disparos"], ["Ver todos", "home.html"],
+      ])}
+      <div class="footer__lateral">
+        <form class="newsletter" id="newsletter" novalidate>
+          <label class="footer__subtitulo" for="newsletter-mail">Suscribite a nuestro newsletter</label>
+          <div class="newsletter__fila">
+            <input type="email" id="newsletter-mail" placeholder="tunombre@mail.com" autocomplete="email">
+            <button class="newsletter__boton" type="submit">Suscribirse</button>
+          </div>
+          <p class="newsletter__error" role="alert" hidden>ⓘ Ingresá un correo electrónico válido</p>
+        </form>
+
+        <div>
+          <p class="footer__subtitulo">Descargá nuestra app</p>
+          <div class="tiendas">
+            ${TIENDAS.map(([nombre, icono]) => `<a class="tienda" href="#">${icono}<span>${nombre}</span></a>`).join("")}
+          </div>
+        </div>
+
+        <div>
+          <p class="footer__subtitulo">Contactate con nosotros</p>
+          <div class="footer__redes">
+            <a href="#" aria-label="Instagram">${ICONOS.instagram}</a>
+            <a href="#" aria-label="X">${ICONOS.x}</a>
+            <a href="#" aria-label="Discord">${ICONOS.discord}</a>
+            <a href="#" aria-label="YouTube">${ICONOS.youtube}</a>
+          </div>
         </div>
       </div>
     </div>
-    <div class="footer__divisor"></div>
-    <p class="texto-chico footer__copy">© 2026 NeoArcade. Todos los derechos reservados.</p>`;
+
+    <div class="footer__bloque footer__pagos">
+      <p class="footer__subtitulo">Métodos de pago</p>
+      <ul class="pagos">
+        ${PAGOS.map(([nombre, logo]) => `<li class="pago" title="${nombre}" aria-label="${nombre}">${logo}</li>`).join("")}
+      </ul>
+      <a class="logo footer__logo" href="home.html">Neo<span>Arcade</span></a>
+    </div>
+
+    <div class="footer__bloque footer__legales">
+      <p>© 2026 NeoArcade. Todos los derechos reservados.</p>
+      <nav class="footer__links-legales" aria-label="Legales">
+        <a href="#">Términos y condiciones</a>
+        <a href="#">Política de privacidad</a>
+        <a href="#">Política de cookies</a>
+        <a href="#">Accesibilidad</a>
+      </nav>
+    </div>`;
+
+  conectarNewsletter();
+}
+
+function conectarNewsletter() {
+  const form = document.getElementById("newsletter");
+  const input = document.getElementById("newsletter-mail");
+  const error = form.querySelector(".newsletter__error");
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const valido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim());
+    error.hidden = valido;
+    form.classList.toggle("newsletter--error", !valido);
+    if (!valido) return;
+    form.reset();
+    mostrarToast("¡Listo! Te vamos a avisar de las novedades");
+  });
 }
 
 /* ---------- Card de juego ---------- */

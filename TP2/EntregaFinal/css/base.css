@@ -155,7 +155,7 @@ input {
   gap: 12px;
   padding: 12px 24px;
   border: none;
-  border-radius: var(--radio);
+  border-radius: 4px;
   font-weight: 600;
   font-size: 15px;
   line-height: 20px;

@@ -31,13 +31,26 @@
   color: var(--texto);
 }
 
+/* Título arriba de todo: queda pegado a las migas y separado del tablero (proximidad) */
+.juego__titulo {
+  margin-block: -32px -24px;
+  font-size: 36px;
+  line-height: 44px;
+}
+
+@media (min-width: 1024px) {
+  .juego__titulo {
+    font-size: 48px;
+    line-height: 56px;
+  }
+}
+
 /* ---------- Zona de juego ---------- */
 
 .juego__zona {
   display: grid;
   grid-template-columns: 1fr;
   gap: 32px;
-  margin-top: -24px;
 }
 
 @media (min-width: 1024px) {

@@ -25,6 +25,12 @@ const ICONOS = {
   corazon: svg('<path d="M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-3 4.5 4.5 0 0 1 8 3c0 6-8 11-8 11z"/>'),
   config: svg('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>'),
   salir: svg('<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>'),
+  accion: svg('<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>'),
+  disparos: svg('<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>'),
+  rpg: svg('<path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/>'),
+  aventura: svg('<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>'),
+  indie: svg('<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 17l.7 1.8 1.8.7-1.8.7L19 22l-.7-1.8-1.8-.7 1.8-.7z"/>'),
+  puzzle: svg('<path d="M4 8h4a2 2 0 1 1 4 0h4v4a2 2 0 1 1 0 4v4H4v-4a2 2 0 1 0 0-4z"/>'),
   estrella: svg('<path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18.3 5.5 22l1.7-7.4-5.7-5 7.5-.7z"/>', 'fill="currentColor" stroke="none"'),
   instagram: svg('<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>'),
   x: svg('<path d="M4 4l16 16M20 4L4 20"/>'),
@@ -35,12 +41,12 @@ const ICONOS = {
 const USUARIO = { nick: "Dragonslayer9", inicial: "D" };
 
 const CATEGORIAS_MENU = [
-  { nombre: "Acción", ancla: "accion" },
-  { nombre: "Disparos", ancla: "disparos" },
-  { nombre: "RPG", ancla: "rpg" },
-  { nombre: "Aventura", ancla: "aventura" },
-  { nombre: "Indie", ancla: "indie" },
-  { nombre: "Puzzle y plataformas", ancla: "puzzle" },
+  { nombre: "Acción", ancla: "accion", icono: "accion" },
+  { nombre: "Disparos", ancla: "disparos", icono: "disparos" },
+  { nombre: "RPG", ancla: "rpg", icono: "rpg" },
+  { nombre: "Aventura", ancla: "aventura", icono: "aventura" },
+  { nombre: "Indie", ancla: "indie", icono: "indie" },
+  { nombre: "Puzzle y plataformas", ancla: "puzzle", icono: "puzzle" },
 ];
 
 /* ---------- Header ---------- */
@@ -71,7 +77,7 @@ function crearHeader() {
 
 function crearPaneles() {
   const itemsCategorias = CATEGORIAS_MENU.map(
-    (c) => `<a class="panel__item" href="home.html#${c.ancla}">${c.nombre}</a>`
+    (c) => `<a class="panel__item" href="home.html#${c.ancla}">${ICONOS[c.icono]} ${c.nombre}</a>`
   ).join("");
 
   document.body.insertAdjacentHTML(

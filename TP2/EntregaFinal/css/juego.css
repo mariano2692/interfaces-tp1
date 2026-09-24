@@ -385,8 +385,8 @@
 .ficha__media {
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(220px, 1fr);
-  gap: 24px;
-  align-items: start;
+  gap: 32px;
+  align-items: stretch;
 }
 
 .video {
@@ -425,10 +425,34 @@
   transform: scale(1.15);
 }
 
+/* La columna ocupa todo el alto del video; el botón queda alineado con su base */
 .relacionados {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding-bottom: 26px;
+}
+
+.relacionados__jugar {
+  margin-top: auto;
+  align-self: stretch;
+}
+
+.etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+  list-style: none;
+}
+
+.etiquetas li {
+  padding: 4px 10px;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--texto-secundario);
 }
 
 .relacionados__links {
@@ -453,6 +477,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-bottom: 20px;
   font-size: 13px;
   line-height: 18px;
   color: var(--texto-secundario);

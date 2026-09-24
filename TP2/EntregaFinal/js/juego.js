@@ -242,13 +242,6 @@ function iniciarCompartir() {
   });
 
   document.getElementById("video").addEventListener("click", () => mostrarToast("El trailer estará disponible pronto"));
-
-  // "Jugar ahora": sube al tablero y arranca la partida
-  document.getElementById("jugar-ahora").addEventListener("click", () => {
-    document.getElementById("tablero-contenedor").scrollIntoView({ behavior: "smooth", block: "center" });
-    const jugar = document.getElementById("jugar");
-    if (jugar.textContent === "Jugar") jugar.click();
-  });
 }
 
 /* ---------- Comunidad ---------- */

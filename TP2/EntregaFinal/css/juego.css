@@ -425,17 +425,10 @@
   transform: scale(1.15);
 }
 
-/* La columna ocupa todo el alto del video; el botón queda alineado con su base */
 .relacionados {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding-bottom: 26px;
-}
-
-.relacionados__jugar {
-  margin-top: auto;
-  align-self: stretch;
 }
 
 .etiquetas {

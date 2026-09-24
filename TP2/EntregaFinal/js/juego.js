@@ -247,21 +247,20 @@ function iniciarCompartir() {
 /* ---------- Comunidad ---------- */
 
 const COMENTARIOS = [
-  { nick: "PixelHunter", fecha: "hace 2 días", puntaje: 5, texto: "Lo terminé con una sola ficha en el centro después de muchos intentos. Muy adictivo." },
-  { nick: "LauGamer", fecha: "hace 5 días", puntaje: 4, texto: "Me encanta que las fichas sean invasores. Sumaría un contador de movimientos." },
-  { nick: "Tincho_88", fecha: "hace 1 semana", puntaje: 4, texto: "Ideal para una partida rápida entre clases." },
+  { nick: "PixelWarrior", fecha: "hace dos días", texto: "Adictivo. Me pasé una hora intentando dejar una sola ficha y no pude, pero volví al toque." },
+  { nick: "kabeza", fecha: "hace una semana", texto: "Buenísimo para despejar la cabeza. Las animaciones de los invaders son un golazo." },
+  { nick: "el_nano", fecha: "hace dos semanas", texto: "El mejor Peg Solitaire que probé. La estética arcade le da mucha identidad." },
 ];
 
-function crearComentario({ nick, fecha, puntaje, texto }, nuevo = false) {
+function crearComentario({ nick, fecha, texto }, nuevo = false) {
   const li = document.createElement("li");
   li.className = "comentario" + (nuevo ? " comentario--nuevo" : "");
   li.innerHTML = `
-    <span class="avatar">${nick[0].toUpperCase()}</span>
     <div class="comentario__cabecera">
+      <span class="comentario__avatar" aria-hidden="true"></span>
       <span class="texto-enfasis"></span>
       <span class="texto-chico comentario__fecha">${fecha}</span>
     </div>
-    <span class="comentario__puntaje" aria-label="${puntaje} de 5 estrellas">${"★".repeat(puntaje)}${"☆".repeat(5 - puntaje)}</span>
     <p class="comentario__texto"></p>`;
   // El texto del usuario va con textContent para no interpretar HTML
   li.querySelector(".texto-enfasis").textContent = nick;
@@ -278,7 +277,12 @@ function iniciarComunidad() {
 
   COMENTARIOS.forEach((c) => lista.appendChild(crearComentario(c)));
 
-  const pintar = (hasta) => estrellas.forEach((e, i) => e.classList.toggle("encendida", i < hasta));
+  // Estrellas vacías (☆) como en el Figma; se llenan (★) al pasar el mouse o elegir
+  const pintar = (hasta) =>
+    estrellas.forEach((e, i) => {
+      e.classList.toggle("encendida", i < hasta);
+      e.textContent = i < hasta ? "★" : "☆";
+    });
 
   estrellas.forEach((estrella, i) => {
     estrella.addEventListener("mouseenter", () => pintar(i + 1));
@@ -296,7 +300,7 @@ function iniciarComunidad() {
     textarea.closest(".campo").classList.toggle("campo--error", !valido);
     if (!valido) return;
 
-    lista.prepend(crearComentario({ nick: USUARIO.nick, fecha: "recién", puntaje, texto }, true));
+    lista.prepend(crearComentario({ nick: USUARIO.nick, fecha: "recién", texto }, true));
     form.reset();
     puntaje = 0;
     pintar(0);
@@ -313,12 +317,7 @@ async function iniciarPaginaJuego() {
   iniciarCompartir();
   iniciarComunidad();
 
-  const juegos = await obtenerJuegos();
-  const similares = juegos.filter((j) => j.url === null && (j.generos.includes("Puzzle") || j.generos.includes("Plataformas")));
-  const contenedor = document.getElementById("similares");
-  contenedor.innerHTML = crearCarrusel({ titulo: "Si te gustó, probá también", ancla: "similares-fila", juegos: similares });
-  conectarCarruseles(contenedor);
-  conectarBotonesDeCards(juegos);
+  conectarBotonesDeCards(await obtenerJuegos());
 }
 
 iniciarPaginaJuego();

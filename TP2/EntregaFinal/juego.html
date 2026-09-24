@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Orbitron:wght@600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/base.css?v=2">
   <link rel="stylesheet" href="css/comun.css?v=3">
-  <link rel="stylesheet" href="css/juego.css?v=6">
+  <link rel="stylesheet" href="css/juego.css?v=7">
 </head>
 <body>
 
@@ -158,40 +158,38 @@
       </div>
     </section>
 
-    <!-- Comunidad -->
+    <!-- Comunidad (a todo el ancho, como en el Figma) -->
     <section class="comunidad">
       <h2 class="titulo-seccion">Comunidad</h2>
 
       <form class="resena" id="form-resena" novalidate>
         <p class="texto-enfasis">Dejá tu reseña</p>
         <div class="estrellas" id="estrellas" role="radiogroup" aria-label="Puntaje">
-          <button type="button" role="radio" aria-checked="false" aria-label="1 estrella" data-valor="1">★</button>
-          <button type="button" role="radio" aria-checked="false" aria-label="2 estrellas" data-valor="2">★</button>
-          <button type="button" role="radio" aria-checked="false" aria-label="3 estrellas" data-valor="3">★</button>
-          <button type="button" role="radio" aria-checked="false" aria-label="4 estrellas" data-valor="4">★</button>
-          <button type="button" role="radio" aria-checked="false" aria-label="5 estrellas" data-valor="5">★</button>
+          <button type="button" role="radio" aria-checked="false" aria-label="1 estrella">☆</button>
+          <button type="button" role="radio" aria-checked="false" aria-label="2 estrellas">☆</button>
+          <button type="button" role="radio" aria-checked="false" aria-label="3 estrellas">☆</button>
+          <button type="button" role="radio" aria-checked="false" aria-label="4 estrellas">☆</button>
+          <button type="button" role="radio" aria-checked="false" aria-label="5 estrellas">☆</button>
         </div>
         <div class="campo">
-          <label class="campo__label" for="resena-texto">Tu opinión</label>
           <div class="campo__caja">
-            <textarea id="resena-texto" rows="3" placeholder="Contanos qué te pareció el juego..."></textarea>
+            <textarea id="resena-texto" rows="3" placeholder="Contanos qué te pareció el juego..." aria-label="Tu reseña"></textarea>
           </div>
           <p class="campo__error">ⓘ Elegí un puntaje y escribí al menos 10 caracteres</p>
         </div>
-        <button class="boton boton--primario" type="submit">Publicar reseña</button>
+        <button class="boton boton--oscuro boton--chico" type="submit">Publicar reseña</button>
       </form>
 
       <ul class="comentarios" id="comentarios"></ul>
     </section>
   </main>
 
-  <div class="home__carruseles juego__similares" id="similares"></div>
 
   <footer id="footer"></footer>
 
   <script src="data/juegos-respaldo.js?v=2"></script>
   <script src="js/datos.js?v=2"></script>
   <script src="js/comun.js?v=2"></script>
-  <script src="js/juego.js?v=6"></script>
+  <script src="js/juego.js?v=7"></script>
 </body>
 </html>

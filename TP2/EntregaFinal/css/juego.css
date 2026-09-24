@@ -481,7 +481,7 @@
   display: inline;
 }
 
-/* ---------- Comunidad ---------- */
+/* ---------- Comunidad (a todo el ancho, como en el Figma) ---------- */
 
 .comunidad {
   display: flex;
@@ -494,8 +494,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 16px;
-  max-width: 760px;
-  padding: 24px;
+  padding: 20px;
   background: var(--superficie);
   border-radius: 12px;
 }
@@ -506,6 +505,7 @@
 
 .resena textarea {
   flex: 1;
+  min-height: 56px;
   background: none;
   border: none;
   outline: none;
@@ -518,18 +518,23 @@
   color: var(--texto-secundario);
 }
 
+.boton--chico {
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
 .estrellas {
   display: flex;
-  gap: 4px;
+  gap: 8px;
 }
 
 .estrellas button {
   padding: 0 2px;
   background: none;
   border: none;
-  font-size: 28px;
+  font-size: 22px;
   line-height: 1;
-  color: var(--borde);
+  color: var(--texto-secundario);
   cursor: pointer;
   transition: color 150ms ease-out, transform 150ms ease-out;
 }
@@ -545,38 +550,34 @@
 .comentarios {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  max-width: 760px;
+  gap: 12px;
   list-style: none;
 }
 
 .comentario {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 4px 12px;
-  padding: 16px;
-  border: 1px solid var(--borde);
-  border-radius: 12px;
-}
-
-.comentario .avatar {
-  grid-row: span 3;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--superficie);
+  border-radius: 8px;
 }
 
 .comentario__cabecera {
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 8px;
+  align-items: center;
+  gap: 10px;
+}
+
+.comentario__avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--borde);
 }
 
 .comentario__fecha {
   color: var(--texto-secundario);
-}
-
-.comentario__puntaje {
-  color: var(--acento);
-  letter-spacing: 2px;
 }
 
 .comentario__texto {
@@ -588,10 +589,7 @@
 }
 
 @keyframes publicar {
-  0% { opacity: 0; transform: translateY(-12px); border-color: var(--secundario); }
-  60% { opacity: 1; transform: none; border-color: var(--secundario); }
-}
-
-.juego__similares {
-  margin-top: 56px;
+  0% { opacity: 0; transform: translateY(-12px); box-shadow: 0 0 0 1px var(--secundario); }
+  60% { opacity: 1; transform: none; box-shadow: 0 0 0 1px var(--secundario); }
+  100% { opacity: 1; transform: none; box-shadow: none; }
 }

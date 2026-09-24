@@ -28,6 +28,12 @@
   border-bottom: 1px solid var(--borde);
 }
 
+.header__marca {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .header__logo {
   font-size: 14px;
 }
@@ -98,13 +104,17 @@
     font-size: 18px;
   }
 
+  /* Desde tablet: marca a la izquierda, buscador centrado y acciones a la derecha (como en el Figma) */
+  .header {
+    display: grid;
+    grid-template-columns: 1fr minmax(200px, 300px) 1fr;
+  }
+
   .buscador {
     display: flex;
     align-items: center;
     gap: 8px;
-    flex: 0 1 360px;
-    margin-left: auto;
-    padding: 8px 14px;
+    padding: 6px 12px;
     background: var(--superficie);
     border: 1px solid var(--superficie);
     border-radius: var(--radio);
@@ -139,6 +149,7 @@
   }
 
   .header__acciones {
+    justify-self: end;
     margin-left: 0;
   }
 }
@@ -174,6 +185,8 @@
 }
 
 .avatar {
+  position: relative;
+  overflow: hidden;
   display: grid;
   place-items: center;
   width: 36px;
@@ -182,6 +195,14 @@
   background: linear-gradient(135deg, var(--primario), var(--secundario-sombra-20));
   color: #FFF;
   font-weight: 600;
+}
+
+.avatar img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .avatar--grande {

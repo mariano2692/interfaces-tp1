@@ -55,8 +55,10 @@ function crearHeader() {
   const header = document.getElementById("header");
   header.className = "header";
   header.innerHTML = `
-    <button class="header__icono" id="abrir-categorias" aria-label="Abrir menú de categorías" aria-expanded="false" aria-controls="panel-categorias">${ICONOS.menu}</button>
-    <a class="logo header__logo" href="home.html">Neo<span>Arcade</span></a>
+    <div class="header__marca">
+      <button class="header__icono" id="abrir-categorias" aria-label="Abrir menú de categorías" aria-expanded="false" aria-controls="panel-categorias">${ICONOS.menu}</button>
+      <a class="logo header__logo" href="home.html">Neo<span>Arcade</span></a>
+    </div>
     <form class="buscador" role="search" onsubmit="return false">
       <span class="buscador__icono">${ICONOS.buscar}</span>
       <input type="search" placeholder="Buscar juegos" aria-label="Buscar juegos">
@@ -67,7 +69,7 @@ function crearHeader() {
         <span class="contador" id="contador-carrito" hidden>0</span>
       </button>
       <button class="cuenta" id="abrir-cuenta" aria-label="Abrir menú de cuenta" aria-expanded="false" aria-controls="menu-cuenta">
-        <span class="avatar">${USUARIO.inicial}</span>
+        <span class="avatar"><img src="img/avatar.jpg" alt="" onerror="this.remove()">${USUARIO.inicial}</span>
         <span class="cuenta__flecha">${ICONOS.flecha}</span>
       </button>
     </div>`;
@@ -95,7 +97,7 @@ function crearPaneles() {
 
     <div class="menu-cuenta" id="menu-cuenta" hidden>
       <div class="menu-cuenta__usuario">
-        <span class="avatar avatar--grande">${USUARIO.inicial}</span>
+        <span class="avatar avatar--grande"><img src="img/avatar.jpg" alt="" onerror="this.remove()">${USUARIO.inicial}</span>
         <span class="texto-enfasis">${USUARIO.nick}</span>
       </div>
       <div class="panel__divisor"></div>

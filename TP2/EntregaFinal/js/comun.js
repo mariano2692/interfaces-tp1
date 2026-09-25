@@ -153,7 +153,7 @@ function crearPaneles() {
       </div>
       <ul class="carrito__lista" id="carrito-lista"></ul>
       <div class="carrito__pie">
-        <div class="carrito__total"><span>Total</span><span class="texto-enfasis" id="carrito-total">USD 0,00</span></div>
+        <div class="carrito__total"><span>Total</span><span class="texto-enfasis" id="carrito-total">U$D 0</span></div>
         <button class="boton boton--primario boton--ancho" id="finalizar-compra">Finalizar compra</button>
       </div>
     </aside>

@@ -97,5 +97,7 @@ async function obtenerJuegos() {
 }
 
 function formatearPrecio(valor) {
-  return `USD ${valor.toLocaleString("es-AR", { minimumFractionDigits: 2 })}`;
+  // Como en el Figma ("U$D 45"): decimales solo si el precio los tiene
+  const decimales = Number.isInteger(valor) ? 0 : 2;
+  return `U$D ${valor.toLocaleString("es-AR", { minimumFractionDigits: decimales, maximumFractionDigits: decimales })}`;
 }

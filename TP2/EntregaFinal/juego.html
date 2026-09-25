@@ -7,9 +7,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Orbitron:wght@600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/base.css?v=2">
-  <link rel="stylesheet" href="css/comun.css?v=10">
-  <link rel="stylesheet" href="css/juego.css?v=8">
+  <link rel="stylesheet" href="css/base.css?v=3">
+  <link rel="stylesheet" href="css/comun.css?v=11">
+  <link rel="stylesheet" href="css/juego.css?v=9">
 </head>
 <body>
 
@@ -40,7 +40,7 @@
         <div class="juego__botones">
           <button class="boton boton--primario" id="jugar" type="button">Jugar</button>
           <div class="compartir">
-            <button class="boton boton--oscuro" id="abrir-compartir" type="button" aria-expanded="false" aria-controls="popover-compartir">Compartir</button>
+            <button class="boton boton--secundario" id="abrir-compartir" type="button" aria-expanded="false" aria-controls="popover-compartir">Compartir</button>
             <div class="compartir__popover" id="popover-compartir" hidden>
               <p class="texto-chico compartir__titulo">Compartir Peg Solitaire</p>
               <button class="compartir__opcion" type="button" id="copiar-enlace">🔗 Copiar enlace</button>
@@ -177,7 +177,7 @@
           </div>
           <p class="campo__error">ⓘ Elegí un puntaje y escribí al menos 10 caracteres</p>
         </div>
-        <button class="boton boton--oscuro boton--chico" type="submit">Publicar reseña</button>
+        <button class="boton boton--secundario boton--chico" type="submit">Publicar reseña</button>
       </form>
 
       <ul class="comentarios" id="comentarios"></ul>

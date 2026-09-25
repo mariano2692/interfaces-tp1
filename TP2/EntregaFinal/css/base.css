@@ -155,7 +155,7 @@ input {
   gap: 12px;
   padding: 12px 24px;
   border: none;
-  border-radius: var(--radio);
+  border-radius: 0; /* esquinas rectas como en el Figma */
   font-weight: 600;
   font-size: 15px;
   line-height: 20px;
@@ -175,7 +175,9 @@ input {
   color: #FFF;
 }
 
+/* Hover del Figma: el violeta se oscurece (sombra 40); la animación suma elevación + glow */
 .boton--primario:hover {
+  background: var(--primario-sombra-40);
   transform: translateY(-2px);
   box-shadow: 0 0 0 2px var(--secundario), 0 0 24px rgba(22, 224, 242, 0.55);
 }
@@ -185,24 +187,23 @@ input {
   background: var(--primario-sombra-20);
 }
 
-/* 2. Secundario */
+/* 2. Secundario (cyan oscuro, como "Compartir" en el Figma) */
 .boton--secundario {
   position: relative;
   overflow: hidden;
   isolation: isolate;
-  background: transparent;
-  color: var(--texto);
-  border: 2px solid var(--primario);
+  background: var(--secundario-sombra-40);
+  color: #FFF;
 }
 
-/* Franja violeta en diagonal (skew) que cruza el botón; se estira un 20 % por lado
+/* Franja más oscura (sombra 60) en diagonal (skew) que cruza el botón; se estira un 20 % por lado
    para que al inclinarla no queden esquinas sin cubrir */
 .boton--secundario::before {
   content: "";
   position: absolute;
   inset: 0 -20%;
   z-index: -1;
-  background: var(--primario);
+  background: var(--secundario-sombra-60);
   transform: translateX(-100%) skewX(-20deg);
   transition: transform 350ms ease-out;
 }
@@ -213,6 +214,7 @@ input {
 
 /* 3. Social (Google / Facebook) */
 .boton--social {
+  border-radius: var(--radio); /* los sociales sí son redondeados en el Figma */
   background: transparent;
   color: var(--texto);
   border: 1px solid var(--borde);

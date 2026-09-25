@@ -429,6 +429,11 @@
   padding: 24px;
 }
 
+/* El título deja libre el lugar de la ✕ (44 + 8 de margen − 24 de padding = 28, redondeado a 32) */
+.ficha-rapida__cuerpo .titulo-seccion {
+  padding-right: 32px;
+}
+
 .ficha-rapida__datos {
   display: grid;
   grid-template-columns: auto 1fr;

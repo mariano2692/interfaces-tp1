@@ -250,6 +250,8 @@ function armarFilas(juegos) {
   // Las 3 cards grandes: las ofertas mejor puntuadas (sin los del slider; eligen primero para no repetirse en los carruseles)
   const ofertas = resto.filter((j) => j.precio.descuento && !IDS_DESTACADOS.includes(j.id));
   const grandes = tomar(ofertas.sort(porRating), 3);
+  // El banner "Próximamente": el juego más nuevo de la API (tampoco se repite abajo)
+  const [banner] = tomar(resto.filter((j) => !IDS_DESTACADOS.includes(j.id)).sort((a, b) => b.anio - a.anio), 1);
   const puzzle = tomar(resto.filter(tieneGenero("Puzzle", "Plataformas")), POR_FILA - 1);
   const indie = tomar(resto.filter(tieneGenero("Indie")));
   const aventura = tomar(resto.filter(tieneGenero("Aventura")));
@@ -267,7 +269,7 @@ function armarFilas(juegos) {
     { titulo: "Disparos", ancla: "disparos", juegos: disparos },
     { titulo: "RPG", ancla: "rpg", juegos: rpg },
     { titulo: "Aventura", ancla: "aventura", juegos: aventura },
-    { tipo: "banner", juego: PROXIMAMENTE },
+    { tipo: "banner", juego: banner },
     { titulo: "Indie", ancla: "indie", juegos: indie },
     { titulo: "Puzzle y plataformas", ancla: "puzzle", juegos: [peg, ...puzzle] },
   ];
@@ -302,14 +304,12 @@ function crearFilaGrandes({ juegos }) {
     </section>`;
 }
 
-// Juego que todavía no salió: no está en la API, la imagen es la misma del Figma
-const PROXIMAMENTE = { nombre: "Alien: Isolation", imagen: "img/banner-proximamente.jpg" };
-
-// Si falta la imagen, el banner no se muestra (mejor que un recuadro vacío)
+// Banner a todo el ancho: usa la imagen en alta porque es mucho más grande que una card
 function crearBanner({ juego }) {
+  if (!juego) return "";
   return `
     <section class="banner" aria-label="Próximamente: ${juego.nombre}">
-      <img src="${juego.imagen}" alt="${juego.nombre}" loading="lazy" onerror="this.closest('.banner').remove()">
+      <img src="${juego.imagenGrande || juego.imagen}" alt="${juego.nombre}" loading="lazy">
       <span class="banner__etiqueta">Próximamente</span>
     </section>`;
 }

@@ -25,7 +25,6 @@
   padding-inline: 8px;
   background: rgba(14, 11, 22, 0.92);
   backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--borde);
 }
 
 .header__marca {

@@ -143,7 +143,7 @@
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  align-self: flex-start;
+  align-self: center; /* centrado como en el Figma */
   padding: 14px;
   background: #F9F9F9;
   border: 1px solid #D3D3D3;
@@ -170,6 +170,12 @@
 .recaptcha input:checked + .recaptcha__check {
   border-color: transparent;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230F9D58' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12l5 5L20 6'/%3E%3C/svg%3E") center / 22px no-repeat;
+}
+
+/* El error del captcha va centrado debajo de la casilla (proximidad) */
+#campo-captcha .campo__error {
+  align-self: center;
+  text-align: center;
 }
 
 .recaptcha input:focus-visible + .recaptcha__check {

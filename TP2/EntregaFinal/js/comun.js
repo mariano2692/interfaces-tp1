@@ -26,9 +26,6 @@ const ICONOS = {
   config: svg('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>'),
   salir: svg('<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>'),
   accion: svg('<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>'),
-  disparos: svg('<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>'),
-  rpg: svg('<path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/>'),
-  aventura: svg('<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>'),
   indie: svg('<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 17l.7 1.8 1.8.7-1.8.7L19 22l-.7-1.8-1.8-.7 1.8-.7z"/>'),
   puzzle: svg('<path d="M4 8h4a2 2 0 1 1 4 0h4v4a2 2 0 1 1 0 4v4H4v-4a2 2 0 1 0 0-4z"/>'),
   estrella: svg('<path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18.3 5.5 22l1.7-7.4-5.7-5 7.5-.7z"/>', 'fill="currentColor" stroke="none"'),
@@ -36,42 +33,33 @@ const ICONOS = {
   x: svg('<path d="M4 4l16 16M20 4L4 20"/>'),
   discord: svg('<path d="M8 17c-3 0-5-1-5-1 0-5 1.5-9 3-10.5C7.5 5 9 4.5 9 4.5l.5 1.5h5l.5-1.5s1.5.5 3 1c1.5 1.5 3 5.5 3 10.5 0 0-2 1-5 1l-1-2"/><circle cx="9" cy="12" r="1.2" fill="currentColor"/><circle cx="15" cy="12" r="1.2" fill="currentColor"/><path d="M8 15.5c2.5 1 5.5 1 8 0"/>'),
   espada: svg('<path d="M14.5 17.5L3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2"/>'),
-  invasor: svg('<path d="M7 4h2v2h6V4h2v2h2v2h2v6h-2v2h-2v-2H7v2H5v-2H3V8h2V6h2z"/><path d="M8 10h1M15 10h1"/>'),
-  cartas: svg('<rect x="8" y="3" width="12" height="16" rx="2" transform="rotate(10 14 11)"/><path d="M6 6.5L4 18a2 2 0 0 0 1.6 2.3L11 21"/>'),
-  globo: svg('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 3.8 5.5 3.8 9s-1.3 6.5-3.8 9c-2.5-2.5-3.8-5.5-3.8-9S9.5 5.5 12 3z"/>'),
   gema: svg('<path d="M6 3h12l4 6-10 12L2 9z"/><path d="M2 9h20M12 21L8 9l4-6 4 6z"/>'),
-  pelota: svg('<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6c2.5 2.5 3.4 6 2.4 9.4M18.4 18.4c-2.5-2.5-3.4-6-2.4-9.4"/>'),
   ovni: svg('<ellipse cx="12" cy="13" rx="10" ry="3.5"/><path d="M7 11.5a5 5 0 0 1 10 0M8 17l-1.5 3M16 17l1.5 3M12 17v3"/>'),
   regalo: svg('<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v9h14v-9M12 8v13M12 8S10.5 3 8 3.5 7 8 12 8zM12 8s1.5-5 4-4.5S17 8 12 8z"/>'),
-  bandera: svg('<path d="M5 21V4h13l-2 4.5 2 4.5H5M9 4v9M13 4v9M5 8.5h13"/>'),
   llama: svg('<path d="M12 22c4 0 7-2.7 7-7 0-4.5-4-7-5-12-2 2-3 4-3 6-1-1-2-2-2-3.5C7 7 5 10 5 15c0 4.3 3 7 7 7z"/>'),
   etiqueta: svg('<path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/>'),
-  grupo: svg('<circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-3.5 3-5.5 7-5.5s7 2 7 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.8c2.4.6 4 2.3 4 5.2"/>'),
   youtube: svg('<rect x="2" y="5" width="20" height="14" rx="4"/><path d="M10 9l5 3-5 3z" fill="currentColor"/>'),
 };
 
 const USUARIO = { nick: "Dragonslayer9", inicial: "D" };
 
-// Mismo menú que el Figma. Las que tienen fila en el Home llevan a su ancla.
+// Una sola lista para el menú y los carruseles del Home: cada opción tiene su fila con el mismo nombre
 const CATEGORIAS_MENU = [
+  { nombre: "Acción", ancla: "accion", icono: "accion" },
+  { nombre: "Shooter", ancla: "shooter", icono: "ovni" },
+  { nombre: "RPG", ancla: "rpg", icono: "gema" },
   { nombre: "Aventura", ancla: "aventura", icono: "espada" },
-  { nombre: "Arcade", icono: "invasor" },
-  { nombre: "Cartas", icono: "cartas" },
-  { nombre: "Estrategia", icono: "globo" },
-  { nombre: "Rol/RPG", ancla: "rpg", icono: "gema" },
-  { nombre: "Deportes", icono: "pelota" },
-  { nombre: "Shooter", ancla: "disparos", icono: "ovni" },
-  { nombre: "Gratis", icono: "regalo" },
-  { nombre: "Puzzle", ancla: "puzzle", icono: "puzzle" },
-  { nombre: "Carrera", icono: "bandera" },
+  { nombre: "Indie", ancla: "indie", icono: "indie" },
+  { nombre: "Puzzle y plataformas", ancla: "puzzle", icono: "puzzle" },
 ];
 
 const FILTROS_MENU = [
-  { nombre: "Mejores puntuados", icono: "llama" },
-  { nombre: "En oferta", icono: "etiqueta" },
-  { nombre: "Un jugador", icono: "perfil" },
-  { nombre: "Multijugador", icono: "grupo" },
+  { nombre: "Mejores puntuados", ancla: "mejores-puntuados", icono: "llama" },
+  { nombre: "En oferta", ancla: "ofertas", icono: "etiqueta" },
+  { nombre: "Gratis", ancla: "gratis", icono: "regalo" },
 ];
+
+const tituloDeCategoria = (ancla) => [...CATEGORIAS_MENU, ...FILTROS_MENU].find((c) => c.ancla === ancla).nombre;
 
 /* ---------- Header ---------- */
 
@@ -103,7 +91,7 @@ function crearHeader() {
 
 function crearPaneles() {
   const item = (c) =>
-    `<a class="panel__item" href="${c.ancla ? `home.html#${c.ancla}` : "#"}">${ICONOS[c.icono]} ${c.nombre}</a>`;
+    `<a class="panel__item" href="home.html#${c.ancla}">${ICONOS[c.icono]} ${c.nombre}</a>`;
 
   document.body.insertAdjacentHTML(
     "beforeend",
@@ -359,8 +347,8 @@ function crearFooter() {
   footer.innerHTML = `
     <div class="footer__bloque footer__principal">
       ${columna("Categorías", [
-        ["Todos los juegos", "home.html"], ["Más vendidos"], ["Mejor puntuados", "home.html#mas-jugados"],
-        ["Últimos lanzamientos"], ["Próximamente"], ["Free to play"], ["Ofertas especiales"],
+        ["Todos los juegos", "home.html"], ["Más vendidos"], ["Mejores puntuados", "home.html#mejores-puntuados"],
+        ["Últimos lanzamientos"], ["Próximamente"], ["Free to play", "home.html#gratis"], ["Ofertas especiales", "home.html#ofertas"],
         ["Exclusivos de la plataforma"], ["Basados en tus gustos"], ["Multijugador"],
         ["Recomendado para vos", "home.html#recomendados"], ["Single player"], ["Multi player"],
       ])}
@@ -368,9 +356,9 @@ function crearFooter() {
         ["Acerca de nosotros"], ["Comunidad"], ["Foro"], ["Cupones de descuento"], ["Trabajá con nosotros"], ["Centro de ayuda"],
       ])}
       ${columna("Géneros", [
-        ["Acción", "home.html#accion"], ["Aventura", "home.html#aventura"], ["Rol RPG", "home.html#rpg"], ["Estrategia"],
+        ["Acción", "home.html#accion"], ["Aventura", "home.html#aventura"], ["RPG", "home.html#rpg"], ["Estrategia"],
         ["Simulación"], ["Deportes"], ["Carreras"], ["Pelea"], ["Terror"], ["Battle royale"],
-        ["Shooter", "home.html#disparos"], ["Ver todos", "home.html"],
+        ["Shooter", "home.html#shooter"], ["Ver todos", "home.html"],
       ])}
       <div class="footer__lateral">
         <form class="newsletter" id="newsletter" novalidate>

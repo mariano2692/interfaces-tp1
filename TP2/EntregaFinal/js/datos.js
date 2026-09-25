@@ -10,7 +10,7 @@ const TIMEOUT_API = 4000;
 
 const GENEROS_ES = {
   Action: "Acción",
-  Shooter: "Disparos",
+  Shooter: "Shooter",
   RPG: "RPG",
   Adventure: "Aventura",
   Indie: "Indie",

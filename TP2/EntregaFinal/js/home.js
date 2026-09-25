@@ -230,10 +230,10 @@ function crearSlider(destacados) {
 
 /* ---------- Filas de carruseles ---------- */
 
-const POR_FILA = 10;
+const POR_FILA = 8;
 const tieneGenero = (...generos) => (j) => generos.some((g) => j.generos.includes(g));
 const porRating = (a, b) => b.rating - a.rating;
-// Mezcla fija (siempre igual) para que "Recomendados" no repita el orden de "Más jugados"
+// Mezcla fija (siempre igual) para que "Recomendados" no repita el orden de "Mejores puntuados"
 const mezclaFija = (a, b) => ((a.id * 7919) % 97) - ((b.id * 7919) % 97);
 
 // Cada juego aparece en una sola fila, así ninguna imagen se repite en el Home.
@@ -248,30 +248,37 @@ function armarFilas(juegos) {
   };
 
   // Las 3 cards grandes: las ofertas mejor puntuadas (sin los del slider; eligen primero para no repetirse en los carruseles)
-  const ofertas = resto.filter((j) => j.precio.descuento && !IDS_DESTACADOS.includes(j.id));
-  const grandes = tomar(ofertas.sort(porRating), 3);
+  const ofertas = resto.filter((j) => j.precio.descuento && !IDS_DESTACADOS.includes(j.id)).sort(porRating);
+  const grandes = tomar(ofertas, 3);
   // El banner "Próximamente": el juego más nuevo de la API (tampoco se repite abajo)
   const [banner] = tomar(resto.filter((j) => !IDS_DESTACADOS.includes(j.id)).sort((a, b) => b.anio - a.anio), 1);
+  const gratis = tomar(resto.filter((j) => j.precio.gratis));
+  const enOferta = tomar(ofertas);
   const puzzle = tomar(resto.filter(tieneGenero("Puzzle", "Plataformas")), POR_FILA - 1);
   const indie = tomar(resto.filter(tieneGenero("Indie")));
   const aventura = tomar(resto.filter(tieneGenero("Aventura")));
   const rpg = tomar(resto.filter(tieneGenero("RPG")));
-  const disparos = tomar(resto.filter(tieneGenero("Disparos")));
-  const masJugados = tomar([...resto].sort(porRating));
+  const shooter = tomar(resto.filter(tieneGenero("Shooter")));
+  const mejores = tomar([...resto].sort(porRating));
   const accion = tomar(resto.filter(tieneGenero("Acción")));
   const recomendados = tomar([...resto].sort(mezclaFija), POR_FILA - 1);
 
+  // Mismo nombre que en el menú hamburguesa (Nielsen #4: consistencia)
+  const fila = (ancla, juegosFila) => ({ titulo: tituloDeCategoria(ancla), ancla, juegos: juegosFila });
+
   return [
     { titulo: "Recomendados para vos", ancla: "recomendados", juegos: [peg, ...recomendados] },
-    { titulo: "Más jugados", ancla: "mas-jugados", juegos: masJugados },
+    fila("mejores-puntuados", mejores),
     { tipo: "grandes", juegos: grandes },
-    { titulo: "Acción", ancla: "accion", juegos: accion },
-    { titulo: "Disparos", ancla: "disparos", juegos: disparos },
-    { titulo: "RPG", ancla: "rpg", juegos: rpg },
-    { titulo: "Aventura", ancla: "aventura", juegos: aventura },
+    fila("accion", accion),
+    fila("shooter", shooter),
+    fila("rpg", rpg),
+    fila("aventura", aventura),
     { tipo: "banner", juego: banner },
-    { titulo: "Indie", ancla: "indie", juegos: indie },
-    { titulo: "Puzzle y plataformas", ancla: "puzzle", juegos: [peg, ...puzzle] },
+    fila("indie", indie),
+    fila("puzzle", [peg, ...puzzle]),
+    fila("ofertas", enOferta),
+    fila("gratis", gratis),
   ];
 }
 

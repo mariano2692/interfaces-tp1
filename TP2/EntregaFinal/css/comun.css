@@ -1003,12 +1003,10 @@
   }
 }
 
+/* Con "reducir movimiento" solo se frena el zoom lento del slider (decorativo).
+   El loading, los hovers y la galería se mantienen: son parte de la consigna y dan feedback. */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 1ms !important;
-    animation-delay: 0ms !important;
-    transition-duration: 1ms !important;
+  .slide--activo .slide__fondo {
+    animation: none;
   }
 }

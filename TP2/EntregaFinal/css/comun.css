@@ -542,29 +542,11 @@
   transform: scale(1.06);
 }
 
-.badge {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  padding: 2px 8px;
-  border-radius: 4px;
-  background: var(--secundario);
-  color: var(--fondo);
-  font-size: 11px;
-  font-weight: 600;
-  line-height: 18px;
-  text-transform: uppercase;
-}
-
-.badge--oferta {
-  background: var(--acento);
-}
-
 .card__contenido {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 12px 16px 16px;
+  gap: 2px;
+  padding: 6px 12px 8px; /* compacta como en el Figma: sin aire de más abajo */
 }
 
 /* Títulos largos: una línea con puntos suspensivos (el nombre completo va en el tooltip) */
@@ -582,6 +564,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  min-height: 42px; /* lugar para las 2 líneas de la Oferta: todas las cards miden igual, como en el Figma (H 247) */
 }
 
 .precio {
@@ -595,9 +578,15 @@
 }
 
 .precio s {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 400;
+  line-height: 18px;
   color: var(--texto-secundario);
+}
+
+/* Oferta: el precio final en acento (el amarillo sobre la card pasa AA de sobra) */
+.precio--oferta {
+  color: var(--acento);
 }
 
 .precio--gratis {
@@ -607,7 +596,7 @@
 /* CardButton: 4.º hover — el color se aclara y el botón "se hunde" al presionar */
 .card-boton {
   flex-shrink: 0;
-  padding: 6px 12px;
+  padding: 3px 10px;
   border: none;
   border-radius: 4px;
   font-size: 16px;

@@ -440,14 +440,14 @@ function conectarNewsletter() {
 
 /* ---------- Card de juego ---------- */
 
+// Tres variantes como en el Figma: Comprar, Jugar (gratis) y Oferta (precio final en acento, el anterior tachado abajo)
 function crearCard(juego) {
   const { precio } = juego;
-  const esNuevo = juego.anio >= 2019;
 
   let precioHtml = `<span class="precio precio--gratis">Gratis</span>`;
   if (!precio.gratis) {
     precioHtml = precio.descuento
-      ? `<span class="precio"><s>${formatearPrecio(precio.lista)}</s>${formatearPrecio(precio.final)}</span>`
+      ? `<span class="precio precio--oferta">${formatearPrecio(precio.final)}<s>${formatearPrecio(precio.lista)}</s></span>`
       : `<span class="precio">${formatearPrecio(precio.final)}</span>`;
   }
 
@@ -455,11 +455,7 @@ function crearCard(juego) {
     ? `<button class="card-boton card-boton--jugar" data-jugar="${juego.id}">Jugar</button>`
     : `<button class="card-boton card-boton--comprar" data-comprar="${juego.id}">Comprar</button>`;
 
-  let badge = "";
-  if (precio.descuento) badge = `<span class="badge badge--oferta">-${precio.descuento}%</span>`;
-  else if (esNuevo) badge = `<span class="badge">Nuevo</span>`;
-
-  const imagen = `<img src="${juego.imagen}" alt="${juego.nombre}" loading="lazy">${badge}`;
+  const imagen = `<img src="${juego.imagen}" alt="${juego.nombre}" loading="lazy">`;
 
   return `
     <article class="card">

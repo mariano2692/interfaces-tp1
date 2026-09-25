@@ -76,7 +76,7 @@
 .carga__porcentaje {
   font-family: var(--fuente-titulos);
   font-weight: 700;
-  font-size: 40px;
+  font-size: 48px;
   line-height: 48px;
   font-variant-numeric: tabular-nums;
 }
@@ -98,7 +98,7 @@
 
 .carga__texto {
   color: var(--texto-secundario);
-  font-size: 14px;
+  font-size: 13px;
 }
 
 /* ---------- Slider principal (galería animada) ----------
@@ -433,7 +433,7 @@
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 8px 16px;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 20px;
 }
 
@@ -537,7 +537,7 @@
 }
 
 .card-grande__precio .precio s {
-  font-size: 12px;
+  font-size: 13px;
   line-height: 16px;
 }
 

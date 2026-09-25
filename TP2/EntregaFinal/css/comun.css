@@ -140,7 +140,7 @@
     background: none;
     border: none;
     outline: none;
-    font-size: 15px;
+    font-size: 16px;
   }
 
   .buscador input::placeholder {
@@ -466,7 +466,7 @@
 .carrito__total {
   display: flex;
   justify-content: space-between;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .boton:disabled {
@@ -551,7 +551,7 @@
 
 /* Títulos largos: una línea con puntos suspensivos (el nombre completo va en el tooltip) */
 .card__titulo {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   line-height: 24px;
   overflow: hidden;
@@ -570,7 +570,7 @@
 .precio {
   display: flex;
   flex-direction: column;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 400;
   line-height: 24px;
   /* violeta como en el Figma, en luz 40: el primario base sobre la card da 2.94:1 y no pasa WCAG AA (4.5:1) */
@@ -578,7 +578,7 @@
 }
 
 .precio s {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 400;
   line-height: 18px;
   color: var(--texto-secundario);
@@ -800,7 +800,7 @@
 .footer__subtitulo {
   display: block;
   margin-bottom: 4px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   line-height: 20px;
   color: var(--texto);
@@ -850,7 +850,7 @@
   background: none;
   border: none;
   outline: none;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .newsletter__fila input::placeholder {
@@ -863,7 +863,7 @@
   border-radius: 4px;
   background: var(--acento);
   color: var(--fondo);
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: background-color var(--transicion), transform 100ms ease-out;
@@ -897,7 +897,7 @@
   border: 1px solid var(--borde);
   border-radius: var(--radio);
   background: var(--fondo);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   transition: border-color var(--transicion), color var(--transicion);
 }
@@ -962,7 +962,7 @@
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 12px 24px;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .footer__links-legales {

@@ -155,7 +155,7 @@ input {
   gap: 12px;
   padding: 12px 24px;
   border: none;
-  border-radius: 0; /* esquinas rectas como en el Figma */
+  border-radius: 3px; /* como en el Figma */
   font-weight: 600;
   font-size: 15px;
   line-height: 20px;

@@ -242,9 +242,42 @@
   box-shadow: 0 0 24px rgba(0, 0, 0, 0.5);
 }
 
+/* Menú de categorías: se abre debajo del header (como en el Figma) para que la ✕ quede a mano */
 .panel--izquierda {
+  top: 64px;
   left: 0;
+  width: min(250px, 85vw);
+  padding: 24px 16px 16px;
   animation: entrar-izquierda 300ms ease-out;
+}
+
+.scrim--bajo-header {
+  top: 64px;
+}
+
+.panel__redes {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+.panel__redes a {
+  display: grid;
+  place-items: center;
+  color: var(--texto);
+  transition: color var(--transicion), transform var(--transicion);
+}
+
+.panel__redes a:hover {
+  color: var(--secundario);
+  transform: translateY(-2px);
+}
+
+.panel__redes svg {
+  width: 20px;
+  height: 20px;
 }
 
 .panel--derecha {

@@ -35,18 +35,42 @@ const ICONOS = {
   instagram: svg('<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>'),
   x: svg('<path d="M4 4l16 16M20 4L4 20"/>'),
   discord: svg('<path d="M8 17c-3 0-5-1-5-1 0-5 1.5-9 3-10.5C7.5 5 9 4.5 9 4.5l.5 1.5h5l.5-1.5s1.5.5 3 1c1.5 1.5 3 5.5 3 10.5 0 0-2 1-5 1l-1-2"/><circle cx="9" cy="12" r="1.2" fill="currentColor"/><circle cx="15" cy="12" r="1.2" fill="currentColor"/><path d="M8 15.5c2.5 1 5.5 1 8 0"/>'),
+  espada: svg('<path d="M14.5 17.5L3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2"/>'),
+  invasor: svg('<path d="M7 4h2v2h6V4h2v2h2v2h2v6h-2v2h-2v-2H7v2H5v-2H3V8h2V6h2z"/><path d="M8 10h1M15 10h1"/>'),
+  cartas: svg('<rect x="8" y="3" width="12" height="16" rx="2" transform="rotate(10 14 11)"/><path d="M6 6.5L4 18a2 2 0 0 0 1.6 2.3L11 21"/>'),
+  globo: svg('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 3.8 5.5 3.8 9s-1.3 6.5-3.8 9c-2.5-2.5-3.8-5.5-3.8-9S9.5 5.5 12 3z"/>'),
+  gema: svg('<path d="M6 3h12l4 6-10 12L2 9z"/><path d="M2 9h20M12 21L8 9l4-6 4 6z"/>'),
+  pelota: svg('<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6c2.5 2.5 3.4 6 2.4 9.4M18.4 18.4c-2.5-2.5-3.4-6-2.4-9.4"/>'),
+  ovni: svg('<ellipse cx="12" cy="13" rx="10" ry="3.5"/><path d="M7 11.5a5 5 0 0 1 10 0M8 17l-1.5 3M16 17l1.5 3M12 17v3"/>'),
+  regalo: svg('<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v9h14v-9M12 8v13M12 8S10.5 3 8 3.5 7 8 12 8zM12 8s1.5-5 4-4.5S17 8 12 8z"/>'),
+  bandera: svg('<path d="M5 21V4h13l-2 4.5 2 4.5H5M9 4v9M13 4v9M5 8.5h13"/>'),
+  llama: svg('<path d="M12 22c4 0 7-2.7 7-7 0-4.5-4-7-5-12-2 2-3 4-3 6-1-1-2-2-2-3.5C7 7 5 10 5 15c0 4.3 3 7 7 7z"/>'),
+  etiqueta: svg('<path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/>'),
+  grupo: svg('<circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-3.5 3-5.5 7-5.5s7 2 7 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.8c2.4.6 4 2.3 4 5.2"/>'),
   youtube: svg('<rect x="2" y="5" width="20" height="14" rx="4"/><path d="M10 9l5 3-5 3z" fill="currentColor"/>'),
 };
 
 const USUARIO = { nick: "Dragonslayer9", inicial: "D" };
 
+// Mismo menú que el Figma. Las que tienen fila en el Home llevan a su ancla.
 const CATEGORIAS_MENU = [
-  { nombre: "Acción", ancla: "accion", icono: "accion" },
-  { nombre: "Disparos", ancla: "disparos", icono: "disparos" },
-  { nombre: "RPG", ancla: "rpg", icono: "rpg" },
-  { nombre: "Aventura", ancla: "aventura", icono: "aventura" },
-  { nombre: "Indie", ancla: "indie", icono: "indie" },
-  { nombre: "Puzzle y plataformas", ancla: "puzzle", icono: "puzzle" },
+  { nombre: "Aventura", ancla: "aventura", icono: "espada" },
+  { nombre: "Arcade", icono: "invasor" },
+  { nombre: "Cartas", icono: "cartas" },
+  { nombre: "Estrategia", icono: "globo" },
+  { nombre: "Rol/RPG", ancla: "rpg", icono: "gema" },
+  { nombre: "Deportes", icono: "pelota" },
+  { nombre: "Shooter", ancla: "disparos", icono: "ovni" },
+  { nombre: "Gratis", icono: "regalo" },
+  { nombre: "Puzzle", ancla: "puzzle", icono: "puzzle" },
+  { nombre: "Carrera", icono: "bandera" },
+];
+
+const FILTROS_MENU = [
+  { nombre: "Mejores puntuados", icono: "llama" },
+  { nombre: "En oferta", icono: "etiqueta" },
+  { nombre: "Un jugador", icono: "perfil" },
+  { nombre: "Multijugador", icono: "grupo" },
 ];
 
 /* ---------- Header ---------- */
@@ -78,9 +102,8 @@ function crearHeader() {
 /* ---------- Paneles: categorías, cuenta y carrito ---------- */
 
 function crearPaneles() {
-  const itemsCategorias = CATEGORIAS_MENU.map(
-    (c) => `<a class="panel__item" href="home.html#${c.ancla}">${ICONOS[c.icono]} ${c.nombre}</a>`
-  ).join("");
+  const item = (c) =>
+    `<a class="panel__item" href="${c.ancla ? `home.html#${c.ancla}` : "#"}">${ICONOS[c.icono]} ${c.nombre}</a>`;
 
   document.body.insertAdjacentHTML(
     "beforeend",
@@ -91,8 +114,14 @@ function crearPaneles() {
       <a class="panel__item" href="home.html">${ICONOS.inicio} Inicio</a>
       <a class="panel__item" href="#">${ICONOS.biblioteca} Biblioteca</a>
       <div class="panel__divisor"></div>
-      <p class="panel__grupo">Categorías</p>
-      ${itemsCategorias}
+      ${CATEGORIAS_MENU.map(item).join("")}
+      <div class="panel__divisor"></div>
+      ${FILTROS_MENU.map(item).join("")}
+      <div class="panel__redes">
+        <a href="#" aria-label="Instagram">${ICONOS.instagram}</a>
+        <a href="#" aria-label="X">${ICONOS.x}</a>
+        <a href="#" aria-label="YouTube">${ICONOS.youtube}</a>
+      </div>
     </nav>
 
     <div class="menu-cuenta" id="menu-cuenta" hidden>
@@ -128,19 +157,32 @@ function crearPaneles() {
 // Solo un panel abierto a la vez; se cierra con el scrim, con Esc o con clic afuera
 let panelAbierto = null;
 
+// Como en el Figma: con el menú abierto el ☰ se convierte en ✕ para cerrarlo
+function cambiarIconoMenu(boton, abierto) {
+  boton.innerHTML = abierto ? ICONOS.cerrar : ICONOS.menu;
+  boton.setAttribute("aria-label", abierto ? "Cerrar menú de categorías" : "Abrir menú de categorías");
+}
+
 function abrirPanel(id, disparador) {
   cerrarPanel();
   const panel = document.getElementById(id);
   panel.hidden = false;
   panelAbierto = { panel, disparador };
   disparador?.setAttribute("aria-expanded", "true");
-  if (panel.classList.contains("panel")) document.getElementById("scrim").hidden = false;
+  const esMenu = id === "panel-categorias";
+  if (esMenu) cambiarIconoMenu(disparador, true);
+  if (panel.classList.contains("panel")) {
+    const scrim = document.getElementById("scrim");
+    scrim.classList.toggle("scrim--bajo-header", esMenu);
+    scrim.hidden = false;
+  }
 }
 
 function cerrarPanel() {
   if (!panelAbierto) return;
   panelAbierto.panel.hidden = true;
   panelAbierto.disparador?.setAttribute("aria-expanded", "false");
+  if (panelAbierto.panel.id === "panel-categorias") cambiarIconoMenu(panelAbierto.disparador, false);
   document.getElementById("scrim").hidden = true;
   panelAbierto = null;
 }
@@ -170,7 +212,13 @@ function conectarPaneles() {
   });
 
   // Los links a categorías cierran el panel al navegar dentro del Home
-  document.querySelectorAll("#panel-categorias a").forEach((a) => a.addEventListener("click", cerrarPanel));
+  // (las que todavía no tienen sección no saltan al principio de la página)
+  document.querySelectorAll("#panel-categorias a").forEach((a) =>
+    a.addEventListener("click", (e) => {
+      if (a.getAttribute("href") === "#") e.preventDefault();
+      cerrarPanel();
+    })
+  );
 }
 
 /* ---------- Toast ---------- */

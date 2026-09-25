@@ -72,8 +72,8 @@ function crearHeader() {
       <a class="logo header__logo" href="home.html">Neo<span>Arcade</span></a>
     </div>
     <form class="buscador" role="search" onsubmit="return false">
-      <span class="buscador__icono">${ICONOS.buscar}</span>
       <input type="search" placeholder="Buscar juegos" aria-label="Buscar juegos">
+      <span class="buscador__icono">${ICONOS.buscar}</span>
     </form>
     <div class="header__acciones">
       <button class="header__icono" id="abrir-carrito" aria-label="Abrir carrito">

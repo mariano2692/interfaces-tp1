@@ -116,7 +116,7 @@
     padding: 6px 12px;
     background: var(--superficie);
     border: 1px solid var(--superficie);
-    border-radius: var(--radio);
+    border-radius: 3px; /* casi recto, como en el Figma */
     color: var(--texto-secundario);
     transition: border-color var(--transicion);
   }
@@ -126,7 +126,7 @@
   }
 
   .buscador:focus-within {
-    border-color: var(--primario);
+    border-color: var(--texto-secundario); /* mismo borde que el Campo en focus */
   }
 
   .buscador svg {

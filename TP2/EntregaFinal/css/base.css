@@ -260,9 +260,9 @@ input {
   transition: border-color var(--transicion), box-shadow var(--transicion);
 }
 
+/* Focus del Figma: el borde se aclara (texto/secundario, 5.1:1 sobre el fondo: pasa WCAG 1.4.11) */
 .campo__caja:focus-within {
-  border-color: var(--primario);
-  box-shadow: 0 0 0 1px var(--primario);
+  border-color: var(--texto-secundario);
 }
 
 .campo__caja input {

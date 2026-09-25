@@ -333,19 +333,19 @@
   letter-spacing: 0.06em;
 }
 
+/* Menú de cuenta: pegado al borde derecho, debajo del header (como en el Figma) */
 .menu-cuenta {
   position: fixed;
-  top: 68px;
-  right: 8px;
+  top: 64px;
+  right: 0;
   z-index: 40;
-  width: 260px;
+  width: min(268px, 92vw);
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding: 16px 8px;
+  padding: 24px 16px 16px;
   background: var(--superficie);
-  border: 1px solid var(--borde);
-  border-radius: 12px;
+  border-bottom-left-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   transform-origin: top right;
   animation: desplegar 200ms ease-out;
@@ -355,17 +355,45 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 4px 12px;
+  padding: 0 12px 8px;
+}
+
+.menu-cuenta__grupo {
+  padding: 0 12px;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--texto-secundario);
+}
+
+.menu-cuenta__redes {
+  display: flex;
+  gap: 24px;
+  padding: 12px 12px 4px;
+}
+
+.menu-cuenta__redes a {
+  display: grid;
+  place-items: center;
+  color: var(--texto);
+  transition: color var(--transicion), transform var(--transicion);
+}
+
+.menu-cuenta__redes a:hover {
+  color: var(--secundario);
+  transform: translateY(-2px);
+}
+
+.menu-cuenta__redes svg {
+  width: 20px;
+  height: 20px;
+}
+
+.menu-cuenta__salir {
+  color: var(--texto-secundario);
 }
 
 @keyframes desplegar {
   0% { opacity: 0; transform: scale(0.95) translateY(-8px); }
-}
-
-@media (min-width: 768px) {
-  .menu-cuenta {
-    right: 24px;
-  }
 }
 
 /* ---------- Carrito ---------- */

@@ -135,7 +135,15 @@ function crearPaneles() {
       <a class="panel__item" href="#">${ICONOS.corazon} Favoritos</a>
       <a class="panel__item" href="#">${ICONOS.config} Configuración</a>
       <div class="panel__divisor"></div>
-      <a class="panel__item" href="index.html">${ICONOS.salir} Cerrar sesión</a>
+      <p class="menu-cuenta__grupo">Seguinos</p>
+      <div class="menu-cuenta__redes">
+        <a href="#" aria-label="Instagram">${ICONOS.instagram}</a>
+        <a href="#" aria-label="X">${ICONOS.x}</a>
+        <a href="#" aria-label="Discord">${ICONOS.discord}</a>
+        <a href="#" aria-label="YouTube">${ICONOS.youtube}</a>
+      </div>
+      <div class="panel__divisor"></div>
+      <a class="panel__item menu-cuenta__salir" href="index.html">${ICONOS.salir} Cerrar sesión</a>
     </div>
 
     <aside class="panel panel--derecha carrito" id="panel-carrito" aria-label="Tu carrito" hidden>

@@ -247,6 +247,9 @@ function armarFilas(juegos) {
     return elegidos;
   };
 
+  // Las 3 cards grandes: las ofertas mejor puntuadas (sin los del slider; eligen primero para no repetirse en los carruseles)
+  const ofertas = resto.filter((j) => j.precio.descuento && !IDS_DESTACADOS.includes(j.id));
+  const grandes = tomar(ofertas.sort(porRating), 3);
   const puzzle = tomar(resto.filter(tieneGenero("Puzzle", "Plataformas")), POR_FILA - 1);
   const indie = tomar(resto.filter(tieneGenero("Indie")));
   const aventura = tomar(resto.filter(tieneGenero("Aventura")));
@@ -259,14 +262,60 @@ function armarFilas(juegos) {
   return [
     { titulo: "Recomendados para vos", ancla: "recomendados", juegos: [peg, ...recomendados] },
     { titulo: "Más jugados", ancla: "mas-jugados", juegos: masJugados },
+    { tipo: "grandes", juegos: grandes },
     { titulo: "Acción", ancla: "accion", juegos: accion },
     { titulo: "Disparos", ancla: "disparos", juegos: disparos },
     { titulo: "RPG", ancla: "rpg", juegos: rpg },
     { titulo: "Aventura", ancla: "aventura", juegos: aventura },
+    { tipo: "banner", juego: PROXIMAMENTE },
     { titulo: "Indie", ancla: "indie", juegos: indie },
     { titulo: "Puzzle y plataformas", ancla: "puzzle", juegos: [peg, ...puzzle] },
   ];
 }
+
+/* ---------- Fila de cards grandes y banner (como en el Figma) ---------- */
+
+// Card grande: imagen ancha con el precio en un recuadro arriba a la derecha; abajo título y botón
+function crearCardGrande(juego) {
+  const { precio } = juego;
+  const precioHtml = precio.descuento
+    ? `<span class="precio precio--oferta">${formatearPrecio(precio.final)}<s>${formatearPrecio(precio.lista)}</s></span>`
+    : `<span class="precio">${formatearPrecio(precio.final)}</span>`;
+
+  return `
+    <article class="card card--grande">
+      <div class="card__imagen">
+        <img src="${juego.imagen}" alt="${juego.nombre}" loading="lazy">
+        <div class="card-grande__precio">${precioHtml}</div>
+      </div>
+      <div class="card-grande__pie">
+        <h3 class="card__titulo" title="${juego.nombre}">${juego.nombre}</h3>
+        <button class="card-boton card-boton--comprar" data-comprar="${juego.id}">Comprar</button>
+      </div>
+    </article>`;
+}
+
+function crearFilaGrandes({ juegos }) {
+  return `
+    <section class="fila-grandes" aria-label="Ofertas destacadas">
+      ${juegos.map(crearCardGrande).join("")}
+    </section>`;
+}
+
+// Juego que todavía no salió: no está en la API, la imagen es la misma del Figma
+const PROXIMAMENTE = { nombre: "Alien: Isolation", imagen: "img/banner-proximamente.jpg" };
+
+// Si falta la imagen, el banner no se muestra (mejor que un recuadro vacío)
+function crearBanner({ juego }) {
+  return `
+    <section class="banner" aria-label="Próximamente: ${juego.nombre}">
+      <img src="${juego.imagen}" alt="${juego.nombre}" loading="lazy" onerror="this.closest('.banner').remove()">
+      <span class="banner__etiqueta">Próximamente</span>
+    </section>`;
+}
+
+const crearFila = (fila) =>
+  fila.tipo === "grandes" ? crearFilaGrandes(fila) : fila.tipo === "banner" ? crearBanner(fila) : crearCarrusel(fila);
 
 /* ---------- Inicio ---------- */
 
@@ -279,7 +328,7 @@ async function iniciarHome() {
 
   const arrancarSlider = crearSlider(destacados);
   const contenedor = document.getElementById("carruseles");
-  contenedor.innerHTML = armarFilas(juegos).map(crearCarrusel).join("");
+  contenedor.innerHTML = armarFilas(juegos).map(crearFila).join("");
   conectarCarruseles(contenedor);
   conectarBotonesDeCards(juegos);
   conectarFicha();

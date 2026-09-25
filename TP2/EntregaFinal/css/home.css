@@ -491,3 +491,111 @@
     gap: 56px;
   }
 }
+
+/* ---------- Fila de cards grandes (Card de juego grande del Figma) ---------- */
+
+/* En mobile se desliza de a una; desde tablet las 3 entran a lo ancho */
+.fila-grandes {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 85%;
+  gap: 16px;
+  padding: 8px 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 16px;
+  scrollbar-width: none;
+}
+
+.fila-grandes::-webkit-scrollbar {
+  display: none;
+}
+
+.card--grande {
+  width: auto;
+}
+
+.card--grande .card__imagen {
+  aspect-ratio: 7 / 3; /* más apaisada que la card común, como en el Figma */
+}
+
+/* Precio en un recuadro oscuro arriba a la derecha de la imagen */
+.card-grande__precio {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(14, 11, 22, 0.85);
+  text-align: right;
+}
+
+.card-grande__precio .precio {
+  align-items: flex-end;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.card-grande__precio .precio s {
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.card-grande__pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+}
+
+@media (min-width: 768px) {
+  .fila-grandes {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(3, 1fr);
+    padding-inline: 32px;
+    overflow: visible;
+  }
+}
+
+/* ---------- Banner "Próximamente" (Card próximamente del Figma) ---------- */
+
+.banner {
+  position: relative;
+  margin-inline: 16px;
+  overflow: hidden;
+  border-radius: 12px;
+  aspect-ratio: 16 / 5;
+  background: var(--superficie);
+}
+
+.banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 600ms ease-out;
+}
+
+.banner:hover img {
+  transform: scale(1.03);
+}
+
+.banner__etiqueta {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  background: rgba(14, 11, 22, 0.85);
+  color: var(--acento);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+}
+
+@media (min-width: 768px) {
+  .banner {
+    margin-inline: 32px;
+    aspect-ratio: 27 / 5;
+  }
+}

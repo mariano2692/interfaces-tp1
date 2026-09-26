@@ -782,6 +782,38 @@
   100% { opacity: 1; transform: none; }
 }
 
+/* Deslizando con el dedo: las cards se inclinan hacia donde se mueven (como si tuvieran inercia) */
+.carrusel__pista--deslizando .card {
+  transform: skewX(-6deg);
+}
+
+.carrusel__pista--deslizando.carrusel__pista--hacia-izq .card {
+  transform: skewX(6deg);
+}
+
+/* Al soltar, se enderezan pasándose un poco para el otro lado */
+.card--asienta-der {
+  animation: card-asienta-der 500ms ease-out;
+}
+
+.card--asienta-izq {
+  animation: card-asienta-izq 500ms ease-out;
+}
+
+@keyframes card-asienta-der {
+  0% { transform: skewX(-6deg); }
+  40% { transform: skewX(3deg); }
+  70% { transform: skewX(-1deg); }
+  100% { transform: skewX(0); }
+}
+
+@keyframes card-asienta-izq {
+  0% { transform: skewX(6deg); }
+  40% { transform: skewX(-3deg); }
+  70% { transform: skewX(1deg); }
+  100% { transform: skewX(0); }
+}
+
 .carrusel__pista::-webkit-scrollbar {
   display: none;
 }

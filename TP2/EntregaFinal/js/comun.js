@@ -519,6 +519,22 @@ function animarEntrada(pista, destino, sentido) {
   });
 }
 
+// Al terminar de deslizar: las cards visibles se enderezan con rebote (keyframes con %)
+function asentarCards(pista, sentido) {
+  pista.classList.remove("carrusel__pista--deslizando", "carrusel__pista--hacia-izq");
+  const clase = sentido > 0 ? "card--asienta-der" : "card--asienta-izq";
+  const visibles = [...pista.children].filter(
+    (card) =>
+      card.offsetLeft + card.offsetWidth > pista.scrollLeft && card.offsetLeft < pista.scrollLeft + pista.clientWidth
+  );
+  visibles.forEach((card) => {
+    card.classList.remove("card--asienta-der", "card--asienta-izq");
+    void card.offsetWidth;
+    card.classList.add(clase);
+    card.addEventListener("animationend", () => card.classList.remove(clase), { once: true });
+  });
+}
+
 function conectarCarruseles(contenedor) {
   contenedor.querySelectorAll(".carrusel").forEach((carrusel) => {
     const pista = carrusel.querySelector(".carrusel__pista");
@@ -538,7 +554,43 @@ function conectarCarruseles(contenedor) {
 
     izq.addEventListener("click", () => mover(-1));
     der.addEventListener("click", () => mover(1));
-    pista.addEventListener("scroll", actualizar, { passive: true });
+
+    // Deslizando con el dedo (mobile): mientras se mueve, las cards se inclinan hacia donde van;
+    // al soltar se enderezan con un rebote. Solo si el movimiento empezó con un toque:
+    // las flechas de desktop ya tienen su propia animación.
+    let conDedo = false;
+    let ultimaPosicion = pista.scrollLeft;
+    let sentido = 0;
+    let fin;
+
+    pista.addEventListener("touchstart", () => (conDedo = true), { passive: true });
+
+    // "scrollend" llega cuando terminó todo, incluido el ajuste final del scroll-snap
+    const terminar = () => {
+      if (pista.classList.contains("carrusel__pista--deslizando")) asentarCards(pista, sentido);
+      conDedo = false;
+    };
+
+    pista.addEventListener(
+      "scroll",
+      () => {
+        actualizar();
+        const delta = pista.scrollLeft - ultimaPosicion;
+        ultimaPosicion = pista.scrollLeft;
+        if (conDedo && Math.abs(delta) > 1) {
+          sentido = Math.sign(delta);
+          pista.classList.add("carrusel__pista--deslizando");
+          pista.classList.toggle("carrusel__pista--hacia-izq", sentido < 0);
+        }
+        // Navegadores sin "scrollend": se considera terminado si pasan 200 ms sin moverse
+        if (!("onscrollend" in window)) {
+          clearTimeout(fin);
+          fin = setTimeout(terminar, 200);
+        }
+      },
+      { passive: true }
+    );
+    pista.addEventListener("scrollend", terminar);
     actualizar();
   });
 }

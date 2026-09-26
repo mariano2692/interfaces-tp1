@@ -382,18 +382,13 @@
 }
 
 /* Video a la izquierda y enlaces + detalles al costado */
-/* Mobile: el video a todo el ancho y la info debajo; desde tablet, video 2/3 + info al costado */
+/* Mobile y tablet: el video a todo el ancho y la info debajo; desde 1200, video 2/3 + info al costado
+   (en tablet el video quedaba angosto y la info, más alta, dejaba un hueco debajo del video) */
 .ficha__media {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 32px;
   align-items: stretch;
-}
-
-@media (min-width: 768px) {
-  .ficha__media {
-    grid-template-columns: minmax(0, 2fr) minmax(220px, 1fr);
-  }
 }
 
 .video {
@@ -412,6 +407,30 @@
   overflow: hidden;
   background: var(--superficie);
   cursor: pointer;
+}
+
+@media (min-width: 1200px) {
+  .ficha__media {
+    grid-template-columns: minmax(0, 2fr) minmax(220px, 1fr);
+  }
+
+  /* El video se estira hasta la altura de la info del costado: nunca queda hueco debajo */
+  .video {
+    container-type: inline-size;
+  }
+
+  /* Como mínimo 16:9 (56.25 % del ancho); si la info es más alta, se estira hasta igualarla */
+  .video__marco {
+    flex: 1;
+    min-height: 56.25cqi;
+    aspect-ratio: auto;
+  }
+
+  /* La imagen no empuja el alto: solo cubre el espacio que le da la columna */
+  .video__marco img {
+    position: absolute;
+    inset: 0;
+  }
 }
 
 .video__marco img {

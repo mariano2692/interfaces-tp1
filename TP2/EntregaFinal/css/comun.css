@@ -686,24 +686,30 @@
   scrollbar-width: none;
 }
 
-/* Entrada de cards al avanzar con las flechas (keyframes con %, permitidos por el enunciado) */
+/* Entrada de cards al avanzar con las flechas (keyframes con %, permitidos por el enunciado).
+   Llegan inclinadas hacia donde se avanza, se pasan un poco para el otro lado y se acomodan:
+   simula la inercia del movimiento. */
 .card--entra-der {
-  animation: card-entra-der 550ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: card-entra-der 750ms ease-out both;
 }
 
 .card--entra-izq {
-  animation: card-entra-izq 550ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: card-entra-izq 750ms ease-out both;
 }
 
 @keyframes card-entra-der {
-  0% { opacity: 0; transform: translateX(64px) scale(0.9) rotateY(-12deg); }
-  60% { opacity: 1; }
+  0% { opacity: 0; transform: translateX(64px) scale(0.9) rotateY(-12deg) skewX(-10deg); }
+  45% { opacity: 1; transform: translateX(-6px) scale(1) rotateY(0) skewX(5deg); }
+  70% { transform: translateX(2px) skewX(-2deg); }
+  85% { transform: translateX(0) skewX(1deg); }
   100% { opacity: 1; transform: none; }
 }
 
 @keyframes card-entra-izq {
-  0% { opacity: 0; transform: translateX(-64px) scale(0.9) rotateY(12deg); }
-  60% { opacity: 1; }
+  0% { opacity: 0; transform: translateX(-64px) scale(0.9) rotateY(12deg) skewX(10deg); }
+  45% { opacity: 1; transform: translateX(6px) scale(1) rotateY(0) skewX(-5deg); }
+  70% { transform: translateX(-2px) skewX(2deg); }
+  85% { transform: translateX(0) skewX(-1deg); }
   100% { opacity: 1; transform: none; }
 }
 

@@ -57,12 +57,16 @@ function calcularPrecio(juego) {
   };
 }
 
+// La API trae la imagen "grande" en 4K (~3,5 MB). RAWG sirve la misma imagen a 1280 px (~115 KB):
+// alcanza para el slider y el banner, y en mobile carga mucho más rápido.
+const achicarImagen = (url) => url?.replace("media.rawg.io/media/games/", "media.rawg.io/media/resize/1280/-/games/");
+
 function normalizar(juego) {
   return {
     id: juego.id,
     nombre: juego.name,
     imagen: juego.background_image_low_res || juego.background_image,
-    imagenGrande: juego.background_image,
+    imagenGrande: achicarImagen(juego.background_image),
     anio: Number((juego.released || "").slice(0, 4)),
     rating: juego.rating,
     generos: juego.genres.map((g) => GENEROS_ES[g.name] || g.name),

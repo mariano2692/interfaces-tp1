@@ -458,11 +458,19 @@
   color: var(--acento);
 }
 
+/* En mobile los dos botones van a todo el ancho (más fáciles de tocar, ley de Fitts) */
 .ficha-rapida__acciones {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 12px;
   margin-top: auto;
+}
+
+@media (min-width: 768px) {
+  .ficha-rapida__acciones {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
 }
 
 .ficha-rapida__cerrar {

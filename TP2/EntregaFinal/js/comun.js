@@ -76,6 +76,7 @@ function crearHeader() {
       <span class="buscador__icono">${ICONOS.buscar}</span>
     </form>
     <div class="header__acciones">
+      <button class="header__icono header__lupa" id="abrir-buscador" aria-label="Abrir buscador" aria-expanded="false">${ICONOS.buscar}</button>
       <button class="header__icono" id="abrir-carrito" aria-label="Abrir carrito">
         ${ICONOS.carrito}
         <span class="contador" id="contador-carrito" hidden>0</span>
@@ -195,6 +196,16 @@ function conectarPaneles() {
   btnCuenta.addEventListener("click", alternar("menu-cuenta", btnCuenta));
   btnCarrito.addEventListener("click", alternar("panel-carrito", btnCarrito));
   document.getElementById("cerrar-carrito").addEventListener("click", cerrarPanel);
+
+  // Mobile: la lupa despliega el buscador debajo del header (en desktop siempre está visible)
+  const btnBuscador = document.getElementById("abrir-buscador");
+  btnBuscador.addEventListener("click", () => {
+    const header = document.getElementById("header");
+    const abierto = header.classList.toggle("header--buscando");
+    btnBuscador.setAttribute("aria-expanded", abierto);
+    btnBuscador.setAttribute("aria-label", abierto ? "Cerrar buscador" : "Abrir buscador");
+    if (abierto) header.querySelector(".buscador input").focus();
+  });
   document.getElementById("scrim").addEventListener("click", cerrarPanel);
 
   document.addEventListener("keydown", (e) => {
@@ -338,11 +349,14 @@ const TIENDAS = [
 function crearFooter() {
   const footer = document.getElementById("footer");
   footer.className = "footer";
+  // Cada columna es un acordeón en mobile (evita una lista de 30 links); en desktop queda siempre abierta
   const columna = (titulo, links) => `
-    <nav class="footer__columna" aria-label="${titulo}">
-      <p class="footer__titulo">${titulo}</p>
-      ${links.map(([texto, href = "#"]) => `<a href="${href}">${texto}</a>`).join("")}
-    </nav>`;
+    <details class="footer__columna" open>
+      <summary class="footer__titulo">${titulo}<span class="footer__flecha">${ICONOS.flecha}</span></summary>
+      <nav class="footer__links" aria-label="${titulo}">
+        ${links.map(([texto, href = "#"]) => `<a href="${href}">${texto}</a>`).join("")}
+      </nav>
+    </details>`;
 
   footer.innerHTML = `
     <div class="footer__bloque footer__principal">
@@ -406,6 +420,12 @@ function crearFooter() {
         <a href="#">Accesibilidad</a>
       </nav>
     </div>`;
+
+  const desktop = matchMedia("(min-width: 768px)");
+  const acomodarColumnas = () =>
+    footer.querySelectorAll(".footer__columna").forEach((columna) => (columna.open = desktop.matches));
+  acomodarColumnas();
+  desktop.addEventListener("change", acomodarColumnas);
 
   conectarNewsletter();
 }

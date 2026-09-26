@@ -49,7 +49,7 @@
 
 .juego__zona {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 48px;
 }
 
@@ -70,7 +70,7 @@
   position: relative;
   display: grid;
   place-items: center;
-  padding: 40px 24px 48px;
+  padding: 32px 12px 44px;
   background: var(--superficie);
   border: 1px solid var(--primario);
   border-radius: var(--radio-grande);
@@ -112,12 +112,23 @@
 }
 
 .grilla {
-  --casilla: 48px;
+  --casilla: 34px; /* mobile: 7 × 34 + 6 × 8 = 286 px, entra en 375 */
   display: grid;
   grid-template-columns: repeat(7, var(--casilla));
   grid-template-rows: repeat(7, var(--casilla));
-  gap: 16px;
+  gap: 8px;
   touch-action: none;
+}
+
+@media (min-width: 768px) {
+  .tablero {
+    padding: 40px 24px 48px;
+  }
+
+  .grilla {
+    --casilla: 48px;
+    gap: 16px;
+  }
 }
 
 .casilla {
@@ -371,11 +382,18 @@
 }
 
 /* Video a la izquierda y enlaces + detalles al costado */
+/* Mobile: el video a todo el ancho y la info debajo; desde tablet, video 2/3 + info al costado */
 .ficha__media {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(220px, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 32px;
   align-items: stretch;
+}
+
+@media (min-width: 768px) {
+  .ficha__media {
+    grid-template-columns: minmax(0, 2fr) minmax(220px, 1fr);
+  }
 }
 
 .video {

@@ -593,8 +593,13 @@
   color: var(--texto-secundario);
 }
 
-/* CardButton: 4.º hover — el color se oscurece (como en el Figma) y el botón "se hunde" al presionar */
+/* CardButton: el color del hover del Figma (sombra 40) no aparece de golpe, se va llenando.
+   Comprar se llena de abajo hacia arriba; Jugar con un círculo que crece desde el centro.
+   Al presionar, el botón "se hunde". */
 .card-boton {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   flex-shrink: 0;
   padding: 3px 10px;
   border: none;
@@ -603,7 +608,14 @@
   font-weight: 600;
   line-height: 20px;
   cursor: pointer;
-  transition: background-color var(--transicion), transform 100ms ease-out;
+  transition: color 250ms ease-out, transform 100ms ease-out;
+}
+
+.card-boton::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .card-boton:active {
@@ -615,8 +627,15 @@
   color: #FFF;
 }
 
-.card-boton--comprar:hover {
-  background: var(--primario-sombra-40); /* hover del Figma: se oscurece */
+.card-boton--comprar::before {
+  inset: 0;
+  background: var(--primario-sombra-40);
+  transform: scaleY(0);
+  transform-origin: bottom;
+}
+
+.card-boton--comprar:hover::before {
+  transform: scaleY(1);
 }
 
 .card-boton--jugar {
@@ -624,9 +643,23 @@
   color: var(--fondo);
 }
 
-.card-boton--jugar:hover {
+/* Círculo más grande que el botón (el overflow lo recorta) para que cubra las esquinas */
+.card-boton--jugar::before {
+  top: 50%;
+  left: 50%;
+  width: 150%;
+  aspect-ratio: 1;
+  border-radius: 50%;
   background: var(--secundario-sombra-40);
+  transform: translate(-50%, -50%) scale(0);
+}
+
+.card-boton--jugar:hover {
   color: #FFF;
+}
+
+.card-boton--jugar:hover::before {
+  transform: translate(-50%, -50%) scale(1);
 }
 
 @media (min-width: 768px) {
@@ -865,6 +898,9 @@
 }
 
 .newsletter__boton {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   padding: 6px 12px;
   border: none;
   border-radius: 4px;
@@ -873,11 +909,22 @@
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color var(--transicion), transform 100ms ease-out;
+  transition: transform 100ms ease-out;
 }
 
-.newsletter__boton:hover {
+/* Hover: el tono más claro se abre desde el centro hacia los costados */
+.newsletter__boton::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
   background: var(--acento-luz-20);
+  transform: scaleX(0);
+  transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.newsletter__boton:hover::before {
+  transform: scaleX(1);
 }
 
 .newsletter__boton:active {

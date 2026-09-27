@@ -730,12 +730,14 @@
   flex-shrink: 0;
   font-size: 13px;
   line-height: 18px;
-  color: var(--secundario);
+  color: var(--texto-secundario);
   text-decoration: none;
+  transition: color var(--transicion);
 }
 
+/* Igual que el resto de los links: gris y cyan solo en hover */
 .carrusel__ver-todos:hover {
-  text-decoration: underline;
+  color: var(--secundario);
 }
 
 .carrusel__cuerpo {

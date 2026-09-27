@@ -192,18 +192,18 @@ input {
   position: relative;
   overflow: hidden;
   isolation: isolate;
-  background: var(--secundario-sombra-40);
+  background: var(--secundario-sombra-60);
   color: #FFF;
 }
 
-/* Franja más oscura (sombra 60) en diagonal (skew) que cruza el botón; se estira un 20 % por lado
+/* Franja más clara (sombra 40) en diagonal (skew) que cruza el botón; se estira un 20 % por lado
    para que al inclinarla no queden esquinas sin cubrir */
 .boton--secundario::before {
   content: "";
   position: absolute;
   inset: 0 -20%;
   z-index: -1;
-  background: var(--secundario-sombra-60);
+  background: var(--secundario-sombra-40);
   transform: translateX(-100%) skewX(-20deg);
   transition: transform 350ms ease-out;
 }

@@ -306,6 +306,30 @@
   height: 30px;
 }
 
+.ayuda__dedo {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+}
+
+/* Pantallas táctiles: la ayuda habla del dedo, no del mouse */
+.ayuda__dedo,
+.ayuda__con-dedo {
+  display: none;
+}
+
+@media (pointer: coarse) {
+  .ayuda__mouse,
+  .ayuda__con-mouse {
+    display: none;
+  }
+
+  .ayuda__dedo,
+  .ayuda__con-dedo {
+    display: block;
+  }
+}
+
 .ayuda__minis {
   display: flex;
   gap: 16px;

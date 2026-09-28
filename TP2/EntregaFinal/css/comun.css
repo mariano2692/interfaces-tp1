@@ -235,9 +235,10 @@
 
 /* ---------- Paneles ---------- */
 
+/* Menú y carrito se abren debajo del header: el scrim tampoco lo tapa */
 .scrim {
   position: fixed;
-  inset: 0;
+  inset: 64px 0 0;
   z-index: 30;
   background: rgba(0, 0, 0, 0.4);
   animation: fundido 200ms ease-out;
@@ -273,10 +274,6 @@
   animation: entrar-izquierda 300ms ease-out;
 }
 
-.scrim--bajo-header {
-  top: 64px;
-}
-
 .panel__redes {
   display: flex;
   justify-content: center;
@@ -303,6 +300,7 @@
 }
 
 .panel--derecha {
+  top: 64px; /* debajo del header, como el menú de categorías */
   right: 0;
   width: min(400px, 92vw);
   animation: entrar-derecha 300ms ease-out;

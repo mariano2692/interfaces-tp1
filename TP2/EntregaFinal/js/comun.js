@@ -170,7 +170,6 @@ function abrirPanel(id, disparador) {
   if (esMenu) cambiarIconoMenu(disparador, true);
   if (panel.classList.contains("panel")) {
     const scrim = document.getElementById("scrim");
-    scrim.classList.toggle("scrim--bajo-header", esMenu);
     scrim.hidden = false;
   }
 }

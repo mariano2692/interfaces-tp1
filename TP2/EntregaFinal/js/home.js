@@ -253,6 +253,7 @@ function armarFilas(juegos) {
   // El banner "Próximamente": el juego más nuevo de la API (tampoco se repite abajo)
   const [banner] = tomar(resto.filter((j) => !IDS_DESTACADOS.includes(j.id)).sort((a, b) => b.anio - a.anio), 1);
   const gratis = tomar(resto.filter((j) => j.precio.gratis));
+  const enOferta = tomar(ofertas);
   const puzzle = tomar(resto.filter(tieneGenero("Puzzle", "Plataformas")), POR_FILA - 1);
   const indie = tomar(resto.filter(tieneGenero("Indie")));
   const aventura = tomar(resto.filter(tieneGenero("Aventura")));
@@ -276,6 +277,7 @@ function armarFilas(juegos) {
     { tipo: "banner", juego: banner },
     fila("indie", indie),
     fila("puzzle", [peg, ...puzzle]),
+    fila("ofertas", enOferta),
     fila("gratis", gratis),
   ];
 }
@@ -302,12 +304,12 @@ function crearCardGrande(juego) {
     </article>`;
 }
 
-// Única sección de ofertas del Home (el ítem "En oferta" del menú lleva acá). Misma cabecera que los carruseles, como en el Figma
+// Las 3 mejores ofertas; "Ver todos" lleva a la fila "En oferta" con el resto. Misma cabecera que los carruseles, como en el Figma
 function crearFilaGrandes({ juegos }) {
   return `
-    <section class="seccion-grandes" id="ofertas" aria-labelledby="titulo-ofertas">
+    <section class="seccion-grandes" id="ofertas-destacadas" aria-labelledby="titulo-ofertas-destacadas">
       <div class="carrusel__cabecera">
-        <h2 class="titulo-seccion" id="titulo-ofertas">Ofertas</h2>
+        <h2 class="titulo-seccion" id="titulo-ofertas-destacadas">Ofertas destacadas</h2>
         <a class="carrusel__ver-todos" href="#ofertas">Ver todos</a>
       </div>
       <div class="fila-grandes">

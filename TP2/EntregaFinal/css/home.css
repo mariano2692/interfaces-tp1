@@ -597,8 +597,22 @@
   transition: transform 600ms ease-out;
 }
 
-.banner:hover img {
+.banner:hover img:not(.banner__logo) {
   transform: scale(1.03);
+}
+
+/* Logo del juego abajo a la izquierda, sobre la imagen (.banner .banner__logo le gana a .banner img) */
+.banner .banner__logo {
+  position: absolute;
+  left: 16px;
+  bottom: 12px;
+  width: 45%;
+  max-width: 360px;
+  height: auto;
+  max-height: 60%;
+  object-fit: contain;
+  object-position: left bottom;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6));
 }
 
 .banner__etiqueta {

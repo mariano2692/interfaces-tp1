@@ -319,11 +319,24 @@ function crearFilaGrandes({ juegos }) {
 }
 
 // Banner a todo el ancho: usa la imagen en alta porque es mucho más grande que una card
+// Arte de Steam para el banner: imagen ancha + logo con el nombre del juego (la API solo trae capturas sin texto)
+const STEAM = "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps";
+const ARTE_BANNER = {
+  41494: { fondo: `${STEAM}/1091500/library_hero.jpg`, logo: `${STEAM}/1091500/logo.png` }, // Cyberpunk 2077
+};
+
 function crearBanner({ juego }) {
   if (!juego) return "";
+  const arte = ARTE_BANNER[juego.id];
+  const respaldo = juego.imagenGrande || juego.imagen;
+  // Si el arte de Steam no carga, vuelve a la imagen de la API y se saca el logo
+  const fondo = arte
+    ? `<img src="${arte.fondo}" alt="${juego.nombre}" loading="lazy" onerror="this.onerror=null; this.src='${respaldo}'; this.nextElementSibling?.remove()">
+      <img class="banner__logo" src="${arte.logo}" alt="" loading="lazy" onerror="this.remove()">`
+    : `<img src="${respaldo}" alt="${juego.nombre}" loading="lazy">`;
   return `
     <section class="banner" aria-label="Próximamente: ${juego.nombre}">
-      <img src="${juego.imagenGrande || juego.imagen}" alt="${juego.nombre}" loading="lazy">
+      ${fondo}
       <span class="banner__etiqueta">Próximamente</span>
     </section>`;
 }

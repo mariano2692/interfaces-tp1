@@ -507,6 +507,14 @@
 
 /* ---------- Fila de cards grandes (Card de juego grande del Figma) ---------- */
 
+/* Título + fila, con el mismo espacio que un carrusel */
+.seccion-grandes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  scroll-margin-top: 80px;
+}
+
 /* En mobile se desliza de a una; desde tablet las 3 entran a lo ancho */
 .fila-grandes {
   display: grid;

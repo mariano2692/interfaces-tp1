@@ -582,7 +582,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding: 6px 12px 8px; /* compacta como en el Figma: sin aire de más abajo */
+  padding: 6px 12px 2px; /* compacta como en el Figma: la card mide 247 de alto */
 }
 
 /* Títulos largos: una línea con puntos suspensivos (el nombre completo va en el tooltip) */
@@ -640,9 +640,9 @@
   padding: 3px 10px;
   border: none;
   border-radius: 3px;
-  font-size: 16px;
+  font-size: 15px; /* Botón del DS: Inter 15 SemiBold */
   font-weight: 600;
-  line-height: 20px;
+  line-height: 18px;
   cursor: pointer;
   transition: color 250ms ease-out, transform 100ms ease-out;
 }

@@ -15,13 +15,6 @@ function simularCarga() {
   const carga = document.getElementById("carga");
   const porcentaje = document.getElementById("porcentaje");
   const relleno = document.getElementById("relleno");
-  const texto = document.getElementById("carga-texto");
-  const mensajes = [
-    [0, "Cargando juegos…"],
-    [35, "Armando los carruseles…"],
-    [70, "Encendiendo los neones…"],
-    [100, "¡Listo!"],
-  ];
 
   return new Promise((resolver) => {
     const inicio = performance.now();
@@ -33,7 +26,6 @@ function simularCarga() {
       porcentaje.textContent = valor;
       relleno.style.width = `${valor}%`;
       carga.setAttribute("aria-valuenow", valor);
-      texto.textContent = mensajes.filter(([desde]) => valor >= desde).pop()[1];
 
       if (avance < 1) {
         requestAnimationFrame(cuadro);

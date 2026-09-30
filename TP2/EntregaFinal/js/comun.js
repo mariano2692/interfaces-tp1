@@ -1,3 +1,8 @@
+// [ESTUDIO] QUÉ ES ESTE ARCHIVO: el JS de las partes compartidas. Lo cargan Home y Juego.
+// Arma con JS el header, los paneles y el footer (así no se repite el HTML en cada página)
+// y tiene las funciones de la card y del carrusel que usa home.js.
+// "use strict" activa el modo estricto: el navegador marca como error cosas que si no pasarían
+// sin aviso (por ejemplo, usar una variable sin declararla).
 "use strict";
 
 /* =========================================================
@@ -6,9 +11,12 @@
    footer, cards y carruseles.
    ========================================================= */
 
+// [ESTUDIO] Función flecha (arrow function) que arma el código de un ícono SVG.
+// Todos los íconos comparten el mismo marco; solo cambia el dibujo (contenido).
 const svg = (contenido, extra = "") =>
   `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${contenido}</svg>`;
 
+// [ESTUDIO] Objeto con todos los íconos: ICONOS.carrito, ICONOS.menu, etc.
 const ICONOS = {
   menu: svg('<path d="M4 6h16M4 12h16M4 18h16"/>'),
   cerrar: svg('<path d="M6 6l12 12M18 6L6 18"/>'),
@@ -41,9 +49,12 @@ const ICONOS = {
   youtube: svg('<rect x="2" y="5" width="20" height="14" rx="4"/><path d="M10 9l5 3-5 3z" fill="currentColor"/>'),
 };
 
+// [ESTUDIO] Usuario simulado: el enunciado dice que se asume que el usuario ya está logueado.
 const USUARIO = { nick: "Dragonslayer9", inicial: "D" };
 
 // Una sola lista para el menú y los carruseles del Home: cada opción tiene su fila con el mismo nombre
+// [ESTUDIO] Array de objetos: cada categoría tiene nombre, ancla (el #id del carrusel) e ícono.
+// La misma lista arma el menú ☰ y los carruseles del Home → siempre coinciden (Nielsen #4).
 const CATEGORIAS_MENU = [
   { nombre: "Acción", ancla: "accion", icono: "accion" },
   { nombre: "Shooter", ancla: "shooter", icono: "ovni" },
@@ -59,10 +70,15 @@ const FILTROS_MENU = [
   { nombre: "Gratis", ancla: "gratis", icono: "regalo" },
 ];
 
+// [ESTUDIO] Busca el nombre de una categoría por su ancla. [...a, ...b] une los dos arrays;
+// find() devuelve el primer elemento que cumple la condición.
 const tituloDeCategoria = (ancla) => [...CATEGORIAS_MENU, ...FILTROS_MENU].find((c) => c.ancla === ancla).nombre;
 
 /* ---------- Header ---------- */
 
+// [ESTUDIO] Escribe el HTML del header adentro de <header id="header"> con innerHTML y un template literal
+// (texto entre backticks donde ${...} mete valores). aria-label describe los botones que solo tienen ícono;
+// aria-expanded dice si el panel que abren está abierto (lo cambia el JS).
 function crearHeader() {
   const header = document.getElementById("header");
   header.className = "header";
@@ -90,7 +106,10 @@ function crearHeader() {
 
 /* ---------- Paneles: categorías, cuenta y carrito ---------- */
 
+// [ESTUDIO] Agrega al final del <body> (insertAdjacentHTML "beforeend") el scrim, el menú ☰, el menú de
+// cuenta, el carrito y el toast. Todos arrancan ocultos con el atributo hidden.
 function crearPaneles() {
+  // [ESTUDIO] Arma un link del menú a partir de una categoría. Después se usa con map() sobre la lista.
   const item = (c) =>
     `<a class="panel__item" href="home.html#${c.ancla}">${ICONOS[c.icono]} ${c.nombre}</a>`;
 
@@ -152,14 +171,19 @@ function crearPaneles() {
 }
 
 // Solo un panel abierto a la vez; se cierra con el scrim, con Esc o con clic afuera
+// [ESTUDIO] Guarda cuál panel está abierto (y qué botón lo abrió). null = ninguno.
 let panelAbierto = null;
 
 // Como en el Figma: con el menú abierto el ☰ se convierte en ✕ para cerrarlo
+// [ESTUDIO] Cambia el ícono del botón: ☰ cuando está cerrado, ✕ cuando está abierto.
 function cambiarIconoMenu(boton, abierto) {
   boton.innerHTML = abierto ? ICONOS.cerrar : ICONOS.menu;
   boton.setAttribute("aria-label", abierto ? "Cerrar menú de categorías" : "Abrir menú de categorías");
 }
 
+// [ESTUDIO] ABRIR UN PANEL: primero cierra el que esté abierto (solo uno a la vez), después le saca hidden
+// al panel (aparece y arranca su animación de CSS), pone aria-expanded="true" en el botón y,
+// si es un panel lateral, muestra el scrim.
 function abrirPanel(id, disparador) {
   cerrarPanel();
   const panel = document.getElementById(id);
@@ -174,6 +198,7 @@ function abrirPanel(id, disparador) {
   }
 }
 
+// [ESTUDIO] CERRAR: lo contrario. Si no hay panel abierto, no hace nada (return).
 function cerrarPanel() {
   if (!panelAbierto) return;
   panelAbierto.panel.hidden = true;
@@ -183,6 +208,8 @@ function cerrarPanel() {
   panelAbierto = null;
 }
 
+// [ESTUDIO] CONECTA LOS EVENTOS de los paneles.
+// alternar(id, boton) devuelve una función: si ese panel ya está abierto lo cierra, si no lo abre.
 function conectarPaneles() {
   const alternar = (id, boton) => () =>
     panelAbierto?.panel.id === id ? cerrarPanel() : abrirPanel(id, boton);
@@ -197,6 +224,8 @@ function conectarPaneles() {
   document.getElementById("cerrar-carrito").addEventListener("click", cerrarPanel);
 
   // Mobile: la lupa despliega el buscador debajo del header (en desktop siempre está visible)
+  // [ESTUDIO] classList.toggle devuelve true si agregó la clase: así sabemos si el buscador quedó abierto.
+  // focus() pone el cursor en el input para escribir directo.
   const btnBuscador = document.getElementById("abrir-buscador");
   btnBuscador.addEventListener("click", () => {
     const header = document.getElementById("header");
@@ -205,6 +234,8 @@ function conectarPaneles() {
     btnBuscador.setAttribute("aria-label", abierto ? "Cerrar buscador" : "Abrir buscador");
     if (abierto) header.querySelector(".buscador input").focus();
   });
+  // [ESTUDIO] Tres formas de cerrar (Nielsen #3, control y libertad): clic en el scrim, tecla Esc,
+  // y clic afuera del menú de cuenta (que no tiene scrim).
   document.getElementById("scrim").addEventListener("click", cerrarPanel);
 
   document.addEventListener("keydown", (e) => {
@@ -229,6 +260,9 @@ function conectarPaneles() {
 
 /* ---------- Toast ---------- */
 
+// [ESTUDIO] TOAST (aviso). mostrarToast pone el texto y la clase .toast--visible (el CSS hace la transición).
+// setTimeout(..., 2600) la saca a los 2,6 s. clearTimeout cancela el anterior si llegan dos avisos seguidos.
+// void offsetWidth reinicia la transición (misma técnica que en el slider).
 let temporizadorToast;
 
 function mostrarToast(mensaje) {
@@ -243,6 +277,9 @@ function mostrarToast(mensaje) {
 
 /* ---------- Carrito (se guarda en el navegador para compartirlo entre páginas) ---------- */
 
+// [ESTUDIO] CARRITO. Se guarda en localStorage (memoria del navegador que sobrevive al recargar o cambiar
+// de página). Se guarda como texto: JSON.stringify convierte el array en texto y JSON.parse lo vuelve array.
+// try/catch: si el navegador no deja usar localStorage, el sitio no se rompe.
 const CLAVE_CARRITO = "neoarcade-carrito";
 let carrito = [];
 
@@ -262,6 +299,8 @@ function guardarCarrito() {
   }
 }
 
+// [ESTUDIO] Si el juego ya está (some() busca si algún item tiene ese id), avisa y no lo repite (Nielsen #5).
+// Si no: lo agrega con push, guarda, redibuja con animación y muestra el aviso.
 function agregarAlCarrito(juego) {
   if (carrito.some((item) => item.id === juego.id)) {
     mostrarToast(`${juego.nombre} ya está en tu carrito`);
@@ -273,6 +312,9 @@ function agregarAlCarrito(juego) {
   mostrarToast(`Agregaste ${juego.nombre} al carrito`);
 }
 
+// [ESTUDIO] REDIBUJA EL CARRITO desde el array ("el estado manda"): lista, total, botón y contador.
+// reduce() suma los precios. Si el carrito está vacío muestra el mensaje y deshabilita Finalizar compra.
+// Si animar es true, reinicia la animación latido del contador.
 function renderizarCarrito(animar = false) {
   const lista = document.getElementById("carrito-lista");
   const contador = document.getElementById("contador-carrito");
@@ -306,6 +348,8 @@ function renderizarCarrito(animar = false) {
   }
 }
 
+// [ESTUDIO] Eventos del carrito. Quitar usa UN listener en la lista (delegación de eventos):
+// con closest("[data-quitar]") ve qué tacho se tocó y filter() arma un array nuevo sin ese juego.
 function conectarCarrito() {
   leerCarrito();
   renderizarCarrito();
@@ -330,6 +374,7 @@ function conectarCarrito() {
 
 /* ---------- Footer ---------- */
 
+// [ESTUDIO] Logos de métodos de pago dibujados como SVG en el código (no son imágenes).
 const PAGOS = [
   ["Visa", '<svg viewBox="0 0 40 24"><text x="20" y="16.5" text-anchor="middle" font-family="Arial, sans-serif" font-weight="900" font-style="italic" font-size="11" fill="#1A1F71">VISA</text></svg>'],
   ["Mastercard", '<svg viewBox="0 0 40 24"><circle cx="16" cy="12" r="7" fill="#EB001B"/><circle cx="24" cy="12" r="7" fill="#F79E1B" fill-opacity=".9"/></svg>'],
@@ -345,6 +390,8 @@ const TIENDAS = [
   ["Google Play", '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M4 3l10 9-10 9z"/><path d="M4 3l13 7.5-3 1.5M4 21l13-7.5-3-1.5M17 10.5l3 1.5-3 1.5"/></svg>'],
 ];
 
+// [ESTUDIO] FOOTER. columna() arma cada columna como <details> (acordeón). links.map(([texto, href = "#"]) ...)
+// recorre pares [texto, destino]; si no hay destino, usa "#".
 function crearFooter() {
   const footer = document.getElementById("footer");
   footer.className = "footer";
@@ -420,6 +467,9 @@ function crearFooter() {
       </nav>
     </div>`;
 
+  // [ESTUDIO] matchMedia es como un @media pero en JS: desktop.matches es true desde 768 px.
+  // En desktop abre todas las columnas; en celular las cierra. El listener "change" lo recalcula
+  // si cambia el ancho de la ventana.
   const desktop = matchMedia("(min-width: 768px)");
   const acomodarColumnas = () =>
     footer.querySelectorAll(".footer__columna").forEach((columna) => (columna.open = desktop.matches));
@@ -429,6 +479,9 @@ function crearFooter() {
   conectarNewsletter();
 }
 
+// [ESTUDIO] NEWSLETTER. preventDefault() evita que el formulario recargue la página.
+// La expresión regular revisa que el correo tenga la forma algo@algo.algo.
+// Si es válido limpia el campo (reset) y muestra el aviso; si no, muestra el error.
 function conectarNewsletter() {
   const form = document.getElementById("newsletter");
   const input = document.getElementById("newsletter-mail");
@@ -448,6 +501,11 @@ function conectarNewsletter() {
 /* ---------- Card de juego ---------- */
 
 // Tres variantes como en el Figma: Comprar, Jugar (gratis) y Oferta (precio final en acento, el anterior tachado abajo)
+// [ESTUDIO] ARMA EL HTML DE UNA CARD a partir de un juego.
+// const { precio } = juego → "desestructuración": saca la propiedad precio del objeto.
+// Elige el precio (Gratis / oferta con el precio viejo tachado en <s> / normal) y el botón
+// (Jugar si es gratis, Comprar si es pago). data-comprar / data-jugar guardan el id del juego:
+// después el JS lo lee con dataset. loading="lazy" carga la imagen recién cuando se va a ver.
 function crearCard(juego) {
   const { precio } = juego;
 
@@ -478,6 +536,8 @@ function crearCard(juego) {
 
 /* ---------- Carrusel de cards ---------- */
 
+// [ESTUDIO] ARMA EL HTML DE UN CARRUSEL: título, "Ver todos", flecha izquierda (arranca disabled porque
+// estás al principio), la pista con una card por juego (juegos.map(crearCard)) y la flecha derecha.
 function crearCarrusel({ titulo, ancla, juegos }) {
   return `
     <section class="carrusel" id="${ancla}" aria-labelledby="titulo-${ancla}">
@@ -495,6 +555,14 @@ function crearCarrusel({ titulo, ancla, juegos }) {
 
 // Además del desplazamiento, las cards que quedan a la vista entran escalonadas
 // desde el lado hacia el que se avanza
+// [ESTUDIO] *** ANIMACIÓN DE LAS CARDS AL TOCAR UNA FLECHA ***
+// 1. filter() se queda con las cards que van a quedar a la vista después de moverse (destino).
+// 2. Elige la clase según el sentido: derecha (1) → card--entra-der, izquierda (-1) → card--entra-izq.
+// 3. Hacia la izquierda da vuelta el orden, así la ola arranca del lado correcto.
+// 4. A cada card: saca la clase, void offsetWidth (para poder repetir la animación), le pone un
+//    animation-delay de i × 70 ms (0, 70, 140...) → entran escalonadas, y le pone la clase.
+// 5. Cuando termina (animationend, { once: true } = el listener se usa una sola vez) limpia todo.
+// PARA CAMBIAR EL ESCALONADO: cambiar el 70 en `${i * 70}ms`.
 function animarEntrada(pista, destino, sentido) {
   const visibles = [...pista.children].filter(
     (card) => card.offsetLeft + card.offsetWidth > destino && card.offsetLeft < destino + pista.clientWidth
@@ -519,6 +587,8 @@ function animarEntrada(pista, destino, sentido) {
 }
 
 // Al terminar de deslizar: las cards visibles se enderezan con rebote (keyframes con %)
+// [ESTUDIO] CELULAR, al terminar de deslizar: saca las clases de inclinación de la pista y les pone
+// card--asienta-der o -izq a las cards visibles (el rebote al enderezarse, en el CSS).
 function asentarCards(pista, sentido) {
   pista.classList.remove("carrusel__pista--deslizando", "carrusel__pista--hacia-izq");
   const clase = sentido > 0 ? "card--asienta-der" : "card--asienta-izq";
@@ -534,16 +604,24 @@ function asentarCards(pista, sentido) {
   });
 }
 
+// [ESTUDIO] CONECTA CADA CARRUSEL (forEach recorre todos los .carrusel).
 function conectarCarruseles(contenedor) {
   contenedor.querySelectorAll(".carrusel").forEach((carrusel) => {
     const pista = carrusel.querySelector(".carrusel__pista");
     const izq = carrusel.querySelector(".carrusel__flecha--izq");
     const der = carrusel.querySelector(".carrusel__flecha--der");
 
+    // [ESTUDIO] Deshabilita la flecha izquierda si estás al principio (scrollLeft ≈ 0) y la derecha si
+    // llegaste al final. El 4 es un margen de tolerancia en px.
     const actualizar = () => {
       izq.disabled = pista.scrollLeft <= 4;
       der.disabled = pista.scrollLeft + pista.clientWidth >= pista.scrollWidth - 4;
     };
+    // [ESTUDIO] *** UN CLIC EN UNA FLECHA HACE DOS COSAS A LA VEZ ***
+    // 1. scrollTo({ behavior: "smooth" }) → la fila se desplaza (scroll suave del navegador).
+    //    Avanza el 90 % del ancho visible (clientWidth * 0.9). Math.max/min evitan pasarse de los bordes.
+    // 2. animarEntrada(...) → cada card hace su animación (inclinación y rebote, en el CSS).
+    // PARA QUE AVANCE MÁS O MENOS: cambiar el 0.9.
     const mover = (sentido) => {
       const maximo = pista.scrollWidth - pista.clientWidth;
       const destino = Math.max(0, Math.min(pista.scrollLeft + sentido * pista.clientWidth * 0.9, maximo));
@@ -557,6 +635,8 @@ function conectarCarruseles(contenedor) {
     // Deslizando con el dedo (mobile): mientras se mueve, las cards se inclinan hacia donde van;
     // al soltar se enderezan con un rebote. Solo si el movimiento empezó con un toque:
     // las flechas de desktop ya tienen su propia animación.
+    // [ESTUDIO] DESLIZAR CON EL DEDO (celular). conDedo = true solo si el movimiento empezó con touchstart
+    // (así las flechas de desktop no disparan esta inclinación).
     let conDedo = false;
     let ultimaPosicion = pista.scrollLeft;
     let sentido = 0;
@@ -565,11 +645,16 @@ function conectarCarruseles(contenedor) {
     pista.addEventListener("touchstart", () => (conDedo = true), { passive: true });
 
     // "scrollend" llega cuando terminó todo, incluido el ajuste final del scroll-snap
+    // [ESTUDIO] Cuando termina el deslizamiento, endereza las cards con rebote (asentarCards).
     const terminar = () => {
       if (pista.classList.contains("carrusel__pista--deslizando")) asentarCards(pista, sentido);
       conDedo = false;
     };
 
+    // [ESTUDIO] En cada movimiento del scroll: actualiza las flechas y calcula hacia dónde vas
+    // (delta = posición nueva - anterior; Math.sign da 1 o -1). Si es con el dedo, pone la clase
+    // --deslizando (las cards se inclinan) y --hacia-izq si vas a la izquierda.
+    // { passive: true } avisa que no se va a cancelar el scroll: el navegador lo hace más fluido.
     pista.addEventListener(
       "scroll",
       () => {
@@ -582,6 +667,7 @@ function conectarCarruseles(contenedor) {
           pista.classList.toggle("carrusel__pista--hacia-izq", sentido < 0);
         }
         // Navegadores sin "scrollend": se considera terminado si pasan 200 ms sin moverse
+        // [ESTUDIO] Navegadores viejos sin el evento scrollend: se considera terminado si pasan 200 ms sin moverse.
         if (!("onscrollend" in window)) {
           clearTimeout(fin);
           fin = setTimeout(terminar, 200);
@@ -595,6 +681,10 @@ function conectarCarruseles(contenedor) {
 }
 
 // Comprar / Jugar desde cualquier card de la página
+// [ESTUDIO] COMPRAR / JUGAR de TODAS las cards con UN solo listener en todo el documento (delegación de eventos):
+// funciona aunque las cards se hayan creado después. new Map(...) arma un índice id → juego
+// para encontrar rápido el juego de la card tocada. Comprar lo agrega al carrito; Jugar abre
+// la página del juego (Peg Solitaire) o avisa que se agregó a la biblioteca.
 function conectarBotonesDeCards(juegos) {
   const porId = new Map(juegos.map((j) => [String(j.id), j]));
   document.addEventListener("click", (e) => {
@@ -611,6 +701,8 @@ function conectarBotonesDeCards(juegos) {
 
 /* ---------- Inicio común ---------- */
 
+// [ESTUDIO] PUNTO DE ARRANQUE de lo compartido: lo llaman home.js y juego.js al empezar.
+// Primero crea el HTML (header, paneles, footer) y después le conecta los eventos.
 function iniciarComun() {
   crearHeader();
   crearPaneles();

@@ -3,6 +3,14 @@
    Tokens tomados 1:1 del Figma (paleta, tipografía, componentes)
    ========================================================= */
 
+/* [ESTUDIO] QUÉ ES ESTE ARCHIVO: el Design System del Figma pasado a CSS. Lo cargan LAS 3 PÁGINAS, primero.
+   VA PRIMERO porque define las variables que usan todos los demás archivos: si home.css se cargara
+   antes, usaría variables que todavía no existen.
+   
+   VARIABLES CSS (custom properties): se definen con --nombre: valor; y se usan con var(--nombre).
+   :root = la raíz de la página, así valen en todo el sitio.
+   Ventaja: cada color está escrito UNA vez. Si cambiás --primario, cambia en todo el sitio.
+   Paleta como pide el enunciado: primario, secundario y acento, cada uno con 3 luces y 3 sombras. */
 :root {
   /* Primario (violeta) — base + 3 luces + 3 sombras */
   --primario: #7B2FF7;
@@ -50,9 +58,12 @@
   /* Forma y movimiento */
   --radio: 8px;
   --radio-grande: 16px;
+  /* [ESTUDIO] Duración y curva estándar de las transiciones: se usa como transition: color var(--transicion). */
   --transicion: 200ms ease-out;
 }
 
+/* [ESTUDIO] RESET: a todos los elementos (* = todos) les saca márgenes del navegador.
+   box-sizing: border-box → el ancho incluye el padding y el borde (más fácil de calcular). */
 *,
 *::before,
 *::after {
@@ -71,6 +82,8 @@ body {
 }
 
 /* Que ningún display de componente le gane al atributo hidden */
+/* [ESTUDIO] Todo lo que tenga el atributo hidden se oculta, aunque su clase diga otro display.
+   !important le gana a cualquier otra regla. Así el JS oculta y muestra con hidden. */
 [hidden] {
   display: none !important;
 }
@@ -97,6 +110,7 @@ input {
   color: inherit;
 }
 
+/* [ESTUDIO] ACCESIBILIDAD: quien navega con teclado (Tab) ve un borde cyan en el elemento con el foco. */
 :focus-visible {
   outline: 2px solid var(--secundario);
   outline-offset: 2px;
@@ -104,6 +118,7 @@ input {
 
 /* ---------- Tipografía (Text Styles del DS) ---------- */
 
+/* [ESTUDIO] TEXT STYLES del Figma como clases: H1 y Sección en Orbitron, el resto en Inter. */
 .titulo-h1 {
   font-family: var(--fuente-titulos);
   font-weight: 700;
@@ -129,6 +144,8 @@ input {
 
 /* ---------- Logo ---------- */
 
+/* [ESTUDIO] Logo: la fuente Press Start 2P se usa SOLO acá (regla del enunciado: la fuente del logo no
+   se usa en títulos). */
 .logo {
   font-family: var(--fuente-logo);
   font-size: 20px;
@@ -148,6 +165,10 @@ input {
    3. Social: el borde se ilumina y el ícono rebota
    ------------------------------- */
 
+/* [ESTUDIO] BOTONES DEL DS (componente Boton del Figma). La clase .boton tiene lo común y los
+   modificadores (--primario, --secundario, --social) cambian colores y hover.
+   Forma de nombrar: bloque__elemento--modificador (BEM): .boton--primario = variante del bloque boton.
+   TRANSICIÓN de transform, sombra, fondo y borde → todos los hovers cambian de a poco. */
 .boton {
   display: inline-flex;
   align-items: center;
@@ -176,12 +197,15 @@ input {
 }
 
 /* Hover del Figma: el violeta se oscurece (sombra 40); la animación suma elevación + glow */
+/* [ESTUDIO] HOVER PRIMARIO (transición): se oscurece a sombra 40 (como el Figma), sube 2 px
+   (translateY negativo = arriba) y aparece un brillo cyan con box-shadow (como el btn--2 de la cátedra). */
 .boton--primario:hover {
   background: var(--primario-sombra-40);
   transform: translateY(-2px);
   box-shadow: 0 0 0 2px var(--secundario), 0 0 24px rgba(22, 224, 242, 0.55);
 }
 
+/* [ESTUDIO] :active = mientras se aprieta: vuelve a su lugar (translateY(0)) → se siente el clic. */
 .boton--primario:active {
   transform: translateY(0);
   background: var(--primario-sombra-20);
@@ -198,6 +222,12 @@ input {
 
 /* Franja más clara (sombra 40) en diagonal (skew) que cruza el botón; se estira un 20 % por lado
    para que al inclinarla no queden esquinas sin cubrir */
+/* [ESTUDIO] HOVER SECUNDARIO (Compartir, Publicar reseña): una franja ::before detrás del texto (z-index: -1)
+   arranca afuera, a la izquierda (translateX(-100%)), e inclinada (skewX(-20deg)).
+   En hover pasa a translateX(0): cruza el botón. Es como el btn--4 de la cátedra, pero moviendo
+   con transform en vez de left. inset: 0 -20% la hace 20 % más ancha por lado, así al inclinarla
+   no quedan esquinas sin cubrir.
+   PARA QUE ENTRE DESDE LA DERECHA: translateX(-100%) → translateX(100%). */
 .boton--secundario::before {
   content: "";
   position: absolute;
@@ -225,10 +255,13 @@ input {
   background: var(--superficie);
 }
 
+/* [ESTUDIO] HOVER SOCIAL: el ícono de Google/Facebook hace la ANIMACIÓN rebote (one shot). */
 .boton--social:hover svg {
   animation: rebote 500ms ease-out;
 }
 
+/* [ESTUDIO] Keyframe con 4 pasos: crece a 1.25 y gira -8° (40 %), se achica a 0.95 y gira +4° (70 %) y vuelve.
+   PARA QUE GIRE AL REVÉS: cambiar el signo de los dos rotate (-8 → 8, 4 → -4). */
 @keyframes rebote {
   0% { transform: scale(1); }
   40% { transform: scale(1.25) rotate(-8deg); }
@@ -238,6 +271,7 @@ input {
 
 /* ---------- Campo (Input del DS) ---------- */
 
+/* [ESTUDIO] CAMPO (Input del DS): label + caja + mensaje de error. Lo usan el login y la reseña del juego. */
 .campo {
   display: flex;
   flex-direction: column;
@@ -261,6 +295,7 @@ input {
 }
 
 /* Focus del Figma: el borde se aclara (texto/secundario, 5.1:1 sobre el fondo: pasa WCAG 1.4.11) */
+/* [ESTUDIO] Con el cursor adentro, el borde se aclara (estado focus del Figma). */
 .campo__caja:focus-within {
   border-color: var(--texto-secundario);
 }
@@ -289,6 +324,8 @@ input {
   color: var(--texto);
 }
 
+/* [ESTUDIO] El mensaje de error está oculto. Cuando el JS pone .campo--error en el campo,
+   el borde se pone rojo y el mensaje aparece (las dos reglas de abajo). */
 .campo__error {
   display: none;
   align-items: center;

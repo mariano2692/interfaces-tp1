@@ -1,9 +1,13 @@
+// [ESTUDIO] QUÉ ES ESTE ARCHIVO: la lógica propia del Home: loading, slider principal, ficha rápida
+// y armado de las filas de carruseles. Usa funciones de comun.js y datos.js, que se cargan antes.
+// Arranca por la función iniciarHome(), que está AL FINAL del archivo.
 "use strict";
 
 /* =========================================================
    Home: loading de 5 s, slider principal y carruseles
    ========================================================= */
 
+// [ESTUDIO] Constantes (en MAYÚSCULAS por convención): duraciones en ms e ids de los 3 juegos del slider.
 const DURACION_CARGA = 5000;
 const DURACION_SLIDE = 6000;
 // Igual que el mainSlider del Figma: 3 destacados, el primero al centro y los otros dos como peeks
@@ -11,14 +15,23 @@ const IDS_DESTACADOS = [28, 3328, 58175]; // Red Dead Redemption 2, The Witcher 
 
 /* ---------- Loading simulado ---------- */
 
+// [ESTUDIO] *** LOADING: ANIMACIÓN PROCEDURAL (filmina de Animaciones) ***
+// El valor no está prefijado en un keyframe: se calcula con código en cada cuadro, igual que el
+// reloj de la cátedra (AnalogClock), pero con requestAnimationFrame en vez de setTimeout.
+// Devuelve una Promise: una "promesa" de que va a terminar. iniciarHome la espera con await.
 function simularCarga() {
   const carga = document.getElementById("carga");
   const porcentaje = document.getElementById("porcentaje");
   const relleno = document.getElementById("relleno");
 
   return new Promise((resolver) => {
+    // [ESTUDIO] performance.now() = el momento exacto en que arranca, en milisegundos.
     const inicio = performance.now();
 
+    // [ESTUDIO] Se ejecuta en CADA CUADRO de pantalla (unas 60 veces por segundo).
+    // avance = tiempo que pasó / 5000 → va de 0 a 1 (Math.min lo frena en 1).
+    // valor = avance × 100 redondeado → el número del porcentaje (0 a 100).
+    // Con ese valor escribe el número, cambia el ancho de la barra y aria-valuenow (accesibilidad).
     function cuadro(ahora) {
       const avance = Math.min(Math.max(ahora - inicio, 0) / DURACION_CARGA, 1);
       const valor = Math.round(avance * 100);
@@ -27,10 +40,13 @@ function simularCarga() {
       relleno.style.width = `${valor}%`;
       carga.setAttribute("aria-valuenow", valor);
 
+      // [ESTUDIO] Si no llegó al final, pide el próximo cuadro (requestAnimationFrame) y corta acá (return).
       if (avance < 1) {
         requestAnimationFrame(cuadro);
         return;
       }
+      // [ESTUDIO] Llegó a 100 %: animación de salida (CSS), habilita el scroll, borra el loading a los 600 ms
+      // y resolver() avisa que la promesa terminó.
       carga.classList.add("carga--fin");
       document.body.classList.remove("cargando");
       setTimeout(() => carga.remove(), 600);
@@ -43,6 +59,9 @@ function simularCarga() {
 
 /* ---------- Ficha rápida ("Ver info" del slider) ---------- */
 
+// [ESTUDIO] FICHA RÁPIDA: arma el contenido con los datos del juego y lo abre con showModal().
+// Si el juego es gratis el botón dice "Jugar gratis"; si no, "Comprar" con el precio.
+// Al cerrarse, focus() devuelve el foco del teclado al botón Ver info que la abrió.
 function abrirFicha(juego, disparador) {
   const ficha = document.getElementById("ficha");
   const { precio } = juego;
@@ -71,6 +90,8 @@ function abrirFicha(juego, disparador) {
   ficha.addEventListener("close", () => disparador.focus(), { once: true });
 }
 
+// [ESTUDIO] Cierra la ficha con clic en el fondo (e.target === ficha: tocaste el <dialog> mismo, no su contenido),
+// con los botones Cerrar o ✕, o al Comprar.
 function conectarFicha() {
   const ficha = document.getElementById("ficha");
   ficha.addEventListener("click", (e) => {
@@ -276,6 +297,8 @@ function crearSlider(destacados) {
 
 /* ---------- Filas de carruseles ---------- */
 
+// [ESTUDIO] ARMADO DE LAS FILAS DEL HOME. POR_FILA = juegos por carrusel.
+// tieneGenero(...) devuelve una función para filter(). porRating ordena de mayor a menor puntaje (sort).
 const POR_FILA = 8;
 const tieneGenero = (...generos) => (j) => generos.some((g) => j.generos.includes(g));
 const porRating = (a, b) => b.rating - a.rating;
@@ -284,6 +307,9 @@ const mezclaFija = (a, b) => ((a.id * 7919) % 97) - ((b.id * 7919) % 97);
 
 // Cada juego aparece en una sola fila, así ninguna imagen se repite en el Home.
 // Las categorías chicas eligen primero para que no se queden sin juegos.
+// [ESTUDIO] Reparte los juegos en filas SIN REPETIR (el enunciado pide imágenes distintas en cada carrusel).
+// new Set() guarda los ids ya usados; tomar() elige los que todavía no se usaron.
+// Devuelve un array: cada elemento es un carrusel, la fila de cards grandes o el banner.
 function armarFilas(juegos) {
   const [peg, ...resto] = juegos;
   const usados = new Set();
@@ -310,6 +336,7 @@ function armarFilas(juegos) {
   const recomendados = tomar([...resto].sort(mezclaFija), POR_FILA - 1);
 
   // Mismo nombre que en el menú hamburguesa (Nielsen #4: consistencia)
+  // [ESTUDIO] El título de cada fila sale de la misma lista que el menú ☰ (comun.js) → siempre coinciden.
   const fila = (ancla, juegosFila) => ({ titulo: tituloDeCategoria(ancla), ancla, juegos: juegosFila });
 
   return [
@@ -331,6 +358,7 @@ function armarFilas(juegos) {
 /* ---------- Fila de cards grandes y banner (como en el Figma) ---------- */
 
 // Card grande: imagen ancha con el precio en un recuadro arriba a la derecha; abajo título y botón
+// [ESTUDIO] HTML de una card grande: reusa las clases de la card chica (.card, .card__titulo, .card-boton).
 function crearCardGrande(juego) {
   const { precio } = juego;
   const precioHtml = precio.descuento
@@ -371,6 +399,8 @@ const ARTE_BANNER = {
   41494: { fondo: `${STEAM}/1091500/library_hero.jpg`, logo: `${STEAM}/1091500/logo.png` }, // Cyberpunk 2077
 };
 
+// [ESTUDIO] BANNER: usa el arte de Steam si existe. onerror = si la imagen no carga, pone la de la API
+// y saca el logo, así nunca queda un espacio roto.
 function crearBanner({ juego }) {
   if (!juego) return "";
   const arte = ARTE_BANNER[juego.id];
@@ -387,11 +417,19 @@ function crearBanner({ juego }) {
     </section>`;
 }
 
+// [ESTUDIO] Según el tipo de fila, llama a la función que arma su HTML (dos ternarios encadenados).
 const crearFila = (fila) =>
   fila.tipo === "grandes" ? crearFilaGrandes(fila) : fila.tipo === "banner" ? crearBanner(fila) : crearCarrusel(fila);
 
 /* ---------- Inicio ---------- */
 
+// [ESTUDIO] *** PUNTO DE ARRANQUE DEL HOME (se llama en la última línea) ***
+// 1. iniciarComun(): header, paneles y footer (comun.js).
+// 2. Arranca el loading (sin await: corre mientras sigue lo demás).
+// 3. await obtenerJuegos(): espera los juegos de la API (datos.js).
+// 4. Arma el slider, las filas (armarFilas + crearFila) y conecta los eventos.
+// 5. await carga: espera que termine el loading.
+// 6. Arranca el autoplay del slider y, si la URL tiene #algo, baja hasta esa sección.
 async function iniciarHome() {
   iniciarComun();
   const carga = simularCarga();

@@ -2,6 +2,8 @@
    Login / Registro
    ========================================================= */
 
+/* [ESTUDIO] QUÉ ES ESTE ARCHIVO: los estilos propios de index.html (Login y Registro).
+   Se carga después de base.css, que ya trae los botones y los campos del Design System. */
 .pagina-login {
   min-height: 100vh;
   display: flex;
@@ -14,6 +16,7 @@
     var(--fondo);
 }
 
+/* [ESTUDIO] El recuadro destacado del formulario (pedido por el enunciado): 440 px de ancho máximo, centrado. */
 .recuadro {
   position: relative;
   width: 100%;
@@ -51,6 +54,9 @@
   transition: color var(--transicion);
 }
 
+/* [ESTUDIO] Subrayado de la pestaña: un ::after de 3 px que arranca aplastado (scaleX(0)).
+   En la pestaña activa pasa a scaleX(1) con TRANSICIÓN. Sin transform-origin crece desde el centro.
+   PARA QUE CREZCA DESDE LA IZQUIERDA: agregar transform-origin: left; */
 .tab::after {
   content: "";
   position: absolute;
@@ -83,6 +89,7 @@
   gap: 12px;
 }
 
+/* [ESTUDIO] Divisor "—— o ——": las dos líneas son ::before y ::after (pseudo-elementos, no están en el HTML). */
 .divisor {
   display: flex;
   align-items: center;
@@ -133,6 +140,7 @@
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
+/* [ESTUDIO] aria-pressed="true" lo pone el JS cuando la contraseña se está mostrando. */
 .campo__ojo[aria-pressed="true"] {
   color: var(--secundario);
 }
@@ -152,6 +160,8 @@
   cursor: pointer;
 }
 
+/* [ESTUDIO] El checkbox real queda invisible y se dibuja uno propio (.recaptcha__check).
+   "input:checked + .recaptcha__check" = el cuadrito que está justo después de un checkbox tildado. */
 .recaptcha input {
   position: absolute;
   opacity: 0;
@@ -185,6 +195,10 @@
 
 /* ---------- Animación de registro correcto ---------- */
 
+/* [ESTUDIO] PANTALLA DE ÉXITO (registro o login correctos). Tapa el recuadro con la animación aparecer.
+   Toda la secuencia se coordina con animation-delay (la espera antes de arrancar):
+   0 ms fondo → 200 ms se dibuja el círculo → 750 ms el tilde → 900 ms título → 1050 ms texto
+   → 1100 ms pulso verde. Después el JS redirige al Home. */
 .exito {
   position: absolute;
   inset: 0;
@@ -214,6 +228,9 @@
   animation: pulso 600ms ease-out 1100ms both;
 }
 
+/* [ESTUDIO] EL TRAZO QUE SE DIBUJA (SVG): stroke-dasharray = largo del trazo (151 el círculo, 36 el tilde).
+   stroke-dashoffset igual al largo = el trazo está corrido y no se ve.
+   La animación trazar lo lleva a 0 → se va dibujando. forwards = queda dibujado al terminar. */
 .exito__circulo {
   stroke-dasharray: 151;
   stroke-dashoffset: 151;
@@ -240,10 +257,12 @@
   100% { opacity: 1; }
 }
 
+/* [ESTUDIO] Keyframe con un solo paso (100 %): el 0 % es el estado normal (el trazo oculto). */
 @keyframes trazar {
   100% { stroke-dashoffset: 0; }
 }
 
+/* [ESTUDIO] Latido con brillo verde (filter: drop-shadow): crece a 1.12 y vuelve, dejando un brillo suave. */
 @keyframes pulso {
   0% { transform: scale(1); filter: none; }
   50% { transform: scale(1.12); filter: drop-shadow(0 0 16px var(--exito)); }
@@ -256,10 +275,14 @@
 }
 
 /* Error al enviar: el recuadro "niega con la cabeza" */
+/* [ESTUDIO] ERROR AL ENVIAR: el JS pone esta clase y el recuadro "niega con la cabeza".
+   Filmina de Animaciones: "una animación funcional indica dónde está el error". */
 .recuadro--sacudir {
   animation: sacudir 400ms ease-in-out;
 }
 
+/* [ESTUDIO] Varios porcentajes con el mismo valor separados por coma: va -8 px, +8 px, -8 px, +8 px y vuelve.
+   PARA QUE SACUDA EN VERTICAL: translateX → translateY. */
 @keyframes sacudir {
   0%, 100% { transform: translateX(0); }
   20%, 60% { transform: translateX(-8px); }

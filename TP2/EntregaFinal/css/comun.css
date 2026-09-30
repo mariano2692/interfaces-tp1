@@ -2,6 +2,11 @@
    Partes compartidas (Home y Juego) — mobile first
    ========================================================= */
 
+/* [ESTUDIO] QUÉ ES ESTE ARCHIVO: los estilos de las partes que se repiten en Home y en Juego
+   (header, menús, carrito, aviso, card, carrusel y footer). Por eso lo cargan las 2 páginas.
+   "Mobile first": primero se escribe cómo se ve en celular, y con @media (min-width: ...)
+   se agregan los cambios para pantallas más grandes.
+   .contenedor da el margen lateral: 16 px en celular y 32 px desde 768 px. */
 .contenedor {
   padding-inline: 16px;
 }
@@ -14,6 +19,9 @@
 
 /* ---------- Header ---------- */
 
+/* [ESTUDIO] HEADER. position: sticky + top: 0 → queda pegado arriba al bajar la página.
+   z-index: 20 → queda por encima del contenido. height: 64px → por eso los paneles arrancan en top: 64px.
+   backdrop-filter: blur(8px) → desenfoca lo que pasa por detrás (fondo semitransparente). */
 .header {
   position: sticky;
   top: 0;
@@ -44,6 +52,8 @@
   margin-left: auto;
 }
 
+/* [ESTUDIO] Botones de íconos del header (☰, lupa, carrito): 44 × 44 px, cómodos para tocar (ley de Fitts).
+   TRANSICIÓN de fondo y color: en :hover se pintan de cyan de a poco, no de golpe. */
 .header__icono {
   position: relative;
   display: grid;
@@ -63,6 +73,8 @@
   color: var(--secundario);
 }
 
+/* [ESTUDIO] Contador amarillo del carrito, arriba a la derecha del ícono (position: absolute
+   dentro del botón, que es position: relative). */
 .contador {
   position: absolute;
   top: 4px;
@@ -78,6 +90,8 @@
   line-height: 18px;
 }
 
+/* [ESTUDIO] ANIMACIÓN one shot (se ejecuta una vez): el JS pone esta clase al agregar un juego al carrito.
+   El keyframe latido crece a 1.5 en el 40 % y vuelve a 1 (filmina: scale). */
 .contador--latido {
   animation: latido 500ms ease-out;
 }
@@ -89,6 +103,8 @@
 }
 
 /* Buscador: en desktop va centrado en el header; en mobile se despliega debajo con la lupa */
+/* [ESTUDIO] BUSCADOR. En celular está oculto (display: none) y lo muestra la lupa.
+   Desde 768 px se ve siempre en el centro del header (más abajo, en el @media). */
 .buscador {
   display: none;
   align-items: center;
@@ -105,6 +121,7 @@
   border-color: var(--texto-secundario);
 }
 
+/* [ESTUDIO] :focus-within = cuando el input de adentro tiene el foco (estás escribiendo). */
 .buscador:focus-within {
   border-color: var(--texto-secundario); /* mismo borde que el Campo en focus */
 }
@@ -127,6 +144,8 @@
   color: var(--texto-secundario);
 }
 
+/* [ESTUDIO] Celular: al tocar la lupa, el JS pone .header--buscando en el header y el buscador
+   aparece debajo con la animación desplegar-buscador (baja 8 px mientras aparece). */
 .header--buscando .buscador {
   display: flex;
   position: absolute;
@@ -142,6 +161,8 @@
   100% { opacity: 1; transform: translateY(0); }
 }
 
+/* [ESTUDIO] Desde 768 px (tablet/compu): el header pasa a ser una grilla de 3 columnas:
+   marca | buscador | acciones. La lupa se oculta porque el buscador ya se ve. */
 @media (min-width: 768px) {
   .header {
     gap: 16px;
@@ -177,6 +198,7 @@
 }
 
 /* Botón de cuenta: avatar + flecha (hover solo visual, se abre con clic) */
+/* [ESTUDIO] Botón de cuenta (avatar + flecha). [aria-expanded="true"] lo pone el JS cuando el menú está abierto. */
 .cuenta {
   display: flex;
   align-items: center;
@@ -202,10 +224,12 @@
   transition: transform var(--transicion);
 }
 
+/* [ESTUDIO] Con el menú abierto la flecha gira 180° (filmina: rotate). Tiene transition, así gira de a poco. */
 .cuenta[aria-expanded="true"] .cuenta__flecha svg {
   transform: rotate(180deg);
 }
 
+/* [ESTUDIO] Avatar redondo (border-radius: 50%). Si la foto no carga, queda la inicial sobre un degradé. */
 .avatar {
   position: relative;
   overflow: hidden;
@@ -236,6 +260,9 @@
 /* ---------- Paneles ---------- */
 
 /* Menú y carrito se abren debajo del header: el scrim tampoco lo tapa */
+/* [ESTUDIO] PANELES (menú ☰, carrito y menú de cuenta).
+   El scrim es el fondo oscuro detrás de un panel abierto. inset: 64px 0 0 → empieza debajo
+   del header (top 64, right 0, bottom 0, left 0). Aparece con la animación fundido. */
 .scrim {
   position: fixed;
   inset: 64px 0 0;
@@ -244,12 +271,14 @@
   animation: fundido 200ms ease-out;
 }
 
+/* [ESTUDIO] [hidden] es el atributo que el JS pone o saca para ocultar o mostrar un panel. */
 .scrim[hidden],
 .panel[hidden],
 .menu-cuenta[hidden] {
   display: none;
 }
 
+/* [ESTUDIO] Base de los paneles laterales: position: fixed (quedan fijos aunque bajes la página). */
 .panel {
   position: fixed;
   top: 0;
@@ -266,6 +295,7 @@
 }
 
 /* Menú de categorías: se abre debajo del header (como en el Figma) para que la ✕ quede a mano */
+/* [ESTUDIO] Menú ☰: entra desde la izquierda con la animación entrar-izquierda (300 ms). */
 .panel--izquierda {
   top: 64px;
   left: 0;
@@ -299,6 +329,7 @@
   height: 20px;
 }
 
+/* [ESTUDIO] Carrito: entra desde la derecha con entrar-derecha (300 ms). */
 .panel--derecha {
   top: 64px; /* debajo del header, como el menú de categorías */
   right: 0;
@@ -306,6 +337,10 @@
   animation: entrar-derecha 300ms ease-out;
 }
 
+/* [ESTUDIO] KEYFRAMES CON UN SOLO PASO: solo dicen cómo ARRANCAN (0 %).
+   El 100 % lo completa el navegador con el estado normal del elemento.
+   translateX(-100%) = corrido a la izquierda todo su ancho (afuera de la pantalla) → entra deslizándose.
+   entrar-derecha es el espejo (100 %, desde la derecha). fundido arranca invisible (opacity 0). */
 @keyframes entrar-izquierda {
   0% { transform: translateX(-100%); }
 }
@@ -318,6 +353,7 @@
   0% { opacity: 0; }
 }
 
+/* [ESTUDIO] Cada opción de los menús (ícono + texto). En hover: fondo y color cyan, con transición. */
 .panel__item {
   display: flex;
   align-items: center;
@@ -355,6 +391,9 @@
 }
 
 /* Menú de cuenta: pegado al borde derecho, debajo del header (como en el Figma) */
+/* [ESTUDIO] MENÚ DE CUENTA: pegado a la derecha, debajo del header.
+   transform-origin: top right → la animación desplegar lo hace crecer DESDE la esquina de arriba
+   a la derecha, que es donde está el avatar (filmina: el punto de apoyo de la transformación). */
 .menu-cuenta {
   position: fixed;
   top: 64px;
@@ -413,12 +452,14 @@
   color: var(--texto-secundario);
 }
 
+/* [ESTUDIO] Arranca invisible, al 95 % de tamaño y 8 px más arriba; termina en su estado normal. */
 @keyframes desplegar {
   0% { opacity: 0; transform: scale(0.95) translateY(-8px); }
 }
 
 /* ---------- Carrito ---------- */
 
+/* [ESTUDIO] CARRITO. Cada juego de la lista (.carrito__item) aparece con subir-item (sube 8 px mientras aparece). */
 .carrito {
   gap: 16px;
 }
@@ -462,6 +503,7 @@
   min-width: 0;
 }
 
+/* [ESTUDIO] Nombres largos: una sola línea con "..." al final (text-overflow: ellipsis). */
 .carrito__nombre {
   overflow: hidden;
   white-space: nowrap;
@@ -490,6 +532,7 @@
   font-size: 16px;
 }
 
+/* [ESTUDIO] Botón deshabilitado (Finalizar compra con el carrito vacío): medio transparente y sin clics. */
 .boton:disabled {
   opacity: 0.5;
   pointer-events: none;
@@ -502,6 +545,9 @@
 /* ---------- Toast ---------- */
 
 /* En mobile aparece arriba, debajo del header, para no tapar el total ni "Finalizar compra" del carrito */
+/* [ESTUDIO] TOAST = aviso chico ("Agregaste ... al carrito"). Es una TRANSICIÓN, no una animación:
+   estado normal = invisible y corrido; estado .toast--visible (lo pone el JS) = visible y en su lugar.
+   translate(-50%, ...) lo centra: left: 50% lo lleva a la mitad y -50% de su ancho lo corre atrás. */
 .toast {
   position: fixed;
   left: 50%;
@@ -538,6 +584,10 @@
 
 /* ---------- Card de juego ---------- */
 
+/* [ESTUDIO] CARD DE JUEGO (se usa en todos los carruseles).
+   flex: 0 0 auto → no se estira ni se achica dentro de la fila.
+   scroll-snap-align: start → al deslizar, la card se acomoda sola al borde.
+   TRANSICIÓN de transform, borde y sombra: el hover es de a poco (200 ms, variable --transicion). */
 .card {
   flex: 0 0 auto;
   width: 240px;
@@ -551,6 +601,7 @@
   transition: transform var(--transicion), border-color var(--transicion), box-shadow var(--transicion);
 }
 
+/* [ESTUDIO] HOVER DE LA CARD: sube 4 px (translateY negativo = hacia arriba), borde violeta y sombra violeta. */
 .card:hover {
   transform: translateY(-4px);
   border-color: var(--primario);
@@ -572,6 +623,8 @@
   transition: transform 400ms ease-out;
 }
 
+/* [ESTUDIO] Al pasar el mouse por la card, la imagen hace zoom (scale 1.06). No se sale porque
+   .card__imagen tiene overflow: hidden. Su transition dura 400 ms (más lenta que la card). */
 .card:hover .card__imagen img {
   transform: scale(1.06);
 }
@@ -601,6 +654,7 @@
   min-height: 42px; /* lugar para las 2 líneas de la Oferta: todas las cards miden igual, como en el Figma (H 247) */
 }
 
+/* [ESTUDIO] Precio: violeta claro (luz 40) porque el violeta base no llega al contraste mínimo 4.5:1 (WCAG AA). */
 .precio {
   display: flex;
   flex-direction: column;
@@ -630,6 +684,10 @@
 /* CardButton: el color del hover del Figma (sombra 40) no aparece de golpe, se va llenando.
    Comprar se llena de abajo hacia arriba; Jugar con un círculo que crece desde el centro.
    Al presionar, el botón "se hunde". */
+/* [ESTUDIO] BOTONES COMPRAR / JUGAR DE LA CARD.
+   El color del hover NO es un cambio de background: es una capa ::before que se agranda.
+   - position: relative + overflow: hidden → la capa queda recortada adentro del botón.
+   - isolation: isolate + z-index: -1 (en ::before) → la capa queda DETRÁS del texto. */
 .card-boton {
   position: relative;
   overflow: hidden;
@@ -645,6 +703,7 @@
   transition: color 250ms ease-out, transform 100ms ease-out;
 }
 
+/* [ESTUDIO] La capa del relleno. transition de transform en 300 ms con curva cubic-bezier (rápido y frena suave). */
 .card-boton::before {
   content: "";
   position: absolute;
@@ -652,6 +711,7 @@
   transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* [ESTUDIO] :active = mientras se aprieta el botón. Se achica a 0.94 → parece que "se hunde". */
 .card-boton:active {
   transform: scale(0.94);
 }
@@ -661,6 +721,8 @@
   color: #FFF;
 }
 
+/* [ESTUDIO] COMPRAR: la capa arranca aplastada (scaleY(0) = altura 0).
+   transform-origin: bottom → crece desde ABAJO. Con "top" crecería desde arriba. */
 .card-boton--comprar::before {
   inset: 0;
   background: var(--primario-sombra-40);
@@ -678,6 +740,8 @@
 }
 
 /* Círculo más grande que el botón (el overflow lo recorta) para que cubra las esquinas */
+/* [ESTUDIO] JUGAR: la capa es un círculo (border-radius 50%) del 150 % del botón, centrado con
+   translate(-50%, -50%), que arranca en scale(0) y en hover pasa a scale(1): crece desde el centro. */
 .card-boton--jugar::before {
   top: 50%;
   left: 50%;
@@ -704,6 +768,8 @@
 
 /* ---------- Carrusel ---------- */
 
+/* [ESTUDIO] CARRUSELES POR CATEGORÍA.
+   scroll-margin-top: 80px → cuando un link lleva a un carrusel (#accion), deja lugar para el header. */
 .carrusel {
   display: flex;
   flex-direction: column;
@@ -743,6 +809,12 @@
 }
 
 /* En mobile se desliza con el dedo; las flechas aparecen desde tablet */
+/* [ESTUDIO] LA PISTA = la fila de cards.
+   - perspective: 1200px → da profundidad para que el rotateY de las cards se vea en 3D
+     (filmina de Transformaciones 3D). Más chico = 3D más exagerado.
+   - overflow-x: auto → se puede desplazar en horizontal (el JS la mueve con scrollTo).
+   - scroll-snap-type: x mandatory → al soltar el dedo, siempre queda una card alineada.
+   - scrollbar-width: none → oculta la barra de desplazamiento. */
 .carrusel__pista {
   position: relative;
   perspective: 1200px;
@@ -758,6 +830,11 @@
 /* Entrada de cards al avanzar con las flechas (keyframes con %, permitidos por el enunciado).
    Llegan inclinadas hacia donde se avanza, se pasan un poco para el otro lado y se acomodan:
    simula la inercia del movimiento. */
+/* [ESTUDIO] *** ANIMACIÓN PRINCIPAL DEL CARRUSEL (lo que más te pueden pedir que cambies) ***
+   Al tocar una flecha, el JS (comun.js → animarEntrada) les pone esta clase a las cards visibles.
+   - Flecha derecha → .card--entra-der ; flecha izquierda → .card--entra-izq (espejo).
+   - 750ms = duración. ease-out = arranca rápido y frena. both = aplica el 0 % antes de arrancar.
+   - El JS además le pone a cada card un animation-delay distinto (0, 70, 140 ms...) → entran en ola. */
 .card--entra-der {
   animation: card-entra-der 750ms ease-out both;
 }
@@ -766,6 +843,15 @@
   animation: card-entra-izq 750ms ease-out both;
 }
 
+/* [ESTUDIO] Keyframe con 5 PASOS (filmina: las animaciones pueden cambiar varias propiedades en varios pasos):
+   0 %:  invisible, corrida 64 px a la derecha, chica (0.9), girada en 3D (rotateY -12°)
+         e inclinada (skewX -10°).
+   45 %: visible, tamaño normal, sin giro, se pasó 6 px y se inclina al otro lado (+5°).
+   70 % y 85 %: va y vuelve cada vez menos (-2°, +1°) → rebote, como algo con peso que frena.
+   100 %: quieta (transform: none).
+   Ejemplos de cambios: invertir la inclinación → cambiar el signo de rotateY y de cada skewX;
+   sin 3D → sacar rotateY; que solo aparezca → dejar solo opacity en 0 % y 100 %.
+   Si cambiás este, cambiá también su espejo card-entra-izq (con los signos al revés). */
 @keyframes card-entra-der {
   0% { opacity: 0; transform: translateX(64px) scale(0.9) rotateY(-12deg) skewX(-10deg); }
   45% { opacity: 1; transform: translateX(-6px) scale(1) rotateY(0) skewX(5deg); }
@@ -783,6 +869,9 @@
 }
 
 /* Deslizando con el dedo: las cards se inclinan hacia donde se mueven (como si tuvieran inercia) */
+/* [ESTUDIO] CELULAR, mientras arrastrás con el dedo: el JS pone .carrusel__pista--deslizando y todas las cards
+   se inclinan (skewX). Como .card tiene transition de transform, se inclinan de a poco (TRANSICIÓN).
+   Si vas hacia la izquierda, también pone --hacia-izq y la inclinación es al revés. */
 .carrusel__pista--deslizando .card {
   transform: skewX(-6deg);
 }
@@ -792,6 +881,8 @@
 }
 
 /* Al soltar, se enderezan pasándose un poco para el otro lado */
+/* [ESTUDIO] CELULAR, al soltar el dedo: las cards se enderezan con rebote (-6° → +3° → -1° → 0), 500 ms.
+   A diferencia de card-entra, solo anima la inclinación: las cards ya estaban visibles. */
 .card--asienta-der {
   animation: card-asienta-der 500ms ease-out;
 }
@@ -818,6 +909,7 @@
   display: none;
 }
 
+/* [ESTUDIO] Las flechas no existen en celular (display: none). Aparecen desde 768 px (en el @media de abajo). */
 .carrusel__flecha {
   display: none;
 }
@@ -858,6 +950,7 @@
     border-color: var(--primario);
   }
 
+  /* [ESTUDIO] En los extremos el JS deshabilita la flecha (disabled) y desaparece (opacity 0, con transición). */
   .carrusel__flecha:disabled {
     opacity: 0;
     pointer-events: none;
@@ -874,6 +967,7 @@
 
 /* ---------- Footer (fat footer, igual al Figma: 3 bloques) ---------- */
 
+/* [ESTUDIO] FAT FOOTER. En celular todo va en una columna; desde 768 px, en 3 columnas (grid). */
 .footer {
   display: flex;
   flex-direction: column;
@@ -902,6 +996,8 @@
   border-bottom: 1px solid var(--borde);
 }
 
+/* [ESTUDIO] Cada columna es un <details> (acordeón nativo de HTML); <summary> es el título que se toca.
+   La flecha gira 180° cuando la columna está abierta ([open]). */
 .footer__columna summary {
   display: flex;
   align-items: center;
@@ -952,6 +1048,8 @@
   }
 
   /* En desktop no se pliega: el título es solo un título */
+  /* [ESTUDIO] Desde 768 px las columnas quedan abiertas (lo hace el JS) y el título no se puede tocar
+     (pointer-events: none). */
   .footer__columna summary {
     min-height: 0;
     margin-bottom: 16px;
@@ -1032,6 +1130,9 @@
   color: var(--texto-secundario);
 }
 
+/* [ESTUDIO] Botón Suscribirse: el hover es una capa ::before (misma técnica que Comprar) que se abre
+   desde el CENTRO hacia los costados con scaleX(0) → scaleX(1). No tiene transform-origin,
+   por eso crece desde el centro (el valor por defecto). */
 .newsletter__boton {
   position: relative;
   overflow: hidden;
@@ -1168,6 +1269,7 @@
     gap: 0;
   }
 
+  /* [ESTUDIO] "a + a" = un link que viene justo después de otro: les pone un "|" adelante como separador. */
   .footer__links-legales a + a::before {
     content: "|";
     margin-inline: 8px;
@@ -1203,6 +1305,8 @@
 
 /* Con "reducir movimiento" solo se frena el zoom lento del slider (decorativo).
    El loading, los hovers y la galería se mantienen: son parte de la consigna y dan feedback. */
+/* [ESTUDIO] ACCESIBILIDAD: si la persona activó "reducir movimiento" en su sistema operativo,
+   se desactiva el zoom lento del slider (es decorativo). El resto se mantiene. */
 @media (prefers-reduced-motion: reduce) {
   .slide--activo .slide__fondo {
     animation: none;

@@ -2,12 +2,16 @@
    Home — mobile first
    ========================================================= */
 
+/* [ESTUDIO] QUÉ ES ESTE ARCHIVO: los estilos propios de home.html: loading, slider, ficha rápida,
+   cards grandes y banner. Se carga último (después de base.css y comun.css).
+   .cargando la tiene el <body> mientras corre el loading: overflow: hidden = no se puede bajar. */
 .cargando {
   overflow: hidden;
 }
 
 /* ---------- Loading ---------- */
 
+/* [ESTUDIO] LOADING: position: fixed + inset: 0 → tapa toda la pantalla. z-index: 100 → por encima de todo. */
 .carga {
   position: fixed;
   inset: 0;
@@ -23,6 +27,8 @@
     var(--fondo);
 }
 
+/* [ESTUDIO] Al llegar a 100 % el JS pone .carga--fin: salir-carga lo hace desaparecer mientras crece un poco.
+   forwards = se queda en el 100 % (invisible). pointer-events: none = ya no bloquea los clics. */
 .carga--fin {
   pointer-events: none;
   animation: salir-carga 500ms ease-in forwards;
@@ -43,6 +49,9 @@
   gap: 6px;
 }
 
+/* [ESTUDIO] Los 9 píxeles: ANIMACIÓN que se repite siempre (infinite, "loopeable" en la filmina), 1,2 s cada vuelta.
+   Cada uno arranca con un animation-delay distinto según su diagonal (0 a 0,4 s) → se ve una onda.
+   :nth-child(n) elige el píxel número n. */
 .carga__pixeles span {
   width: 20px;
   height: 20px;
@@ -60,6 +69,9 @@
 .carga__pixeles span:nth-child(8) { animation-delay: 0.3s; }
 .carga__pixeles span:nth-child(9) { animation-delay: 0.4s; }
 
+/* [ESTUDIO] Keyframe con porcentajes: en 0 %, 60 % y 100 % el píxel está normal y violeta; en 30 % se achica
+   (scale 0.6), gira 45° (rotate) y se vuelve cyan con brillo. Del 60 % al 100 % queda quieto (pausa).
+   PARA QUE GIRE AL REVÉS: rotate(45deg) → rotate(-45deg). */
 @keyframes pixel {
   0%, 60%, 100% {
     transform: scale(1);
@@ -73,6 +85,8 @@
   }
 }
 
+/* [ESTUDIO] El número del porcentaje lo escribe el JS en cada cuadro (animación PROCEDURAL, ver home.js).
+   tabular-nums: todos los números miden lo mismo, así el texto no "baila" al cambiar. */
 .carga__porcentaje {
   font-family: var(--fuente-titulos);
   font-weight: 700;
@@ -89,6 +103,7 @@
   overflow: hidden;
 }
 
+/* [ESTUDIO] La barra: arranca con width: 0 y el JS le cambia el ancho (0 % a 100 %) en cada cuadro. */
 .carga__relleno {
   width: 0;
   height: 100%;
@@ -464,6 +479,9 @@
 
 /* ---------- Ficha rápida ("Ver info") ---------- */
 
+/* [ESTUDIO] FICHA RÁPIDA ("Ver info"): es un <dialog> de HTML. Con showModal() (en el JS) el navegador
+   ya pone el fondo oscuro (::backdrop), bloquea la página de atrás y lo cierra con Esc.
+   position: fixed + inset: 0 + margin: auto → queda centrada en la pantalla. */
 .ficha-rapida {
   position: fixed;
   inset: 0;
@@ -490,6 +508,7 @@
   backdrop-filter: blur(4px);
 }
 
+/* [ESTUDIO] Al abrirse sube 24 px y crece de 0.96 a 1 mientras aparece. */
 @keyframes abrir-ficha {
   0% { opacity: 0; transform: translateY(24px) scale(0.96); }
   100% { opacity: 1; transform: none; }
@@ -587,6 +606,7 @@
 /* ---------- Fila de cards grandes (Card de juego grande del Figma) ---------- */
 
 /* Título + fila, con el mismo espacio que un carrusel */
+/* [ESTUDIO] OFERTAS DESTACADAS: 3 cards grandes. Reusan .card (con su hover) y le suman .card--grande. */
 .seccion-grandes {
   display: flex;
   flex-direction: column;
@@ -620,6 +640,7 @@
 }
 
 /* Precio en un recuadro oscuro arriba a la derecha de la imagen */
+/* [ESTUDIO] El precio va en un recuadro oscuro ENCIMA de la imagen (position: absolute dentro de .card__imagen). */
 .card-grande__precio {
   position: absolute;
   top: 8px;
@@ -660,6 +681,8 @@
 
 /* ---------- Banner "Próximamente" (Card próximamente del Figma) ---------- */
 
+/* [ESTUDIO] BANNER "PRÓXIMAMENTE": imagen ancha (aspect-ratio 16 / 5). En hover la imagen hace un zoom
+   suave (TRANSICIÓN de 600 ms). :not(.banner__logo) = todas las imágenes menos el logo. */
 .banner {
   position: relative;
   margin-inline: 16px;

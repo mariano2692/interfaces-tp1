@@ -2,6 +2,8 @@
    Página de juego — Peg Solitaire (solo desktop, según enunciado)
    ========================================================= */
 
+/* [ESTUDIO] QUÉ ES ESTE ARCHIVO: los estilos propios de juego.html: breadcrumbs, tablero del Peg Solitaire,
+   ayuda, compartir, galería, video y comunidad. Se carga último (después de base.css y comun.css). */
 .juego {
   display: flex;
   flex-direction: column;
@@ -11,6 +13,8 @@
 
 /* ---------- Breadcrumbs ---------- */
 
+/* [ESTUDIO] BREADCRUMBS (patrón pedido por el enunciado): Inicio › Puzzle › Peg Solitaire.
+   [aria-current] marca la página actual, que va en blanco. */
 .migas {
   display: flex;
   flex-wrap: wrap;
@@ -47,6 +51,8 @@
 
 /* ---------- Zona de juego: tablero + instrucciones ---------- */
 
+/* [ESTUDIO] ZONA DE JUEGO con grid: en celular una columna; desde 1024 px dos columnas
+   (tablero 2 partes, ayuda 1 parte). minmax(0, 1fr) evita que el contenido ensanche la columna. */
 .juego__zona {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -77,6 +83,8 @@
 }
 
 /* Antes de tocar "Jugar" el tablero se ve pero no se puede usar */
+/* [ESTUDIO] VELO: capa oscura encima del tablero hasta que tocás Jugar. El JS pone .tablero--jugando
+   en el tablero y el velo desaparece con una TRANSICIÓN de opacity (300 ms). */
 .tablero__velo {
   position: absolute;
   inset: 0;
@@ -111,6 +119,9 @@
   font-weight: 600;
 }
 
+/* [ESTUDIO] LA GRILLA DEL TABLERO: 7 columnas × 7 filas con grid. --casilla es una variable local:
+   34 px en celular y 48 px desde 768 px. touch-action: none → con el dedo arrastrás la ficha
+   sin mover la página. */
 .grilla {
   --casilla: 34px; /* mobile: 7 × 34 + 6 × 8 = 286 px, entra en 375 */
   display: grid;
@@ -131,6 +142,8 @@
   }
 }
 
+/* [ESTUDIO] CADA CASILLA es un <button> redondo (border-radius 50%). Las clases de estado las pone el JS
+   (juego.js → render) y el CSS las pinta. TRANSICIÓN de borde, sombra y fondo. */
 .casilla {
   display: grid;
   place-items: center;
@@ -150,11 +163,13 @@
   border-color: var(--secundario-sombra-20);
 }
 
+/* [ESTUDIO] Ficha elegida: borde cyan con brillo (box-shadow). */
 .casilla--seleccionada {
   border-color: var(--secundario);
   box-shadow: 0 0 16px rgba(22, 224, 242, 0.5);
 }
 
+/* [ESTUDIO] Destinos válidos: borde violeta PUNTEADO (dashed). Con el puntero encima, sólido y relleno. */
 .casilla--destino {
   border: 2px dashed var(--primario-luz-20);
   cursor: pointer;
@@ -166,6 +181,7 @@
   background: var(--primario-sombra-60);
 }
 
+/* [ESTUDIO] Mientras arrastrás, la ficha original queda transparente (la que se mueve es una copia). */
 .casilla--origen .invasor {
   opacity: 0.25;
 }
@@ -177,10 +193,15 @@
   pointer-events: none;
 }
 
+/* [ESTUDIO] FICHA QUE ACABA DE SALTAR: animación aterrizar (cae 16 px mientras crece de 0.6 a 1).
+   La curva cubic-bezier(0.34, 1.56, 0.64, 1) tiene un valor MAYOR que 1 (1.56): la ficha
+   se pasa un poco y vuelve → rebote sin agregar pasos al keyframe. */
 .casilla--nueva .invasor {
   animation: aterrizar 350ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+/* [ESTUDIO] FICHA COMIDA: animación explotar, una onda roja con box-shadow que crece de 0 a 16 px
+   mientras se vuelve transparente. Es la misma técnica que el btn--3 (shadow-pulse) de la cátedra. */
 .casilla--eliminada {
   animation: explotar 350ms ease-out;
 }
@@ -196,6 +217,8 @@
 }
 
 /* Ficha que sigue al puntero mientras se arrastra */
+/* [ESTUDIO] La copia de la ficha que sigue al puntero: position: fixed y el JS le cambia left/top en cada movimiento.
+   pointer-events: none → no tapa la casilla que está debajo del puntero. */
 .arrastrada {
   position: fixed;
   z-index: 50;
@@ -227,6 +250,8 @@
   position: relative;
 }
 
+/* [ESTUDIO] POPOVER DE COMPARTIR: position: absolute arriba del botón. Aparece con subir-popover
+   (sube 8 px mientras aparece). */
 .compartir__popover {
   position: absolute;
   left: 0;
@@ -272,6 +297,7 @@
 
 /* ---------- Instrucciones (a la derecha del tablero, sin recuadro) ---------- */
 
+/* [ESTUDIO] AYUDA al costado del tablero (el enunciado pide instrucciones visibles mientras se juega). */
 .ayuda {
   display: flex;
   flex-direction: column;
@@ -318,6 +344,8 @@
   display: none;
 }
 
+/* [ESTUDIO] pointer: coarse = pantalla táctil (el puntero es un dedo, poco preciso).
+   Oculta la ayuda del mouse y muestra la del dedo ("Tocá y arrastrá"). */
 @media (pointer: coarse) {
   .ayuda__mouse,
   .ayuda__con-mouse {
@@ -337,6 +365,7 @@
 }
 
 /* Mini tableros de puntos (objetivo y ejemplo de salto) */
+/* [ESTUDIO] MINI TABLEROS de la ayuda: los dibuja el JS (dibujarMinis) con <span> de colores. */
 .mini {
   flex-shrink: 0;
   display: grid;
@@ -400,6 +429,7 @@
   transition: transform var(--transicion), box-shadow var(--transicion);
 }
 
+/* [ESTUDIO] Hover de la galería (TRANSICIÓN): zoom a 1.03 y sombra violeta. */
 .galeria__item img:hover {
   transform: scale(1.03);
   box-shadow: 0 8px 24px rgba(123, 47, 247, 0.35);
@@ -471,6 +501,7 @@
   transition: transform var(--transicion);
 }
 
+/* [ESTUDIO] Video: imagen + botón de play (aceptado por el ayudante). En hover el play crece a 1.15. */
 .video__marco:hover .video__play {
   transform: scale(1.15);
 }
@@ -578,6 +609,7 @@
   gap: 8px;
 }
 
+/* [ESTUDIO] ESTRELLAS DE LA RESEÑA: el JS cambia ☆ por ★ y pone .encendida. En hover crecen (scale 1.2). */
 .estrellas button {
   padding: 0 2px;
   background: none;
@@ -634,6 +666,8 @@
   color: var(--texto-secundario);
 }
 
+/* [ESTUDIO] RESEÑA RECIÉN PUBLICADA: animación publicar (baja 12 px mientras aparece, con un borde cyan
+   que se va al final). Confirma que se publicó (Nielsen #1). */
 .comentario--nuevo {
   animation: publicar 500ms ease-out;
 }

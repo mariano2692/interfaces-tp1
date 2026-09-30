@@ -1047,13 +1047,13 @@
   transition: transform 100ms ease-out;
 }
 
-/* Hover: el tono más claro se abre desde el centro hacia los costados */
+/* Hover: la sombra 40 (como el Figma) se abre desde el centro hacia los costados */
 .newsletter__boton::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: var(--acento-luz-20);
+  background: var(--acento-sombra-40);
   transform: scaleX(0);
   transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
 }

@@ -83,6 +83,10 @@ function conectarFicha() {
 
 /* ---------- Slider principal ---------- */
 
+/* [ESTUDIO] crearSlider arma el slider y conecta todos sus eventos.
+   Recibe "destacados": un array con los 3 juegos del slider (vienen de la API).
+   Idea clave: el JS NO anima. Solo decide QUÉ slide va y le pone clases;
+   las animaciones están en home.css (@keyframes entra-der, sale-izq, etc.). */
 function crearSlider(destacados) {
   const slider = document.getElementById("slider");
   const escenario = document.getElementById("slider-escenario");
@@ -90,8 +94,15 @@ function crearSlider(destacados) {
   const peekIzq = slider.querySelector(".slider__peek--izq");
   const peekDer = slider.querySelector(".slider__peek--der");
 
+  // [ESTUDIO] Arriba: busca en el HTML los elementos que va a usar (getElementById / querySelector).
+
+  // [ESTUDIO] Le pasa al CSS la duración del autoplay (6000ms) como variable --duracion-slide.
+  // La usa la barrita del indicador (animation: llenar var(--duracion-slide)).
   slider.style.setProperty("--duracion-slide", `${DURACION_SLIDE}ms`);
 
+  // [ESTUDIO] Crea el HTML de los 3 slides. map() recorre los juegos y por cada uno arma un
+  // texto con backticks (template literal); ${...} mete el dato del juego. join("") los une.
+  // innerHTML = ... escribe todo ese HTML adentro del escenario.
   escenario.innerHTML = destacados
     .map(
       (juego, i) => `
@@ -109,6 +120,11 @@ function crearSlider(destacados) {
     .map((juego, i) => `<button class="indicador" aria-label="Ir a ${juego.nombre}" data-indice="${i}"></button>`)
     .join("");
 
+  // [ESTUDIO] Estado del slider:
+  // - slides / puntos: arrays con los slides y los indicadores ([...] convierte la lista del HTML en array)
+  // - actual: índice del slide que se ve (0, 1 o 2)
+  // - temporizador: el reloj del autoplay (setInterval)
+  // - animando: true mientras dura un cambio, para no aceptar otro clic encima
   const slides = [...escenario.children];
   const puntos = [...indicadores.children];
   const total = slides.length;
@@ -116,8 +132,15 @@ function crearSlider(destacados) {
   let temporizador;
   let animando = false;
 
+  // [ESTUDIO] Devuelve el índice del vecino, dando la vuelta: con 3 slides,
+  // desde el 2 el siguiente es el 0, y desde el 0 el anterior es el 2.
+  // % es el resto de la división: (2 + 1 + 3) % 3 = 0.
   const vecino = (paso) => (actual + paso + total) % total;
 
+  // [ESTUDIO] Pone en cada peek la imagen del vecino (izquierdo = anterior, derecho = siguiente).
+  // Si animar es true, reinicia la animación cambio-peek:
+  //   1. saca la clase, 2. void offsetWidth obliga al navegador a "darse cuenta" de que se sacó,
+  //   3. la vuelve a poner. Sin el paso 2, la animación no se repetiría.
   function actualizarPeeks(animar) {
     [[peekIzq, vecino(-1)], [peekDer, vecino(1)]].forEach(([peek, indice]) => {
       peek.querySelector("img").src = destacados[indice].imagen;
@@ -128,6 +151,8 @@ function crearSlider(destacados) {
     });
   }
 
+  // [ESTUDIO] classList.toggle(clase, condición): pone la clase si la condición es true
+  // y la saca si es false. Solo el indicador del slide actual queda activo.
   function marcarIndicador() {
     puntos.forEach((punto, i) => {
       punto.classList.toggle("indicador--activo", i === actual);
@@ -135,18 +160,29 @@ function crearSlider(destacados) {
     });
   }
 
+  // [ESTUDIO] *** LA FUNCIÓN MÁS IMPORTANTE: cambia del slide actual al slide "destino". ***
+  // sentido: 1 = avanzar, -1 = retroceder.
   function irA(destino, sentido) {
+    // Si ya estoy en ese slide, o hay una animación en curso, no hago nada (prevención de errores).
     if (destino === actual || animando) return;
     animando = true;
 
-    const saliente = slides[actual];
-    const entrante = slides[destino];
+    const saliente = slides[actual]; // el que se va
+    const entrante = slides[destino]; // el que llega
+    // Si no me dijeron el sentido (clic en un indicador), lo calculo: más adelante = 1, más atrás = -1.
+    // ?? significa "si sentido no tiene valor, usá lo de la derecha".
     const direccion = sentido ?? (destino > actual ? 1 : -1);
 
+    // ACÁ ARRANCAN LAS ANIMACIONES: el JS solo pone clases, el CSS anima.
+    // Operador ternario  condición ? A : B  → si avanzo usa A, si retrocedo usa B.
+    // Avanzar:    el viejo sale a la izquierda y el nuevo entra desde la derecha.
+    // Retroceder: el viejo sale a la derecha y el nuevo entra desde la izquierda.
     saliente.classList.remove("slide--activo");
     saliente.classList.add(direccion > 0 ? "slide--sale-izq" : "slide--sale-der");
     entrante.classList.add("slide--activo", direccion > 0 ? "slide--entra-der" : "slide--entra-izq");
 
+    // [ESTUDIO] animationend = evento que avisa cuando termina una animación CSS.
+    // Cuando termina, limpia las clases de animación y deja todo listo para el próximo cambio.
     // animationend también llega desde los hijos (texto, imagen): solo cuenta la del slide
     entrante.addEventListener("animationend", function alTerminar(e) {
       if (e.target !== entrante) return;
@@ -156,15 +192,20 @@ function crearSlider(destacados) {
       animando = false;
     });
 
+    // Actualiza el estado: ahora el actual es el nuevo, y se actualizan indicadores, peeks y autoplay.
     actual = destino;
     marcarIndicador();
     actualizarPeeks(true);
     reiniciarAutoplay();
   }
 
+  // [ESTUDIO] Atajos: siguiente = ir al vecino de la derecha avanzando; anterior = al revés.
   const siguiente = () => irA(vecino(1), 1);
   const anterior = () => irA(vecino(-1), -1);
 
+  // [ESTUDIO] setInterval(función, ms) ejecuta la función cada tantos ms: cada 6 s llama a siguiente().
+  // clearInterval lo frena. Se reinicia en cada cambio para que el próximo salto sea 6 s después.
+  // Es parecido al reloj de la cátedra (AnalogClock), que usa setTimeout para redibujar.
   function reiniciarAutoplay() {
     clearInterval(temporizador);
     if (!slider.classList.contains("slider--pausado")) temporizador = setInterval(siguiente, DURACION_SLIDE);
@@ -175,6 +216,10 @@ function crearSlider(destacados) {
     activo.classList.add("indicador--activo");
   }
 
+  // [ESTUDIO] EVENTOS: addEventListener("evento", función) = "cuando pase esto, ejecutá esto".
+  // Clic en el peek derecho → siguiente; en el izquierdo → anterior.
+  // En los indicadores hay UN solo listener para los 3: con closest(".indicador") se fija
+  // cuál se tocó, y con dataset.indice lee su número (el atributo data-indice del HTML).
   peekDer.addEventListener("click", siguiente);
   peekIzq.addEventListener("click", anterior);
   indicadores.addEventListener("click", (e) => {
@@ -183,6 +228,9 @@ function crearSlider(destacados) {
   });
 
   // Pausa mientras el usuario está mirando o usando el slider
+  // [ESTUDIO] mouseenter = entra el mouse, mouseleave = sale. Al entrar: pone .slider--pausado
+  // (el CSS congela la barrita con animation-play-state: paused) y frena el autoplay.
+  // Al salir: saca la clase y vuelve a arrancar el autoplay.
   const pausar = (pausado) => () => {
     slider.classList.toggle("slider--pausado", pausado);
     if (pausado) clearInterval(temporizador);
@@ -192,6 +240,9 @@ function crearSlider(destacados) {
   escenario.addEventListener("mouseleave", pausar(false));
 
   // Deslizar con el dedo en mobile
+  // [ESTUDIO] pointerdown guarda dónde apoyaste (clientX = posición horizontal).
+  // pointerup calcula cuánto te moviste (delta). Si fueron más de 50 px:
+  // hacia la izquierda (delta negativo) → siguiente; hacia la derecha → anterior.
   let inicioX = null;
   escenario.addEventListener("pointerdown", (e) => (inicioX = e.clientX));
   escenario.addEventListener("pointerup", (e) => {
@@ -201,17 +252,20 @@ function crearSlider(destacados) {
     inicioX = null;
   });
 
+  // [ESTUDIO] Teclado: flechas ← → cambian de slide, solo si el foco está dentro del slider.
   document.addEventListener("keydown", (e) => {
     if (!slider.contains(document.activeElement)) return;
     if (e.key === "ArrowRight") siguiente();
     if (e.key === "ArrowLeft") anterior();
   });
 
+  // [ESTUDIO] Clic en "Ver info": abre la ficha rápida del juego de ese slide.
   escenario.addEventListener("click", (e) => {
     const info = e.target.closest("[data-info]");
     if (info) abrirFicha(destacados.find((j) => String(j.id) === info.dataset.info), info);
   });
 
+  // [ESTUDIO] Estado inicial: se ve el primer slide, su indicador activo y los peeks sin animar.
   slides[0].classList.add("slide--activo");
   marcarIndicador();
   actualizarPeeks(false);

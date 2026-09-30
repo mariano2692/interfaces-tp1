@@ -103,7 +103,16 @@
 
 /* ---------- Slider principal (galería animada) ----------
    Mismo diseño que el mainSlider del Figma: título abajo a la izquierda,
-   "Ver info" en amarillo a la derecha, indicadores debajo y peeks a los costados */
+   "Ver info" en amarillo a la derecha, indicadores debajo y peeks a los costados
+
+   [ESTUDIO] CÓMO FUNCIONA EL SLIDER, EN RESUMEN
+   - Los 3 slides están todos en el HTML, uno ENCIMA del otro (position: absolute).
+   - Solo se ve el que tiene la clase .slide--activo.
+   - Para cambiar de slide, el JS (home.js → irA) NO mueve nada: solo agrega clases.
+     Por ejemplo, al slide nuevo le pone .slide--entra-der y al viejo .slide--sale-izq.
+   - Esas clases tienen una "animation" que usa un @keyframes. El que anima es el CSS.
+   - Filmina de Animaciones: esto es una ANIMACIÓN (no una transición) porque tiene
+     keyframes con 0 % y 100 % y arranca cuando el JS pone la clase, no con un :hover. */
 
 .slider {
   display: grid;
@@ -126,12 +135,15 @@
   touch-action: pan-y;
 }
 
+/* [ESTUDIO] Cada slide ocupa todo el escenario (inset: 0 = top, right, bottom y left en 0)
+   y está oculto. Como son absolute, quedan apilados uno encima del otro. */
 .slide {
   position: absolute;
   inset: 0;
   visibility: hidden;
 }
 
+/* [ESTUDIO] El JS le pone esta clase al slide que se tiene que ver. */
 .slide--activo {
   visibility: visible;
 }
@@ -143,9 +155,19 @@
 }
 
 /* Zoom lento mientras el slide está activo */
+/* [ESTUDIO] "animation" es el shorthand de la filmina (animation: nombre duración curva ...):
+   - acercar  → animation-name: el @keyframes que usa (está abajo)
+   - 7s       → animation-duration: dura 7 segundos
+   - linear   → animation-timing-function: velocidad pareja, sin acelerar ni frenar
+   - forwards → animation-fill-mode: al terminar se QUEDA en el 100 % (no vuelve al tamaño original)
+   El selector ".slide--activo .slide__fondo" significa: la imagen (.slide__fondo)
+   que está DENTRO de un slide activo. Solo el slide activo hace el zoom. */
 .slide--activo .slide__fondo {
   animation: acercar 7s linear forwards;
 }
+
+/* [ESTUDIO] Filmina de Transformaciones: scale(1) es el tamaño normal y scale(1.08) es
+   un 8 % más grande. No se sale del recuadro porque .slider__escenario tiene overflow: hidden. */
 
 @keyframes acercar {
   0% { transform: scale(1); }
@@ -178,13 +200,22 @@
 }
 
 /* El título y el botón entran escalonados cada vez que cambia el slide */
+/* [ESTUDIO] "> *" = todos los hijos directos de .slide__info (el título y el botón).
+   - 500ms    → duración
+   - ease-out → arranca rápido y frena al final (ver easings.net, filmina de Animaciones)
+   - both     → antes de arrancar ya aplica el 0 % (invisible) y al terminar se queda en el 100 % */
 .slide--activo .slide__info > * {
   animation: subir-texto 500ms ease-out both;
 }
 
+/* [ESTUDIO] ":nth-child(2)" = el segundo hijo, o sea el botón Ver info.
+   animation-delay: 120ms → espera 120 ms antes de arrancar. Por eso sube después del título. */
 .slide--activo .slide__info > :nth-child(2) {
   animation-delay: 120ms;
 }
+
+/* [ESTUDIO] translateY(16px) = corrido 16 px hacia ABAJO (en Y, positivo es abajo).
+   Termina en translateY(0), su lugar. Mientras sube, opacity va de 0 (invisible) a 1. */
 
 @keyframes subir-texto {
   0% { opacity: 0; transform: translateY(16px); }
@@ -223,6 +254,12 @@
   background: var(--acento-sombra-40); /* hover del Figma: se oscurece */
 }
 
+/* [ESTUDIO] Acá se combinan las dos cosas de la filmina:
+   - El cambio de color del fondo es una TRANSICIÓN (transition en .boton-info): pasa del
+     estado normal al estado :hover.
+   - El brillo es una ANIMACIÓN (@keyframes brillo): la franja ::after cruza el botón una vez
+     ("one shot", no se repite porque no tiene infinite).
+   La franja está inclinada con skewX(-20deg) (filmina de Transformaciones: skew). */
 .boton-info:hover::after {
   animation: brillo 600ms ease-out;
 }
@@ -233,11 +270,38 @@
 }
 
 /* Transiciones entre slides: el que sale se aleja y se desenfoca, el que entra llega desde el costado */
+/* [ESTUDIO] *** LA ANIMACIÓN PRINCIPAL DEL SLIDER (lo que más te pueden pedir que cambies) ***
+   El JS pone estas clases según hacia dónde se avanza:
+   - Avanzar (flecha derecha, peek derecho, autoplay):
+       slide nuevo → .slide--entra-der (llega desde la DERECHA)
+       slide viejo → .slide--sale-izq  (se va hacia la IZQUIERDA)
+   - Retroceder: al revés (.slide--entra-izq y .slide--sale-der).
+   Las dos animaciones corren AL MISMO TIEMPO, por eso uno parece reemplazar al otro.
+
+   Cada línea: animation: nombre  duración  curva  fill-mode
+   - 700ms → cuánto dura. Para hacerlo más lento, subí este número (en las 4 líneas).
+   - cubic-bezier(0.22, 1, 0.36, 1) → curva propia: arranca rápido y frena suave.
+     Se puede cambiar por ease, ease-in, ease-out o linear (ver easings.net).
+   - both → antes de empezar ya está en el 0 % y al terminar se queda en el 100 %.
+   En los que salen, "visibility: visible" hace falta porque el JS les saca .slide--activo
+   (que era lo que los hacía visibles) y sin esto desaparecerían de golpe. */
 .slide--entra-der { animation: entra-der 700ms cubic-bezier(0.22, 1, 0.36, 1) both; }
 .slide--entra-izq { animation: entra-izq 700ms cubic-bezier(0.22, 1, 0.36, 1) both; }
 .slide--sale-izq { visibility: visible; animation: sale-izq 700ms cubic-bezier(0.22, 1, 0.36, 1) both; }
 .slide--sale-der { visibility: visible; animation: sale-der 700ms cubic-bezier(0.22, 1, 0.36, 1) both; }
 
+/* [ESTUDIO] Cómo leer este keyframe (0 % = cómo arranca, 100 % = cómo termina;
+   lo del medio lo completa el navegador):
+   0 %:  translateX(60%) → corrido a la DERECHA el 60 % de su propio ancho (filmina: translate)
+         scale(0.85)     → más chico, al 85 % (filmina: scale)
+         opacity: 0      → invisible
+         filter: blur(8px) → borroso
+   100 %: transform: none → en su lugar y tamaño normal; opacity 1 → visible; blur(0) → nítido
+   Ejemplos de cambios:
+   - Que entre desde ARRIBA: translateX(60%) → translateY(-60%)
+   - Que además gire: agregar rotate(-10deg) en el 0 % (filmina: rotate)
+   - Que entre desde el otro lado: cambiar el signo → translateX(-60%)
+   Si cambiás entra-der, acordate de cambiar su espejo entra-izq (con el signo al revés). */
 @keyframes entra-der {
   0% { transform: translateX(60%) scale(0.85); opacity: 0; filter: blur(8px); }
   100% { transform: none; opacity: 1; filter: blur(0); }
@@ -248,6 +312,8 @@
   100% { transform: none; opacity: 1; filter: blur(0); }
 }
 
+/* [ESTUDIO] sale-izq es lo contrario de entra-der: arranca normal (0 %) y termina
+   corrido 40 % a la IZQUIERDA (translateX negativo), más chico, invisible y borroso (100 %). */
 @keyframes sale-izq {
   0% { transform: none; opacity: 1; filter: blur(0); }
   100% { transform: translateX(-40%) scale(0.8); opacity: 0; filter: blur(8px); }
@@ -275,6 +341,9 @@
   background: var(--texto-secundario);
   overflow: hidden;
   cursor: pointer;
+  /* [ESTUDIO] TRANSICIÓN (filmina: transition: propiedad tiempo efecto).
+     Cuando un indicador pasa a activo, su ancho cambia de 16 px a 32 px en 300 ms,
+     en vez de saltar de golpe. También el color, con la duración de la variable --transicion. */
   transition: width 300ms ease-out, background-color var(--transicion);
 }
 
@@ -288,6 +357,11 @@
 }
 
 /* El indicador activo se llena como barra de tiempo del autoplay */
+/* [ESTUDIO] La barra es un pseudo-elemento ::after (una capa extra que no está en el HTML).
+   - transform-origin: left → el punto de apoyo es el borde izquierdo, así crece hacia la derecha.
+     Con "right" crecería de derecha a izquierda; sin esta línea crecería desde el centro.
+   - var(--duracion-slide, 6s) → la duración la manda el JS (6000 ms). Si no llega, usa 6s.
+   - animation-play-state: paused (más abajo) → con el mouse encima, la animación se congela. */
 .indicador--activo::after {
   content: "";
   position: absolute;
@@ -364,6 +438,11 @@
     transform: scale(1.05);
   }
 
+  /* [ESTUDIO] Peeks = los slides vecinos que se asoman a los costados (solo desde 1024 px).
+     - filter: blur(3px) los desenfoca para que resalte el del centro.
+     - El hover es una TRANSICIÓN: scale(1.05) en 400 ms.
+     - Cuando cambia el slide, el JS les pone .peek--cambio y hacen esta ANIMACIÓN:
+       arrancan grandes (1.15) e invisibles y se acomodan a su tamaño (1). */
   .peek--cambio img {
     animation: cambio-peek 600ms ease-out;
   }

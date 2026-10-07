@@ -231,7 +231,7 @@ const mezclaFija = (a, b) => ((a.id * 7919) % 97) - ((b.id * 7919) % 97);
 // Cada juego aparece en una sola fila, así ninguna imagen se repite en el Home.
 // Las categorías chicas eligen primero para que no se queden sin juegos.
 function armarFilas(juegos) {
-  const [peg, ...resto] = juegos;
+  const [peg, blocka, ...resto] = juegos;
   const usados = new Set();
   const tomar = (lista, cantidad = POR_FILA) => {
     const elegidos = lista.filter((j) => !usados.has(j.id)).slice(0, cantidad);
@@ -246,20 +246,20 @@ function armarFilas(juegos) {
   const [banner] = tomar(resto.filter((j) => !IDS_DESTACADOS.includes(j.id)).sort((a, b) => b.anio - a.anio), 1);
   const gratis = tomar(resto.filter((j) => j.precio.gratis));
   const enOferta = tomar(ofertas);
-  const puzzle = tomar(resto.filter(tieneGenero("Puzzle", "Plataformas")), POR_FILA - 1);
+  const puzzle = tomar(resto.filter(tieneGenero("Puzzle", "Plataformas")), POR_FILA - 2);
   const indie = tomar(resto.filter(tieneGenero("Indie")));
   const aventura = tomar(resto.filter(tieneGenero("Aventura")));
   const rpg = tomar(resto.filter(tieneGenero("RPG")));
   const shooter = tomar(resto.filter(tieneGenero("Shooter")));
   const mejores = tomar([...resto].sort(porRating));
   const accion = tomar(resto.filter(tieneGenero("Acción")));
-  const recomendados = tomar([...resto].sort(mezclaFija), POR_FILA - 1);
+  const recomendados = tomar([...resto].sort(mezclaFija), POR_FILA - 2);
 
   // Mismo nombre que en el menú hamburguesa (Nielsen #4: consistencia)
   const fila = (ancla, juegosFila) => ({ titulo: tituloDeCategoria(ancla), ancla, juegos: juegosFila });
 
   return [
-    { titulo: "Recomendados para vos", ancla: "recomendados", juegos: [peg, ...recomendados] },
+    { titulo: "Recomendados para vos", ancla: "recomendados", juegos: [peg, blocka, ...recomendados] },
     fila("mejores-puntuados", mejores),
     { tipo: "grandes", juegos: grandes },
     fila("accion", accion),
@@ -268,7 +268,7 @@ function armarFilas(juegos) {
     fila("aventura", aventura),
     { tipo: "banner", juego: banner },
     fila("indie", indie),
-    fila("puzzle", [peg, ...puzzle]),
+    fila("puzzle", [peg, blocka, ...puzzle]),
     fila("ofertas", enOferta),
     fila("gratis", gratis),
   ];

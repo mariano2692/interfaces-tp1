@@ -38,6 +38,18 @@ const PEG_SOLITAIRE = {
   url: "juego.html",
 };
 
+// Segundo juego propio (TPE3): rompecabezas de imágenes con filtros
+const BLOCKA = {
+  id: "blocka",
+  name: "Blocka: Pixel Puzzle",
+  released: "2026-10-14",
+  background_image: "img/blocka.svg",
+  background_image_low_res: "img/blocka.svg",
+  rating: 4.7,
+  genres: [{ name: "Puzzle" }],
+  url: "blocka.html",
+};
+
 // La API no trae precios. Son gratis los que en la realidad son free-to-play;
 // al resto se le asigna un precio fijo a partir del id (siempre el mismo).
 const PRECIOS = [9.99, 14.99, 19.99, 29.99, 39.99, 59.99];
@@ -97,7 +109,7 @@ async function obtenerJuegos() {
     console.warn("[NeoArcade] API no disponible, uso copia local:", error.message);
     crudos = window.JUEGOS_RESPALDO || [];
   }
-  return [PEG_SOLITAIRE, ...crudos].map(normalizar);
+  return [PEG_SOLITAIRE, BLOCKA, ...crudos].map(normalizar);
 }
 
 function formatearPrecio(valor) {

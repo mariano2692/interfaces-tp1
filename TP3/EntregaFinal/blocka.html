@@ -33,10 +33,14 @@
     <section class="juego__zona">
       <div class="juego__principal">
         <div class="tablero blocka" id="blocka">
-          <!-- HUD: nivel y filtro a la izquierda, temporizador a la derecha -->
+          <!-- HUD: nivel y filtro a la izquierda; ayudita y temporizador a la derecha
+               (la ayudita le suma tiempo al reloj: van juntos, ley de proximidad) -->
           <div class="blocka__hud">
             <p class="blocka__nivel" id="hud-nivel"></p>
-            <p class="blocka__reloj" id="hud-reloj" role="timer" aria-live="off">⏱ 00:00</p>
+            <div class="blocka__hud-derecha">
+              <button class="boton boton--primario blocka__ayudita" id="ayudita" type="button" disabled>Ayudita (+5 s)</button>
+              <p class="blocka__reloj" id="hud-reloj" role="timer" aria-live="off">⏱ 00:00</p>
+            </div>
           </div>
 
           <div class="blocka__escenario">
@@ -78,8 +82,7 @@
           </div>
         </div>
 
-        <div class="juego__botones juego__botones--tres">
-          <button class="boton boton--primario" id="ayudita" type="button" disabled>Ayudita (+5 s)</button>
+        <div class="juego__botones">
           <button class="boton boton--secundario" id="volver-menu" type="button" disabled>Menú principal</button>
           <div class="compartir">
             <button class="boton boton--secundario" id="abrir-compartir" type="button" aria-expanded="false" aria-controls="popover-compartir">Compartir</button>

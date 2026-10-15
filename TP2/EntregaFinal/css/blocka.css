@@ -26,8 +26,23 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 16px;
+  flex-wrap: wrap; /* en mobile, si no entra, ayudita y reloj bajan a otra fila */
+  gap: 8px 16px;
   width: 100%;
+}
+
+/* Ayudita + reloj juntos a la derecha */
+.blocka__hud-derecha {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Más compacta que los botones de abajo para no agrandar la barra */
+.blocka__ayudita {
+  padding: 8px 16px;
+  font-size: 14px;
+  white-space: nowrap;
 }
 
 .blocka__nivel {
@@ -265,23 +280,7 @@
   100% { transform: scale(1.1); box-shadow: 0 0 0 14px rgba(255, 210, 63, 0); }
 }
 
-/* ---------- Botones debajo del juego ---------- */
-
-.juego__botones--tres {
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-
-@media (max-width: 599px) {
-  .juego__botones--tres {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  /* En mobile, la ayudita ocupa toda la fila */
-  .juego__botones--tres > :first-child {
-    grid-column: 1 / -1;
-  }
-}
+/* ---------- Botones (debajo del juego y la ayudita del HUD) ---------- */
 
 .boton:disabled {
   opacity: 0.45;

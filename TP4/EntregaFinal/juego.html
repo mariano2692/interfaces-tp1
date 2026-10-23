@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Peg Solitaire: Invasión Pixel — NeoArcade</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Orbitron:wght@600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/base.css?v=6">
+  <link rel="stylesheet" href="css/comun.css?v=22">
+  <link rel="stylesheet" href="css/juego.css?v=17">
+</head>
+<body>
+
+  <header id="header"></header>
+
+  <main class="juego contenedor">
+    <nav class="migas texto-chico" aria-label="Estás en">
+      <a href="home.html">Inicio</a>
+      <span aria-hidden="true">›</span>
+      <a href="home.html#puzzle">Puzzle</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">Peg Solitaire</span>
+    </nav>
+
+    <h1 class="titulo-h1 juego__titulo">Peg Solitaire: Invasión Pixel</h1>
+
+    <!-- Zona de juego: tablero + instrucciones a la derecha -->
+    <section class="juego__zona">
+      <div class="juego__principal">
+        <!-- Todo el juego se dibuja en el canvas (js/peg/): tablero, fichas, hints, reloj y carteles -->
+        <div class="tablero peg">
+          <canvas class="peg__lienzo" id="lienzo" aria-label="Peg Solitaire: arrastrá un invasor por encima de otro hasta un hueco vacío"></canvas>
+        </div>
+
+        <div class="juego__botones">
+          <button class="boton boton--primario" id="jugar" type="button">Jugar</button>
+          <div class="compartir">
+            <button class="boton boton--secundario" id="abrir-compartir" type="button" aria-expanded="false" aria-controls="popover-compartir">Compartir</button>
+            <div class="compartir__popover" id="popover-compartir" hidden>
+              <p class="texto-chico compartir__titulo">Compartir Peg Solitaire</p>
+              <button class="compartir__opcion" type="button" id="copiar-enlace">🔗 Copiar enlace</button>
+              <a class="compartir__opcion" id="compartir-whatsapp" target="_blank" rel="noopener">💬 WhatsApp</a>
+              <a class="compartir__opcion" id="compartir-email">✉️ Email</a>
+              <a class="compartir__opcion" id="compartir-x" target="_blank" rel="noopener">𝕏 X</a>
+              <a class="compartir__opcion" id="compartir-facebook" target="_blank" rel="noopener">📘 Facebook</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="ayuda" aria-label="Cómo se juega">
+        <section class="ayuda__bloque">
+          <h2 class="ayuda__titulo">Controles</h2>
+          <div class="ayuda__fila peg__ayuda-fila">
+            <svg class="ayuda__mouse" viewBox="0 0 24 36" aria-hidden="true">
+              <rect x="1.5" y="1.5" width="21" height="33" rx="10.5" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M12 1.5v12H1.5V12A10.5 10.5 0 0 1 12 1.5z" fill="var(--primario-luz-40)"/>
+              <path d="M12 2v11M2 13h20" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <p>Hacé clic sobre un invasor y, sin soltar el botón izquierdo, arrastralo hasta un hueco. Si lo soltás en un lugar no válido, vuelve a su casillero.</p>
+          </div>
+          <div class="ayuda__fila peg__ayuda-fila">
+            <svg class="peg__ayuda-hint" viewBox="0 0 32 40" aria-hidden="true">
+              <path d="M9 2h14l-7 9z" fill="var(--acento)"/>
+              <circle cx="16" cy="26" r="11" fill="none" stroke="var(--acento)" stroke-width="3"/>
+            </svg>
+            <p>Al agarrar un invasor, los huecos donde podés soltarlo <b>laten en amarillo</b> con una flecha que los señala.</p>
+          </div>
+        </section>
+
+        <section class="ayuda__bloque">
+          <h2 class="ayuda__titulo">Tiempo</h2>
+          <p>Tenés <b>3 minutos</b> por partida: el reloj está arriba a la derecha y se pone rojo en los últimos 30 segundos. Con <b>Reiniciar</b> empezás de nuevo cuando quieras.</p>
+        </section>
+
+        <section class="ayuda__bloque">
+          <h2 class="ayuda__titulo">Invasores</h2>
+          <div class="peg__tipos" aria-hidden="true">
+            <img src="img/peg/invasor-cangrejo.svg" alt="">
+            <img src="img/peg/invasor-calamar.svg" alt="">
+            <img src="img/peg/invasor-pulpo.svg" alt="">
+            <img src="img/peg/invasor-ovni.svg" alt="">
+          </div>
+          <p>Hay 4 tipos de invasor (cangrejo, calamar, pulpo y ovni). Todos se mueven igual: cualquiera puede saltar sobre cualquiera.</p>
+        </section>
+
+        <section class="ayuda__bloque">
+          <h2 class="ayuda__titulo">Objetivo</h2>
+          <div class="ayuda__fila">
+            <div class="mini" data-mini="objetivo" aria-hidden="true"></div>
+            <p>Eliminá todas las fichas hasta dejar una sola en el centro del tablero.</p>
+          </div>
+        </section>
+
+        <section class="ayuda__bloque">
+          <h2 class="ayuda__titulo">Movimientos</h2>
+          <p>Para eliminar una ficha, mové otra saltando por encima de ella hacia una casilla vacía.</p>
+          <div class="ayuda__minis" aria-hidden="true">
+            <div class="mini" data-mini="antes"></div>
+            <div class="mini" data-mini="despues"></div>
+          </div>
+          <p>Solo se puede saltar en línea recta hacia una casilla vacía, saltando una única ficha.</p>
+          <p>La partida termina cuando ningún invasor puede saltar o cuando se acaba el tiempo.</p>
+        </section>
+      </aside>
+    </section>
+
+    <!-- De qué trata: descripción, galería y video -->
+    <section class="ficha">
+      <h2 class="titulo-seccion">¿De qué trata este juego?</h2>
+      <div class="ficha__texto">
+        <p>
+          Los invasores pixelados ocuparon cada casillero del tablero. Tu misión: hacerlos desaparecer
+          saltando una ficha por encima de otra —en horizontal o vertical— hasta que quede una sola en pie.
+        </p>
+        <p>
+          Una versión arcade del clásico Peg Solitaire inglés, con tablero en cruz de 33 casilleros
+          y 32 invasores de 4 especies distintas. Arrastrás cada invasor con el mouse y el tablero
+          te marca, con hints animados, a qué huecos puede saltar.
+        </p>
+        <p>
+          Tenés 3 minutos. Cuantos menos invasores dejes, mejor. Dejá uno solo y ganás la partida;
+          si el último queda justo en el centro, es una victoria perfecta.
+        </p>
+      </div>
+
+      <div class="galeria">
+        <figure class="galeria__item">
+          <img src="img/peg/galeria-1.png" alt="Tablero en cruz lleno de invasores de 4 colores, con el centro vacío y el reloj en 2:57" loading="lazy">
+          <figcaption class="texto-chico">Tablero inicial</figcaption>
+        </figure>
+        <figure class="galeria__item">
+          <img src="img/peg/galeria-2.png" alt="Invasor levantado con el mouse y el hueco de destino marcado con un anillo y una flecha amarilla" loading="lazy">
+          <figcaption class="texto-chico">Arrastre con hints</figcaption>
+        </figure>
+        <figure class="galeria__item">
+          <img src="img/peg/galeria-3.png" alt="Un solo invasor en el centro del tablero y el cartel ¡Ganaste!" loading="lazy">
+          <figcaption class="texto-chico">¡Último invasor!</figcaption>
+        </figure>
+      </div>
+
+      <div class="ficha__media">
+        <figure class="video">
+          <button class="video__marco" type="button" id="video" aria-label="Reproducir trailer">
+            <img src="img/trailer.jpg" alt="" loading="lazy">
+            <span class="video__play" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="56" height="56"><circle cx="12" cy="12" r="11" fill="rgba(14,11,22,.6)" stroke="#EDECF5" stroke-width="1.5"/><path d="M10 8l6 4-6 4z" fill="#EDECF5"/></svg>
+            </span>
+          </button>
+          <figcaption class="texto-chico">Trailer — Invasión Pixel</figcaption>
+        </figure>
+
+        <div class="relacionados">
+          <h3 class="texto-enfasis">Enlaces relacionados</h3>
+          <ul class="relacionados__links">
+            <li><a href="#">Cómo se juega el Peg Solitaire</a></li>
+            <li><a href="#">Estrategias para dejar una sola ficha</a></li>
+            <li><a href="home.html#puzzle">Más juegos de puzzle</a></li>
+            <li><a href="home.html">Otros juegos de NeoArcade Studio</a></li>
+          </ul>
+
+          <h3 class="texto-enfasis">Detalles del juego</h3>
+          <dl class="relacionados__detalles">
+            <div><dt>Desarrollador:</dt> <dd>NeoArcade Studio</dd></div>
+            <div><dt>Categoría:</dt> <dd>Puzzle</dd></div>
+            <div><dt>Lanzamiento:</dt> <dd>2024</dd></div>
+            <div><dt>Jugadores:</dt> <dd>1</dd></div>
+            <div><dt>Plataforma:</dt> <dd>Navegador (PC)</dd></div>
+            <div><dt>Idioma:</dt> <dd>Español</dd></div>
+            <div><dt>Clasificación:</dt> <dd>Apto para todo público</dd></div>
+          </dl>
+
+          <h3 class="texto-enfasis">Etiquetas</h3>
+          <ul class="etiquetas">
+            <li>Puzzle</li>
+            <li>Estrategia</li>
+            <li>Un jugador</li>
+            <li>Arcade</li>
+            <li>Pixel art</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comunidad (a todo el ancho, como en el Figma) -->
+    <section class="comunidad">
+      <h2 class="titulo-seccion">Comunidad</h2>
+
+      <form class="resena" id="form-resena" novalidate>
+        <p class="texto-enfasis">Dejá tu reseña</p>
+        <div class="estrellas" id="estrellas" role="radiogroup" aria-label="Puntaje">
+          <button type="button" role="radio" aria-checked="false" aria-label="1 estrella">☆</button>
+          <button type="button" role="radio" aria-checked="false" aria-label="2 estrellas">☆</button>
+          <button type="button" role="radio" aria-checked="false" aria-label="3 estrellas">☆</button>
+          <button type="button" role="radio" aria-checked="false" aria-label="4 estrellas">☆</button>
+          <button type="button" role="radio" aria-checked="false" aria-label="5 estrellas">☆</button>
+        </div>
+        <div class="campo">
+          <div class="campo__caja">
+            <textarea id="resena-texto" rows="3" placeholder="Contanos qué te pareció el juego..." aria-label="Tu reseña"></textarea>
+          </div>
+          <p class="campo__error">ⓘ Elegí un puntaje y escribí al menos 10 caracteres</p>
+        </div>
+        <button class="boton boton--secundario boton--chico" type="submit">Publicar reseña</button>
+      </form>
+
+      <ul class="comentarios" id="comentarios"></ul>
+    </section>
+  </main>
+
+
+  <footer id="footer"></footer>
+
+  <script src="data/juegos-respaldo.js?v=2"></script>
+  <script src="js/datos.js?v=6"></script>
+  <script src="js/comun.js?v=14"></script>
+  <script src="js/pagina-juego.js?v=1"></script>
+  <!-- Peg Solitaire: Modelo (Ficha, Tablero) → Vista → Controlador, en ese orden
+       porque cada archivo usa clases o constantes de los anteriores -->
+  <script src="js/peg/Ficha.js?v=1"></script>
+  <script src="js/peg/Tablero.js?v=1"></script>
+  <script src="js/peg/Vista.js?v=1"></script>
+  <script src="js/peg/Controlador.js?v=1"></script>
+  <script src="js/juego.js?v=9"></script>
+</body>
+</html>

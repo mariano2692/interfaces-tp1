@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blocka: Pixel Puzzle — NeoArcade</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Orbitron:wght@600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/base.css?v=6">
+  <link rel="stylesheet" href="css/comun.css?v=22">
+  <link rel="stylesheet" href="css/juego.css?v=17">
+  <link rel="stylesheet" href="css/blocka.css?v=1">
+</head>
+<body>
+
+  <header id="header"></header>
+
+  <!-- Misma estructura que la página del Peg Solitaire (juego.html): migas, título,
+       zona de juego con instrucciones al costado, ficha del juego y comunidad -->
+  <main class="juego contenedor">
+    <nav class="migas texto-chico" aria-label="Estás en">
+      <a href="home.html">Inicio</a>
+      <span aria-hidden="true">›</span>
+      <a href="home.html#puzzle">Puzzle</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">Blocka</span>
+    </nav>
+
+    <h1 class="titulo-h1 juego__titulo">Blocka: Pixel Puzzle</h1>
+
+    <!-- Zona de juego: canvas + instrucciones a la derecha -->
+    <section class="juego__zona">
+      <div class="juego__principal">
+        <div class="tablero blocka" id="blocka">
+          <!-- HUD: nivel y filtro a la izquierda; ayudita y temporizador a la derecha
+               (la ayudita le suma tiempo al reloj: van juntos, ley de proximidad) -->
+          <div class="blocka__hud">
+            <p class="blocka__nivel" id="hud-nivel"></p>
+            <div class="blocka__hud-derecha">
+              <button class="boton boton--primario blocka__ayudita" id="ayudita" type="button" disabled>Ayudita (+5 s)</button>
+              <p class="blocka__reloj" id="hud-reloj" role="timer" aria-live="off">⏱ 00:00</p>
+            </div>
+          </div>
+
+          <div class="blocka__escenario">
+            <canvas class="blocka__lienzo" id="lienzo" aria-label="Blocka: girá cada pieza hasta armar la imagen"></canvas>
+
+            <!-- Menú principal -->
+            <form class="blocka__pantalla" id="pantalla-menu" novalidate>
+              <h2 class="blocka__pantalla-titulo">Menú principal</h2>
+              <fieldset class="blocka__grupo">
+                <legend class="texto-chico">Nivel</legend>
+                <div class="blocka__opciones" id="opciones-nivel"></div>
+              </fieldset>
+              <fieldset class="blocka__grupo">
+                <legend class="texto-chico">Piezas</legend>
+                <div class="blocka__opciones">
+                  <label class="opcion"><input type="radio" name="piezas" value="4" checked><span class="opcion__caja"><b>4</b></span></label>
+                  <label class="opcion"><input type="radio" name="piezas" value="6"><span class="opcion__caja"><b>6</b></span></label>
+                  <label class="opcion"><input type="radio" name="piezas" value="8"><span class="opcion__caja"><b>8</b></span></label>
+                </div>
+              </fieldset>
+              <button class="boton boton--primario" type="submit">Comenzar</button>
+            </form>
+
+            <!-- Sorteo de la imagen del nivel -->
+            <div class="blocka__pantalla" id="pantalla-sorteo" hidden>
+              <h2 class="blocka__pantalla-titulo">Eligiendo imagen…</h2>
+              <div class="sorteo" id="sorteo"></div>
+            </div>
+
+            <!-- Fin del nivel: ganó o se acabó el tiempo -->
+            <div class="blocka__pantalla blocka__pantalla--fin" id="pantalla-fin" role="status" hidden>
+              <h2 class="blocka__pantalla-titulo" id="fin-titulo"></h2>
+              <p id="fin-detalle"></p>
+              <div class="blocka__acciones">
+                <button class="boton boton--primario" type="button" id="fin-seguir"></button>
+                <button class="boton boton--secundario" type="button" id="fin-menu">Menú principal</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="juego__botones">
+          <button class="boton boton--secundario" id="volver-menu" type="button" disabled>Menú principal</button>
+          <div class="compartir">
+            <button class="boton boton--secundario" id="abrir-compartir" type="button" aria-expanded="false" aria-controls="popover-compartir">Compartir</button>
+            <div class="compartir__popover" id="popover-compartir" hidden>
+              <p class="texto-chico compartir__titulo">Compartir Blocka</p>
+              <button class="compartir__opcion" type="button" id="copiar-enlace">🔗 Copiar enlace</button>
+              <a class="compartir__opcion" id="compartir-whatsapp" target="_blank" rel="noopener">💬 WhatsApp</a>
+              <a class="compartir__opcion" id="compartir-email">✉️ Email</a>
+              <a class="compartir__opcion" id="compartir-x" target="_blank" rel="noopener">𝕏 X</a>
+              <a class="compartir__opcion" id="compartir-facebook" target="_blank" rel="noopener">📘 Facebook</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Instrucciones al costado del juego, siempre visibles mientras se juega
+           (reconocer antes que recordar, Nielsen #6) -->
+      <aside class="ayuda" aria-label="Cómo se juega">
+        <section class="ayuda__bloque">
+          <h2 class="ayuda__titulo">Controles</h2>
+          <div class="ayuda__fila ayuda__con-mouse">
+            <svg class="ayuda__mouse" viewBox="0 0 24 36" aria-hidden="true">
+              <rect x="1.5" y="1.5" width="21" height="33" rx="10.5" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M12 1.5v12H1.5V12A10.5 10.5 0 0 1 12 1.5z" fill="var(--primario-luz-40)"/>
+              <path d="M12 2v11M2 13h20" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <p><b>Clic izquierdo</b> sobre una pieza: gira 90° a la izquierda ↺</p>
+          </div>
+          <div class="ayuda__fila ayuda__con-mouse">
+            <svg class="ayuda__mouse" viewBox="0 0 24 36" aria-hidden="true">
+              <rect x="1.5" y="1.5" width="21" height="33" rx="10.5" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M12 1.5v12h10.5V12A10.5 10.5 0 0 0 12 1.5z" fill="var(--primario-luz-40)"/>
+              <path d="M12 2v11M2 13h20" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <p><b>Clic derecho</b> sobre una pieza: gira 90° a la derecha ↻</p>
+          </div>
+          <div class="ayuda__fila ayuda__con-dedo">
+            <svg class="ayuda__dedo" viewBox="0 0 30 30" aria-hidden="true">
+              <circle cx="15" cy="15" r="6" fill="var(--primario-luz-40)"/>
+              <circle cx="15" cy="15" r="12" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <p>Tocá una pieza para girarla 90° a la izquierda ↺</p>
+          </div>
+        </section>
+
+        <section class="ayuda__bloque">
+          <h2 class="ayuda__titulo">Objetivo</h2>
+          <p>Girá las piezas hasta que la imagen quede derecha. Cuando la armás, el reloj se frena, se quitan los filtros y aparece la imagen original.</p>
+        </section>
+
+        <section class="ayuda__bloque">
+          <h2 class="ayuda__titulo">Niveles</h2>
+          <ol class="ayuda__lista">
+            <li>Escala de grises</li>
+            <li>Brillo +30 %</li>
+            <li>Negativo, con tiempo máximo de 2 min</li>
+            <li>Un filtro distinto en cada pieza, con 1 min 30 s</li>
+          </ol>
+          <p>En el menú podés elegir el nivel y si la imagen se corta en 4, 6 u 8 piezas.</p>
+        </section>
+
+        <section class="ayuda__bloque">
+          <h2 class="ayuda__titulo">Ayudita</h2>
+          <p>¿Trabado? La ayudita acomoda una pieza y la deja fija (borde amarillo), pero suma 5 segundos al reloj.</p>
+        </section>
+      </aside>
+    </section>
+
+    <!-- De qué trata: descripción, galería y video -->
+    <section class="ficha">
+      <h2 class="titulo-seccion">¿De qué trata este juego?</h2>
+      <div class="ficha__texto">
+        <p>
+          Un glitch desarmó las portadas de los juegos de NeoArcade: cada imagen quedó partida en bloques,
+          girados y con los colores alterados. Tu misión es volver a ponerlos derechos lo más rápido posible.
+        </p>
+        <p>
+          Cuatro niveles, cada uno con un filtro distinto —escala de grises, brillo y negativo— que hace más difícil
+          reconocer la imagen. Batí tu récord en cada nivel y animate a jugar con 6 u 8 piezas.
+        </p>
+      </div>
+
+      <div class="galeria">
+        <figure class="galeria__item">
+          <img src="img/blocka-galeria-1.jpg" alt="Sorteo de la imagen del nivel entre las miniaturas" loading="lazy">
+          <figcaption class="texto-chico">Sorteo de la imagen</figcaption>
+        </figure>
+        <figure class="galeria__item">
+          <img src="img/blocka-galeria-2.jpg" alt="Blocka de 6 piezas giradas con filtro negativo" loading="lazy">
+          <figcaption class="texto-chico">Piezas con filtro</figcaption>
+        </figure>
+        <figure class="galeria__item">
+          <img src="img/blocka-galeria-3.jpg" alt="Imagen armada y sin filtro al ganar el nivel" loading="lazy">
+          <figcaption class="texto-chico">¡Imagen armada!</figcaption>
+        </figure>
+      </div>
+
+      <div class="ficha__media">
+        <figure class="video">
+          <button class="video__marco" type="button" id="video" aria-label="Reproducir trailer">
+            <img src="img/blocka-trailer.jpg" alt="" loading="lazy">
+            <span class="video__play" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="56" height="56"><circle cx="12" cy="12" r="11" fill="rgba(14,11,22,.6)" stroke="#EDECF5" stroke-width="1.5"/><path d="M10 8l6 4-6 4z" fill="#EDECF5"/></svg>
+            </span>
+          </button>
+          <figcaption class="texto-chico">Trailer — Blocka: Pixel Puzzle</figcaption>
+        </figure>
+
+        <div class="relacionados">
+          <h3 class="texto-enfasis">Enlaces relacionados</h3>
+          <ul class="relacionados__links">
+            <li><a href="juego.html">Peg Solitaire: Invasión Pixel</a></li>
+            <li><a href="#">Cómo funcionan los filtros de imagen</a></li>
+            <li><a href="home.html#puzzle">Más juegos de puzzle</a></li>
+            <li><a href="home.html">Otros juegos de NeoArcade Studio</a></li>
+          </ul>
+
+          <h3 class="texto-enfasis">Detalles del juego</h3>
+          <dl class="relacionados__detalles">
+            <div><dt>Desarrollador:</dt> <dd>NeoArcade Studio</dd></div>
+            <div><dt>Categoría:</dt> <dd>Puzzle</dd></div>
+            <div><dt>Lanzamiento:</dt> <dd>2026</dd></div>
+            <div><dt>Jugadores:</dt> <dd>1</dd></div>
+            <div><dt>Plataforma:</dt> <dd>Navegador (PC)</dd></div>
+            <div><dt>Idioma:</dt> <dd>Español</dd></div>
+            <div><dt>Clasificación:</dt> <dd>Apto para todo público</dd></div>
+          </dl>
+
+          <h3 class="texto-enfasis">Etiquetas</h3>
+          <ul class="etiquetas">
+            <li>Puzzle</li>
+            <li>Rompecabezas</li>
+            <li>Contrarreloj</li>
+            <li>Un jugador</li>
+            <li>Arcade</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comunidad (igual que en el Peg Solitaire) -->
+    <section class="comunidad">
+      <h2 class="titulo-seccion">Comunidad</h2>
+
+      <form class="resena" id="form-resena" novalidate>
+        <p class="texto-enfasis">Dejá tu reseña</p>
+        <div class="estrellas" id="estrellas" role="radiogroup" aria-label="Puntaje">
+          <button type="button" role="radio" aria-checked="false" aria-label="1 estrella">☆</button>
+          <button type="button" role="radio" aria-checked="false" aria-label="2 estrellas">☆</button>
+          <button type="button" role="radio" aria-checked="false" aria-label="3 estrellas">☆</button>
+          <button type="button" role="radio" aria-checked="false" aria-label="4 estrellas">☆</button>
+          <button type="button" role="radio" aria-checked="false" aria-label="5 estrellas">☆</button>
+        </div>
+        <div class="campo">
+          <div class="campo__caja">
+            <textarea id="resena-texto" rows="3" placeholder="Contanos qué te pareció el juego..." aria-label="Tu reseña"></textarea>
+          </div>
+          <p class="campo__error">ⓘ Elegí un puntaje y escribí al menos 10 caracteres</p>
+        </div>
+        <button class="boton boton--secundario boton--chico" type="submit">Publicar reseña</button>
+      </form>
+
+      <ul class="comentarios" id="comentarios"></ul>
+    </section>
+  </main>
+
+
+  <footer id="footer"></footer>
+
+  <script src="data/juegos-respaldo.js?v=2"></script>
+  <script src="js/datos.js?v=6"></script>
+  <script src="js/comun.js?v=14"></script>
+  <script src="js/pagina-juego.js?v=1"></script>
+  <script src="js/filtros.js?v=1"></script>
+  <script src="js/blocka.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400">
+  <defs>
+    <radialGradient id="brillo" cx="50%" cy="45%" r="65%">
+      <stop offset="0" stop-color="#311363"/>
+      <stop offset="1" stop-color="#0E0B16"/>
+    </radialGradient>
+    <!-- Invasor pixel (misma ficha que en el tablero del Figma) -->
+    <g id="invasor" fill="#16E0F2">
+      <rect x="2" y="0" width="2" height="2"/><rect x="12" y="0" width="2" height="2"/>
+      <rect x="4" y="2" width="2" height="2"/><rect x="10" y="2" width="2" height="2"/>
+      <rect x="2" y="4" width="12" height="2"/>
+      <rect x="0" y="6" width="4" height="2"/><rect x="6" y="6" width="4" height="2"/><rect x="12" y="6" width="4" height="2"/>
+      <rect x="0" y="8" width="16" height="2"/>
+      <rect x="0" y="10" width="2" height="2"/><rect x="2" y="10" width="12" height="2"/><rect x="14" y="10" width="2" height="2"/>
+      <rect x="0" y="12" width="2" height="2"/><rect x="4" y="12" width="2" height="2"/><rect x="10" y="12" width="2" height="2"/><rect x="14" y="12" width="2" height="2"/>
+    </g>
+    <g id="casilla">
+      <circle cx="8" cy="7" r="9" fill="#1B1830" stroke="#2A2745"/>
+      <use href="#invasor" transform="translate(1.5 1) scale(.8)"/>
+    </g>
+    <circle id="hueco" cx="8" cy="7" r="9" fill="#0E0B16" stroke="#7B2FF7"/>
+  </defs>
+
+  <rect width="600" height="400" fill="url(#brillo)"/>
+  <g stroke="#2A2745" stroke-width="1" opacity=".6">
+    <path d="M0 80h600M0 160h600M0 240h600M0 320h600M100 0v400M200 0v400M300 0v400M400 0v400M500 0v400"/>
+  </g>
+
+  <!-- Tablero en cruz de 33 casilleros -->
+  <g transform="translate(174 74)">
+    <g id="fila3">
+      <use href="#casilla" x="72" y="0"/><use href="#casilla" x="108" y="0"/><use href="#casilla" x="144" y="0"/>
+    </g>
+    <use href="#fila3" y="36"/>
+    <g id="fila7" transform="translate(0 72)">
+      <use href="#casilla" x="0"/><use href="#casilla" x="36"/><use href="#casilla" x="72"/><use href="#casilla" x="108"/><use href="#casilla" x="144"/><use href="#casilla" x="180"/><use href="#casilla" x="216"/>
+    </g>
+    <g transform="translate(0 108)">
+      <use href="#casilla" x="0"/><use href="#casilla" x="36"/><use href="#casilla" x="72"/><use href="#hueco" x="108"/><use href="#casilla" x="144"/><use href="#casilla" x="180"/><use href="#casilla" x="216"/>
+    </g>
+    <use href="#fila7" y="72"/>
+    <use href="#fila3" y="180"/>
+    <use href="#fila3" y="216"/>
+  </g>
+
+  <text x="300" y="372" fill="#EDECF5" font-family="'Press Start 2P', monospace" font-size="18" text-anchor="middle">PEG SOLITAIRE</text>
+</svg>

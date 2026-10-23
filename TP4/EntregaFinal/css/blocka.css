@@ -1,0 +1,310 @@
+/* =========================================================
+   Página de juego — Blocka (TPE3)
+   Usa el layout de juego.css (migas, zona, ayuda, ficha, comunidad);
+   acá solo va lo propio de la Blocka: HUD, canvas y pantallas del juego.
+   ========================================================= */
+
+/* ---------- Contenedor del juego ---------- */
+
+/* Reusa .tablero (fondo superficie + borde primario) pero apila HUD y canvas */
+.blocka {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+@media (min-width: 768px) {
+  .blocka {
+    padding: 24px;
+  }
+}
+
+/* ---------- HUD: nivel y temporizador ---------- */
+
+.blocka__hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* en mobile, si no entra, ayudita y reloj bajan a otra fila */
+  gap: 8px 16px;
+  width: 100%;
+}
+
+/* Ayudita + reloj juntos a la derecha */
+.blocka__hud-derecha {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Más compacta que los botones de abajo para no agrandar la barra */
+.blocka__ayudita {
+  padding: 8px 16px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.blocka__nivel {
+  font-size: 14px;
+  color: var(--texto-secundario);
+}
+
+.blocka__reloj {
+  font-family: var(--fuente-titulos);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums; /* los números no "bailan" al cambiar */
+  color: var(--secundario);
+  transition: color var(--transicion);
+}
+
+/* Últimos 10 segundos: rojo y latido (loop mientras dure la urgencia) */
+.blocka__reloj--urgente {
+  color: var(--error);
+  animation: latido 1s ease-in-out infinite;
+}
+
+@keyframes latido {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
+
+/* ---------- Escenario: canvas + pantallas encima ---------- */
+
+.blocka__escenario {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 320px;
+}
+
+/* El canvas tiene sus píxeles reales (width/height en el JS); con max-width
+   se achica en pantallas chicas sin deformarse (height: auto mantiene la proporción) */
+.blocka__lienzo {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radio);
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.blocka__lienzo--sobre-pieza {
+  cursor: pointer;
+}
+
+/* Menú, sorteo y fin: tapan el escenario con un velo oscuro */
+.blocka__pantalla {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px;
+  overflow-y: auto;
+  border-radius: var(--radio);
+  background: rgba(14, 11, 22, 0.92);
+  text-align: center;
+  animation: aparecer-pantalla 250ms ease-out;
+}
+
+@keyframes aparecer-pantalla {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.blocka__pantalla-titulo {
+  font-family: var(--fuente-titulos);
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 28px;
+}
+
+@media (min-width: 768px) {
+  .blocka__pantalla-titulo {
+    font-size: 24px;
+    line-height: 32px;
+  }
+}
+
+/* Fin del nivel: banda abajo y más transparente, para ver la imagen armada */
+.blocka__pantalla--fin {
+  inset: auto 0 0;
+  background: linear-gradient(transparent, rgba(14, 11, 22, 0.95) 30%);
+  padding-top: 48px;
+  animation: subir-fin 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.blocka__pantalla--fin .blocka__pantalla-titulo {
+  color: var(--exito);
+}
+
+.blocka__pantalla--perdido .blocka__pantalla-titulo {
+  color: var(--error);
+}
+
+@keyframes subir-fin {
+  0% { opacity: 0; transform: translateY(24px); }
+  100% { opacity: 1; transform: none; }
+}
+
+.blocka__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+}
+
+/* ---------- Menú principal: opciones de nivel y piezas ---------- */
+
+.blocka__grupo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  border: none;
+}
+
+.blocka__grupo legend {
+  margin-bottom: 8px;
+  color: var(--texto-secundario);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.blocka__opciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Cada opción es un radio escondido + una caja que se ve como botón.
+   El radio sigue ahí (teclado y lectores de pantalla), solo es invisible. */
+.opcion input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.opcion__caja {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 56px;
+  padding: 8px 12px;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--superficie);
+  cursor: pointer;
+  transition: border-color var(--transicion), background-color var(--transicion);
+}
+
+.opcion__caja small {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--texto-secundario);
+}
+
+.opcion:hover .opcion__caja {
+  border-color: var(--primario-luz-20);
+}
+
+/* Elegida: mismo violeta del DS que los botones primarios */
+.opcion input:checked + .opcion__caja {
+  border-color: var(--primario);
+  background: var(--primario-sombra-60);
+}
+
+.opcion input:focus-visible + .opcion__caja {
+  outline: 2px solid var(--secundario);
+  outline-offset: 2px;
+}
+
+/* Mobile: el canvas se achica, así que el escenario crece para que el menú entre
+   sin scroll y los 4 niveles van en una grilla de 2 × 2 */
+@media (max-width: 599px) {
+  .blocka__escenario {
+    min-height: 440px;
+  }
+
+  .blocka__pantalla {
+    gap: 12px;
+    padding: 16px;
+  }
+
+  #opciones-nivel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ---------- Sorteo de la imagen (miniaturas) ---------- */
+
+.sorteo {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  width: min(100%, 520px);
+}
+
+.sorteo__miniatura {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  opacity: 0.4;
+  transition: opacity 80ms linear, transform 80ms linear;
+}
+
+/* La que va pasando la "ruleta" */
+.sorteo__miniatura--resaltada {
+  opacity: 1;
+  border-color: var(--secundario);
+  transform: scale(1.06);
+}
+
+/* La elegida: pulso con glow (one shot) */
+.sorteo__miniatura--elegida {
+  border-color: var(--acento);
+  animation: elegida 900ms ease-out both;
+}
+
+@keyframes elegida {
+  0% { transform: scale(1.06); box-shadow: 0 0 0 0 rgba(255, 210, 63, 0.8); }
+  40% { transform: scale(1.18); }
+  100% { transform: scale(1.1); box-shadow: 0 0 0 14px rgba(255, 210, 63, 0); }
+}
+
+/* ---------- Botones (debajo del juego y la ayudita del HUD) ---------- */
+
+.boton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ---------- Instrucciones ---------- */
+
+.ayuda__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: 20px;
+}
+
+.ayuda b {
+  color: var(--texto);
+}
+
+/* juego.css muestra la ayuda táctil como block; acá es una fila con ícono */
+@media (pointer: coarse) {
+  .ayuda__fila.ayuda__con-dedo {
+    display: flex;
+  }
+}

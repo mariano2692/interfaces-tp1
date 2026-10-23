@@ -1,0 +1,548 @@
+/* =========================================================
+   Página de juego — Peg Solitaire (solo desktop, según enunciado)
+   ========================================================= */
+
+.juego {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  padding-top: 24px;
+}
+
+/* ---------- Breadcrumbs ---------- */
+
+.migas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--texto-secundario);
+}
+
+.migas a {
+  text-decoration: none;
+}
+
+.migas a:hover {
+  color: var(--secundario);
+  text-decoration: underline;
+}
+
+.migas [aria-current] {
+  color: var(--texto);
+}
+
+/* Título arriba de todo: queda pegado a las migas y separado del tablero (proximidad) */
+.juego__titulo {
+  margin-block: -32px -24px;
+  font-size: 36px;
+  line-height: 44px;
+}
+
+@media (min-width: 1024px) {
+  .juego__titulo {
+    font-size: 48px;
+    line-height: 56px;
+  }
+}
+
+/* ---------- Zona de juego: tablero + instrucciones ---------- */
+
+.juego__zona {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 48px;
+}
+
+@media (min-width: 1024px) {
+  .juego__zona {
+    grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr);
+    align-items: start;
+  }
+}
+
+.juego__principal {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.tablero {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 32px 12px 44px;
+  background: var(--superficie);
+  border: 1px solid var(--primario);
+  border-radius: var(--radio-grande);
+}
+
+/* ---------- Peg Solitaire en canvas (TPE4) ---------- */
+
+.peg {
+  padding: 16px;
+}
+
+/* El canvas tiene 640 × 640 píxeles reales (Vista.js); con max-width se achica
+   si no entra, sin deformarse (height: auto mantiene la proporción).
+   640 + el header y el título entran en una pantalla Full HD (1080) sin scroll. */
+.peg__lienzo {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radio);
+  user-select: none;
+}
+
+/* Ayuda: ícono de hint (anillo + flecha) igual al que se dibuja en el canvas */
+.peg__ayuda-fila {
+  align-items: flex-start;
+}
+
+.peg__ayuda-hint {
+  flex-shrink: 0;
+  width: 26px;
+  height: 32px;
+}
+
+.peg__tipos {
+  display: flex;
+  gap: 8px;
+}
+
+.peg__tipos img {
+  width: 36px;
+  height: 36px;
+}
+
+/* ---------- Botones debajo del tablero ---------- */
+
+.juego__botones {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.juego__botones .boton {
+  width: 100%;
+}
+
+.compartir {
+  position: relative;
+}
+
+.compartir__popover {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 8px);
+  z-index: 10;
+  width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  animation: subir-popover 200ms ease-out;
+}
+
+@keyframes subir-popover {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: none; }
+}
+
+.compartir__titulo {
+  padding: 8px 12px;
+  color: var(--texto-secundario);
+  border-bottom: 1px solid var(--borde);
+}
+
+.compartir__opcion {
+  padding: 10px 12px;
+  background: none;
+  border: none;
+  border-radius: var(--radio);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--transicion);
+}
+
+.compartir__opcion:hover {
+  background: var(--borde);
+}
+
+/* ---------- Instrucciones (a la derecha del tablero, sin recuadro) ---------- */
+
+.ayuda {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding-top: 48px;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--texto-secundario);
+}
+
+.ayuda__bloque {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ayuda__titulo {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--texto);
+}
+
+.ayuda__fila {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ayuda__mouse {
+  flex-shrink: 0;
+  width: 20px;
+  height: 30px;
+}
+
+.ayuda__dedo {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+}
+
+/* Pantallas táctiles: la ayuda habla del dedo, no del mouse */
+.ayuda__dedo,
+.ayuda__con-dedo {
+  display: none;
+}
+
+@media (pointer: coarse) {
+  .ayuda__mouse,
+  .ayuda__con-mouse {
+    display: none;
+  }
+
+  .ayuda__dedo,
+  .ayuda__con-dedo {
+    display: block;
+  }
+}
+
+.ayuda__minis {
+  display: flex;
+  gap: 16px;
+  padding-block: 8px;
+}
+
+/* Mini tableros de puntos (objetivo y ejemplo de salto) */
+.mini {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: repeat(7, 7px);
+  grid-template-rows: repeat(7, 7px);
+  gap: 1px;
+}
+
+.mini span {
+  border-radius: 50%;
+}
+
+.mini__hueco {
+  background: var(--borde);
+}
+
+.mini__ficha {
+  background: var(--secundario-sombra-40);
+}
+
+.mini__resalte {
+  background: var(--secundario);
+  box-shadow: 0 0 4px var(--secundario);
+}
+
+/* ---------- De qué trata: descripción, galería y video ---------- */
+
+.ficha {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.ficha__texto {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 680px;
+  color: var(--texto-secundario);
+}
+
+.galeria {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.galeria__item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--texto-secundario);
+}
+
+.galeria__item img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 4px;
+  background: var(--superficie);
+  transition: transform var(--transicion), box-shadow var(--transicion);
+}
+
+.galeria__item img:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 24px rgba(123, 47, 247, 0.35);
+}
+
+/* Video a la izquierda y enlaces + detalles al costado */
+/* Mobile y tablet: el video a todo el ancho y la info debajo; desde 1200, video 2/3 + info al costado
+   (en tablet el video quedaba angosto y la info, más alta, dejaba un hueco debajo del video) */
+.ficha__media {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
+  align-items: stretch;
+}
+
+.video {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--texto-secundario);
+}
+
+.video__marco {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  padding: 0;
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--superficie);
+  cursor: pointer;
+}
+
+@media (min-width: 1200px) {
+  .ficha__media {
+    grid-template-columns: minmax(0, 2fr) minmax(220px, 1fr);
+  }
+
+  /* El video se estira hasta la altura de la info del costado: nunca queda hueco debajo */
+  .video {
+    container-type: inline-size;
+  }
+
+  /* Como mínimo 16:9 (56.25 % del ancho); si la info es más alta, se estira hasta igualarla */
+  .video__marco {
+    flex: 1;
+    min-height: 56.25cqi;
+    aspect-ratio: auto;
+  }
+
+  /* La imagen no empuja el alto: solo cubre el espacio que le da la columna */
+  .video__marco img {
+    position: absolute;
+    inset: 0;
+  }
+}
+
+.video__marco img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video__play {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transition: transform var(--transicion);
+}
+
+.video__marco:hover .video__play {
+  transform: scale(1.15);
+}
+
+.relacionados {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+  list-style: none;
+}
+
+.etiquetas li {
+  padding: 4px 10px;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  font-size: 13px;
+  line-height: 16px;
+  color: var(--texto-secundario);
+}
+
+.relacionados__links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+  list-style: none;
+}
+
+.relacionados__links a {
+  color: var(--texto-secundario);
+  text-decoration: none;
+  transition: color var(--transicion);
+}
+
+.relacionados__links a:hover {
+  color: var(--secundario);
+}
+
+.relacionados__detalles {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--texto-secundario);
+}
+
+.relacionados__detalles dt,
+.relacionados__detalles dd {
+  display: inline;
+}
+
+/* ---------- Comunidad (a todo el ancho, como en el Figma) ---------- */
+
+.comunidad {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.resena {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px;
+  background: var(--superficie);
+  border-radius: 12px;
+}
+
+.resena .campo {
+  align-self: stretch;
+}
+
+.resena textarea {
+  flex: 1;
+  min-height: 56px;
+  background: none;
+  border: none;
+  outline: none;
+  resize: vertical;
+  font: inherit;
+  color: inherit;
+}
+
+.resena textarea::placeholder {
+  color: var(--texto-secundario);
+}
+
+.boton--chico {
+  padding: 4px 12px; /* talle chico del Figma */
+  font-size: 13px;
+}
+
+.estrellas {
+  display: flex;
+  gap: 8px;
+}
+
+.estrellas button {
+  padding: 0 2px;
+  background: none;
+  border: none;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--texto-secundario);
+  cursor: pointer;
+  transition: color 150ms ease-out, transform 150ms ease-out;
+}
+
+.estrellas button.encendida {
+  color: var(--acento);
+}
+
+.estrellas button:hover {
+  transform: scale(1.2);
+}
+
+.comentarios {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  list-style: none;
+}
+
+.comentario {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--superficie);
+  border-radius: 8px;
+}
+
+.comentario__cabecera {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.comentario__avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--borde);
+}
+
+.comentario__fecha {
+  color: var(--texto-secundario);
+}
+
+.comentario__texto {
+  color: var(--texto-secundario);
+}
+
+.comentario--nuevo {
+  animation: publicar 500ms ease-out;
+}
+
+@keyframes publicar {
+  0% { opacity: 0; transform: translateY(-12px); box-shadow: 0 0 0 1px var(--secundario); }
+  60% { opacity: 1; transform: none; box-shadow: 0 0 0 1px var(--secundario); }
+  100% { opacity: 1; transform: none; box-shadow: none; }
+}

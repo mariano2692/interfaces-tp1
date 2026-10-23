@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inicio — NeoArcade</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Orbitron:wght@600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/base.css?v=6">
+  <link rel="stylesheet" href="css/comun.css?v=22">
+  <link rel="stylesheet" href="css/home.css?v=10">
+</head>
+<body class="cargando">
+
+  <!-- Loading simulado de 5 segundos (sin GIF: keyframes CSS + % calculado en JS) -->
+  <div class="carga" id="carga" role="progressbar" aria-label="Cargando NeoArcade" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+    <p class="logo carga__logo">Neo<span>Arcade</span></p>
+    <div class="carga__pixeles" aria-hidden="true">
+      <span></span><span></span><span></span>
+      <span></span><span></span><span></span>
+      <span></span><span></span><span></span>
+    </div>
+    <p class="carga__porcentaje"><span id="porcentaje">0</span>%</p>
+    <div class="carga__barra"><div class="carga__relleno" id="relleno"></div></div>
+    <p class="carga__texto">Cargando juegos…</p>
+  </div>
+
+  <header id="header"></header>
+
+  <main class="home">
+    <section class="slider" id="slider" aria-roledescription="carrusel" aria-label="Juegos destacados">
+      <button class="slider__peek slider__peek--izq" aria-label="Destacado anterior"><img alt=""></button>
+      <div class="slider__escenario" id="slider-escenario"></div>
+      <button class="slider__peek slider__peek--der" aria-label="Destacado siguiente"><img alt=""></button>
+      <div class="slider__indicadores" id="slider-indicadores"></div>
+    </section>
+
+    <div class="home__carruseles" id="carruseles"></div>
+  </main>
+
+  <dialog class="ficha-rapida" id="ficha" aria-label="Información del juego"></dialog>
+
+  <footer id="footer"></footer>
+
+  <script src="data/juegos-respaldo.js?v=2"></script>
+  <script src="js/datos.js?v=6"></script>
+  <script src="js/comun.js?v=14"></script>
+  <script src="js/home.js?v=13"></script>
+</body>
+</html>

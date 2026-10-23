@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400">
+  <defs>
+    <radialGradient id="brillo" cx="50%" cy="45%" r="65%">
+      <stop offset="0" stop-color="#311363"/>
+      <stop offset="1" stop-color="#0E0B16"/>
+    </radialGradient>
+    <linearGradient id="cielo" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#311363"/>
+      <stop offset="1" stop-color="#7B2FF7"/>
+    </linearGradient>
+    <linearGradient id="sol" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFD23F"/>
+      <stop offset="1" stop-color="#FF4D6D"/>
+    </linearGradient>
+    <filter id="gris"><feColorMatrix type="saturate" values="0"/></filter>
+    <filter id="negativo">
+      <feComponentTransfer>
+        <feFuncR type="table" tableValues="1 0"/><feFuncG type="table" tableValues="1 0"/><feFuncB type="table" tableValues="1 0"/>
+      </feComponentTransfer>
+    </filter>
+
+    <!-- Paisaje de 240 × 240 que después se corta en 4 piezas -->
+    <g id="escena">
+      <rect width="240" height="240" fill="url(#cielo)"/>
+      <circle cx="120" cy="120" r="64" fill="url(#sol)"/>
+      <g fill="#7B2FF7">
+        <rect x="50" y="128" width="140" height="6"/><rect x="50" y="144" width="140" height="8"/><rect x="50" y="162" width="140" height="10"/>
+      </g>
+      <path d="M0 176 L48 112 L84 150 L132 96 L180 152 L208 124 L240 164 V240 H0Z" fill="#095A61" stroke="#16E0F2" stroke-width="3"/>
+      <rect y="176" width="240" height="64" fill="#0E0B16"/>
+      <g stroke="#16E0F2" stroke-width="2" opacity=".8">
+        <path d="M0 186h240M0 200h240M0 218h240M0 240h240"/>
+        <path d="M120 176v64M80 176L40 240M160 176l40 64M40 176L-40 240M200 176l80 64"/>
+      </g>
+    </g>
+  </defs>
+
+  <rect width="600" height="400" fill="url(#brillo)"/>
+  <g stroke="#2A2745" stroke-width="1" opacity=".6">
+    <path d="M0 80h600M0 160h600M0 240h600M0 320h600M100 0v400M200 0v400M300 0v400M400 0v400M500 0v400"/>
+  </g>
+
+  <!-- 4 piezas: dos bien, una girada y otras dos con filtro, como en el juego -->
+  <g transform="translate(176 52)">
+    <svg x="0" y="0" width="120" height="120" viewBox="0 0 120 120"><use href="#escena"/></svg>
+    <g transform="rotate(90 188 60)">
+      <svg x="128" y="0" width="120" height="120" viewBox="120 0 120 120" filter="url(#negativo)"><use href="#escena"/></svg>
+    </g>
+    <g transform="rotate(-90 60 188)">
+      <svg x="0" y="128" width="120" height="120" viewBox="0 120 120 120" filter="url(#gris)"><use href="#escena"/></svg>
+    </g>
+    <svg x="128" y="128" width="120" height="120" viewBox="120 120 120 120"><use href="#escena"/></svg>
+    <g fill="none" stroke="#7B2FF7" stroke-width="2">
+      <rect x="0" y="0" width="120" height="120" rx="4"/><rect x="128" y="0" width="120" height="120" rx="4"/>
+      <rect x="0" y="128" width="120" height="120" rx="4"/><rect x="128" y="128" width="120" height="120" rx="4"/>
+    </g>
+  </g>
+
+  <text x="300" y="350" fill="#EDECF5" font-family="'Press Start 2P', monospace" font-size="18" text-anchor="middle">BLOCKA</text>
+</svg>

@@ -15,12 +15,21 @@ const MARGEN = 40;
 const LADO_CANVAS = MARGEN * 2 + CASILLA * TAMANIO;
 const RADIO_FICHA = 30;
 
+// Botones dibujados en el canvas (rectángulos: esquina de arriba a la izquierda + medidas).
+// panel: adentro del cartel de inicio/fin ("Jugar"). hud: abajo del reloj, mientras se juega ("Reiniciar").
+const BOTONES = {
+  panel: { x: 240, y: 500, ancho: 160, alto: 44 },
+  hud: { x: 500, y: 88, ancho: 116, alto: 36, texto: "Reiniciar" },
+};
+
 // Colores del Design System (base.css): el canvas no puede leer las variables CSS
 const COLOR_TEXTO = "#EDECF5"; // --texto
 const COLOR_TEXTO_SECUNDARIO = "#8B88AD"; // --texto-secundario
 const COLOR_SECUNDARIO = "#16E0F2"; // --secundario
 const COLOR_ERROR = "#FF4D6D"; // --error
 const COLOR_EXITO = "#3DDC97"; // --exito
+const COLOR_PRIMARIO = "#7B2FF7"; // --primario (botones)
+const COLOR_PRIMARIO_LUZ = "#9559F9"; // --primario-luz-20 (botón con el mouse encima)
 
 // Color de cada invasor: se usa si su imagen no cargó y en las explosiones
 const COLORES_FICHA = {
@@ -74,9 +83,15 @@ class Vista {
     };
   }
 
+  // ¿El punto (x, y) cae adentro del botón? Es la misma idea que encontrar una figura con el mouse
+  static dentroDe(boton, x, y) {
+    return x >= boton.x && x <= boton.x + boton.ancho && y >= boton.y && y <= boton.y + boton.alto;
+  }
+
   // Dibuja un cuadro completo, de atrás para adelante (lo último que se dibuja queda arriba):
   // fondo → fichas quietas → explosiones → hints → ficha que vuelve → ficha arrastrada → HUD → mensaje
-  dibujar({ tablero, arrastre, volviendo, sobre, explosiones, tiempo, restante, mensaje }) {
+  // botonSobre = "panel", "hud" o null: el botón que tiene el mouse encima (se dibuja más claro)
+  dibujar({ tablero, arrastre, volviendo, sobre, explosiones, tiempo, restante, mensaje, botonSobre }) {
     const ctx = this.ctx;
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     ctx.drawImage(this.imagenes.fondo, 0, 0, this.canvas.width, this.canvas.height);
@@ -99,7 +114,9 @@ class Vista {
 
     // Antes de la primera partida no hay Tablero: en vez de un número se muestra una raya
     this.dibujarHud(tablero ? tablero.cantidadFichas() : "—", restante);
-    if (mensaje) this.dibujarMensaje(mensaje);
+    // Con cartel, el botón está en el cartel; sin cartel (jugando), Reiniciar va abajo del reloj
+    if (mensaje) this.dibujarMensaje(mensaje, botonSobre === "panel");
+    else this.dibujarBoton(BOTONES.hud, BOTONES.hud.texto, botonSobre === "hud");
   }
 
   // Dibuja una ficha con su imagen recortada en círculo.
@@ -231,17 +248,17 @@ class Vista {
 
   // Cartel de inicio y fin de partida: un recuadro abajo del centro, sin tapar el resto,
   // para que se sigan viendo los invasores que quedaron (sobre todo el del centro).
-  // mensaje = { titulo, detalle, tipo }; el tipo decide el color del título y del borde.
-  dibujarMensaje({ titulo, detalle, tipo }) {
+  // mensaje = { titulo, detalle, tipo, boton }; el tipo decide el color del título y del borde,
+  // y boton es el texto del botón del cartel ("Jugar" o "Jugar de nuevo").
+  dibujarMensaje({ titulo, detalle, tipo, boton }, botonResaltado) {
     const ctx = this.ctx;
     const colores = { inicio: COLOR_TEXTO, victoria: COLOR_EXITO, derrota: COLOR_ERROR };
-    const centroY = 470;
     ctx.save();
     ctx.fillStyle = "rgba(27, 24, 48, 0.95)"; // --superficie
     ctx.strokeStyle = colores[tipo];
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.roundRect(60, centroY - 56, LADO_CANVAS - 120, 112, 16);
+    ctx.roundRect(60, 392, LADO_CANVAS - 120, 172, 16);
     ctx.fill();
     ctx.stroke();
 
@@ -249,11 +266,31 @@ class Vista {
     ctx.textBaseline = "middle";
     ctx.font = "700 28px Orbitron, sans-serif";
     ctx.fillStyle = colores[tipo];
-    ctx.fillText(titulo, LADO_CANVAS / 2, centroY - 18);
+    ctx.fillText(titulo, LADO_CANVAS / 2, 428);
 
     ctx.font = "400 16px Inter, sans-serif";
     ctx.fillStyle = COLOR_TEXTO;
-    ctx.fillText(detalle, LADO_CANVAS / 2, centroY + 22);
+    ctx.fillText(detalle, LADO_CANVAS / 2, 468);
+    ctx.restore();
+
+    this.dibujarBoton(BOTONES.panel, boton, botonResaltado);
+  }
+
+  // Botón dibujado: rectángulo redondeado violeta con el texto centrado.
+  // resaltado = true → el mouse está encima: violeta más claro (feedback de que se puede tocar)
+  dibujarBoton(boton, texto, resaltado) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.fillStyle = resaltado ? COLOR_PRIMARIO_LUZ : COLOR_PRIMARIO;
+    ctx.beginPath();
+    ctx.roundRect(boton.x, boton.y, boton.ancho, boton.alto, 8);
+    ctx.fill();
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.font = "600 16px Inter, sans-serif";
+    ctx.fillStyle = COLOR_TEXTO;
+    ctx.fillText(texto, boton.x + boton.ancho / 2, boton.y + boton.alto / 2);
     ctx.restore();
   }
 }

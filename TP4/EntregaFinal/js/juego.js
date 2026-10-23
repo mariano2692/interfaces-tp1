@@ -43,12 +43,12 @@ async function cargarImagenesPeg() {
 }
 
 // Arma el juego: Vista (dibuja) + Controlador (eventos y loop). El Tablero lo crea
-// el Controlador cuando se aprieta Jugar; hasta entonces se ve el tablero vacío.
+// el Controlador cuando se aprieta Jugar (botón dibujado en el canvas); hasta entonces se ve el tablero vacío.
 async function iniciarJuego() {
   const canvas = document.getElementById("lienzo");
   const imagenes = await cargarImagenesPeg();
   const vista = new Vista(canvas, imagenes);
-  const controlador = new Controlador(vista, canvas, document.getElementById("jugar"));
+  const controlador = new Controlador(vista, canvas);
   controlador.iniciar();
 }
 

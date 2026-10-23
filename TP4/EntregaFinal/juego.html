@@ -34,8 +34,8 @@
           <canvas class="peg__lienzo" id="lienzo" aria-label="Peg Solitaire: arrastrá un invasor por encima de otro hasta un hueco vacío"></canvas>
         </div>
 
+        <!-- Jugar y Reiniciar no están acá: se dibujan adentro del canvas (Vista.dibujarBoton) -->
         <div class="juego__botones">
-          <button class="boton boton--primario" id="jugar" type="button">Jugar</button>
           <div class="compartir">
             <button class="boton boton--secundario" id="abrir-compartir" type="button" aria-expanded="false" aria-controls="popover-compartir">Compartir</button>
             <div class="compartir__popover" id="popover-compartir" hidden>
@@ -72,7 +72,7 @@
 
         <section class="ayuda__bloque">
           <h2 class="ayuda__titulo">Tiempo</h2>
-          <p>Tenés <b>3 minutos</b> por partida: el reloj está arriba a la derecha y se pone rojo en los últimos 30 segundos. Con <b>Reiniciar</b> empezás de nuevo cuando quieras.</p>
+          <p>Tenés <b>3 minutos</b> por partida: el reloj está arriba a la derecha y se pone rojo en los últimos 30 segundos. Con <b>Reiniciar</b>, abajo del reloj, empezás de nuevo cuando quieras.</p>
         </section>
 
         <section class="ayuda__bloque">
@@ -221,8 +221,8 @@
        porque cada archivo usa clases o constantes de los anteriores -->
   <script src="js/peg/Ficha.js?v=1"></script>
   <script src="js/peg/Tablero.js?v=1"></script>
-  <script src="js/peg/Vista.js?v=1"></script>
-  <script src="js/peg/Controlador.js?v=1"></script>
-  <script src="js/juego.js?v=9"></script>
+  <script src="js/peg/Vista.js?v=2"></script>
+  <script src="js/peg/Controlador.js?v=2"></script>
+  <script src="js/juego.js?v=10"></script>
 </body>
 </html>

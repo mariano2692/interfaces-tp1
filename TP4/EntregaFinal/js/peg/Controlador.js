@@ -21,21 +21,21 @@ const DURACION_VUELTA = 0.2; // segundos que tarda una ficha soltada en lugar in
 const DURACION_EXPLOSION = 0.4; // segundos de la explosión del invasor comido
 
 // Carteles del canvas
-const MENSAJE_INICIO = { titulo: "Invasión Pixel", detalle: "Apretá Jugar para empezar", tipo: "inicio" };
+const MENSAJE_INICIO = { titulo: "Invasión Pixel", detalle: "Dejá un solo invasor antes de que se acabe el tiempo", tipo: "inicio", boton: "Jugar" };
 
 class Controlador {
-  // Recibe la Vista, el canvas y el botón Jugar/Reiniciar. El juego arranca esperando:
-  // tablero vacío (sin Tablero) y el cartel de inicio.
-  constructor(vista, canvas, botonJugar) {
+  // Recibe la Vista y el canvas. El juego arranca esperando:
+  // tablero vacío (sin Tablero) y el cartel de inicio con el botón Jugar.
+  constructor(vista, canvas) {
     this.vista = vista;
     this.canvas = canvas;
-    this.botonJugar = botonJugar;
 
     this.tablero = null;
     this.estado = "esperando"; // "esperando" | "jugando" | "terminado"
     this.arrastre = null; // { ficha, x, y, destinos, sobre } mientras se arrastra una ficha
     this.volviendo = null; // { ficha, desdeX, desdeY, x, y, inicio } ficha que vuelve a su lugar
     this.sobre = null; // ficha bajo el mouse (se resalta para avisar que se puede agarrar)
+    this.botonSobre = null; // "panel", "hud" o null: botón del canvas bajo el mouse
     this.explosiones = []; // { x, y, tipo, inicio } invasores recién comidos
     this.inicio = 0; // momento en que arrancó la partida (en ms, como lo da requestAnimationFrame)
     this.restante = TIEMPO_LIMITE;
@@ -52,7 +52,6 @@ class Controlador {
     // move y up van en window: si el mouse se sale del canvas con la ficha, se sigue arrastrando
     window.addEventListener("mousemove", (e) => this.onMouseMove(e));
     window.addEventListener("mouseup", (e) => this.onMouseUp(e));
-    this.botonJugar.addEventListener("click", () => this.reiniciar());
     requestAnimationFrame(this.loop);
   }
 
@@ -67,7 +66,7 @@ class Controlador {
     this.inicio = performance.now();
     this.restante = TIEMPO_LIMITE;
     this.mensaje = null;
-    this.botonJugar.textContent = "Reiniciar";
+    this.botonSobre = null;
   }
 
   // Posición del mouse en píxeles DEL CANVAS. Es la misma cuenta que piezaEn de Blocka:
@@ -88,11 +87,25 @@ class Controlador {
     return this.tablero.fichaEn(fila, columna);
   }
 
-  // mousedown: encontrar la ficha y levantarla (feedback: se agranda y tiene sombra)
-  // y calcular a dónde puede saltar (para dibujar los hints)
+  // El botón del canvas que está en (x, y), o null. Solo cuenta el que se está viendo:
+  // con cartel, el del cartel ("panel"); jugando, el Reiniciar de abajo del reloj ("hud").
+  botonEn(x, y) {
+    if (this.mensaje) return Vista.dentroDe(BOTONES.panel, x, y) ? "panel" : null;
+    if (this.estado === "jugando") return Vista.dentroDe(BOTONES.hud, x, y) ? "hud" : null;
+    return null;
+  }
+
+  // mousedown: primero se fija si se tocó un botón (Jugar / Reiniciar → partida nueva).
+  // Si no, encuentra la ficha y la levanta (feedback: se agranda y tiene sombra)
+  // y calcula a dónde puede saltar (para dibujar los hints).
   onMouseDown(e) {
-    if (this.estado !== "jugando" || e.button !== 0) return; // solo clic izquierdo
+    if (e.button !== 0) return; // solo clic izquierdo
     const { x, y } = this.posicionMouse(e);
+    if (this.botonEn(x, y)) {
+      this.reiniciar();
+      return;
+    }
+    if (this.estado !== "jugando") return;
     const ficha = this.fichaEn(x, y);
     if (!ficha || ficha === this.volviendo?.ficha) return;
 
@@ -103,9 +116,9 @@ class Controlador {
   }
 
   // mousemove: si se arrastra una ficha, sigue al mouse y se marca el destino que tiene abajo.
-  // Si no se arrastra nada, solo se resalta la ficha bajo el mouse (cursor "manito").
+  // Si no se arrastra nada, se resalta lo que está bajo el mouse: un botón o una ficha
+  // (el cursor cambia a "mano" para avisar que se puede tocar o agarrar).
   onMouseMove(e) {
-    if (this.estado !== "jugando") return;
     const { x, y } = this.posicionMouse(e);
 
     if (this.arrastre) {
@@ -115,8 +128,11 @@ class Controlador {
       return;
     }
 
-    this.sobre = this.fichaEn(x, y);
-    this.canvas.style.cursor = this.sobre ? "grab" : "default";
+    this.botonSobre = this.botonEn(x, y);
+    this.sobre = this.estado === "jugando" && !this.botonSobre ? this.fichaEn(x, y) : null;
+    if (this.botonSobre) this.canvas.style.cursor = "pointer";
+    else if (this.sobre) this.canvas.style.cursor = "grab";
+    else this.canvas.style.cursor = "default";
   }
 
   // mouseup: si se soltó sobre un destino válido, el Tablero hace el salto y se revisa
@@ -155,12 +171,14 @@ class Controlador {
         titulo: "¡Ganaste!",
         detalle: enElCentro ? "Perfecto: el último invasor quedó en el centro" : "Detuviste la invasión: quedó un solo invasor",
         tipo: "victoria",
+        boton: "Jugar de nuevo",
       });
     } else if (!this.tablero.hayMovimientos()) {
       this.terminar({
         titulo: "Sin movimientos",
-        detalle: `Quedaron ${cantidad} invasores. Apretá Reiniciar para volver a jugar`,
+        detalle: `Ningún invasor puede saltar. Quedaron ${cantidad}`,
         tipo: "derrota",
+        boton: "Jugar de nuevo",
       });
     }
   }
@@ -185,8 +203,9 @@ class Controlador {
       if (this.restante === 0) {
         this.terminar({
           titulo: "¡Se acabó el tiempo!",
-          detalle: `Quedaron ${this.tablero.cantidadFichas()} invasores. Apretá Reiniciar para volver a jugar`,
+          detalle: `Quedaron ${this.tablero.cantidadFichas()} invasores en el tablero`,
           tipo: "derrota",
+          boton: "Jugar de nuevo",
         });
       }
     }
@@ -203,6 +222,7 @@ class Controlador {
       tiempo,
       restante: this.restante,
       mensaje: this.mensaje,
+      botonSobre: this.botonSobre,
     });
     requestAnimationFrame(this.loop);
   }

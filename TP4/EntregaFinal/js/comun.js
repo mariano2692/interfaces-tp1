@@ -59,6 +59,7 @@ const FILTROS_MENU = [
   { nombre: "Gratis", ancla: "gratis", icono: "regalo" },
 ];
 
+// Nombre visible de una categoría o filtro a partir de su ancla (ej.: "ofertas" → "En oferta")
 const tituloDeCategoria = (ancla) => [...CATEGORIAS_MENU, ...FILTROS_MENU].find((c) => c.ancla === ancla).nombre;
 
 /* ---------- Header ---------- */
@@ -91,6 +92,7 @@ function crearHeader() {
 /* ---------- Paneles: categorías, cuenta y carrito ---------- */
 
 function crearPaneles() {
+  // HTML de un link del menú de categorías
   const item = (c) =>
     `<a class="panel__item" href="home.html#${c.ancla}">${ICONOS[c.icono]} ${c.nombre}</a>`;
 
@@ -160,6 +162,8 @@ function cambiarIconoMenu(boton, abierto) {
   boton.setAttribute("aria-label", abierto ? "Cerrar menú de categorías" : "Abrir menú de categorías");
 }
 
+// Abre un panel (categorías, cuenta o carrito) cerrando el que estuviera abierto;
+// disparador = el botón que lo abrió (para aria-expanded y el ícono ☰/✕)
 function abrirPanel(id, disparador) {
   cerrarPanel();
   const panel = document.getElementById(id);
@@ -174,6 +178,7 @@ function abrirPanel(id, disparador) {
   }
 }
 
+// Cierra el panel abierto (si hay uno) y el fondo oscuro (scrim)
 function cerrarPanel() {
   if (!panelAbierto) return;
   panelAbierto.panel.hidden = true;
@@ -183,7 +188,9 @@ function cerrarPanel() {
   panelAbierto = null;
 }
 
+// Engancha los botones del header que abren y cierran los paneles
 function conectarPaneles() {
+  // Devuelve el manejador del clic: si ese panel ya está abierto lo cierra, si no lo abre
   const alternar = (id, boton) => () =>
     panelAbierto?.panel.id === id ? cerrarPanel() : abrirPanel(id, boton);
 
@@ -231,6 +238,8 @@ function conectarPaneles() {
 
 let temporizadorToast;
 
+// Muestra un aviso corto abajo de la pantalla que se va solo a los 2,6 s.
+// void offsetWidth reinicia la animación si se muestra otro toast antes de que termine
 function mostrarToast(mensaje) {
   const toast = document.getElementById("toast");
   toast.textContent = mensaje;
@@ -246,6 +255,7 @@ function mostrarToast(mensaje) {
 const CLAVE_CARRITO = "neoarcade-carrito";
 let carrito = [];
 
+// Lee el carrito guardado en localStorage (si falla o no hay nada, arranca vacío)
 function leerCarrito() {
   try {
     carrito = JSON.parse(localStorage.getItem(CLAVE_CARRITO)) || [];
@@ -254,6 +264,7 @@ function leerCarrito() {
   }
 }
 
+// Guarda el carrito en localStorage para que se vea igual en todas las páginas
 function guardarCarrito() {
   try {
     localStorage.setItem(CLAVE_CARRITO, JSON.stringify(carrito));
@@ -262,6 +273,7 @@ function guardarCarrito() {
   }
 }
 
+// Suma un juego al carrito (si no estaba), lo guarda, lo muestra y avisa con un toast
 function agregarAlCarrito(juego) {
   if (carrito.some((item) => item.id === juego.id)) {
     mostrarToast(`${juego.nombre} ya está en tu carrito`);
@@ -273,6 +285,8 @@ function agregarAlCarrito(juego) {
   mostrarToast(`Agregaste ${juego.nombre} al carrito`);
 }
 
+// Dibuja la lista del carrito, el total y el contador del header.
+// animar = true → el contador hace un latido (se acaba de agregar algo)
 function renderizarCarrito(animar = false) {
   const lista = document.getElementById("carrito-lista");
   const contador = document.getElementById("contador-carrito");
@@ -306,6 +320,7 @@ function renderizarCarrito(animar = false) {
   }
 }
 
+// Carga el carrito guardado y engancha los botones de quitar y finalizar compra
 function conectarCarrito() {
   leerCarrito();
   renderizarCarrito();
@@ -345,6 +360,7 @@ const TIENDAS = [
   ["Google Play", '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M4 3l10 9-10 9z"/><path d="M4 3l13 7.5-3 1.5M4 21l13-7.5-3-1.5M17 10.5l3 1.5-3 1.5"/></svg>'],
 ];
 
+// Arma el footer de todas las páginas: columnas de links, newsletter, medios de pago y tiendas
 function crearFooter() {
   const footer = document.getElementById("footer");
   footer.className = "footer";
@@ -421,6 +437,7 @@ function crearFooter() {
     </div>`;
 
   const desktop = matchMedia("(min-width: 768px)");
+  // En desktop las columnas del footer quedan abiertas; en mobile son acordeones cerrados
   const acomodarColumnas = () =>
     footer.querySelectorAll(".footer__columna").forEach((columna) => (columna.open = desktop.matches));
   acomodarColumnas();
@@ -429,6 +446,7 @@ function crearFooter() {
   conectarNewsletter();
 }
 
+// Valida el mail del formulario de newsletter y muestra el error o el aviso de suscripción
 function conectarNewsletter() {
   const form = document.getElementById("newsletter");
   const input = document.getElementById("newsletter-mail");
@@ -534,16 +552,19 @@ function asentarCards(pista, sentido) {
   });
 }
 
+// Engancha las flechas (y el deslizamiento con el dedo) de cada carrusel de cards
 function conectarCarruseles(contenedor) {
   contenedor.querySelectorAll(".carrusel").forEach((carrusel) => {
     const pista = carrusel.querySelector(".carrusel__pista");
     const izq = carrusel.querySelector(".carrusel__flecha--izq");
     const der = carrusel.querySelector(".carrusel__flecha--der");
 
+    // Deshabilita la flecha izquierda al principio y la derecha al final del carrusel
     const actualizar = () => {
       izq.disabled = pista.scrollLeft <= 4;
       der.disabled = pista.scrollLeft + pista.clientWidth >= pista.scrollWidth - 4;
     };
+    // Corre el carrusel casi un ancho de pantalla: sentido -1 = izquierda, 1 = derecha
     const mover = (sentido) => {
       const maximo = pista.scrollWidth - pista.clientWidth;
       const destino = Math.max(0, Math.min(pista.scrollLeft + sentido * pista.clientWidth * 0.9, maximo));

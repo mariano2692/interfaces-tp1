@@ -55,6 +55,8 @@ const BLOCKA = {
 const PRECIOS = [9.99, 14.99, 19.99, 29.99, 39.99, 59.99];
 const FREE_TO_PLAY = /Counter-Strike|Dota 2|Team Fortress 2|Warframe|Apex Legends|Path of Exile|Destiny 2|Half-Life 2: (Deathmatch|Lost Coast)/;
 
+// Precio inventado de un juego: gratis si es free-to-play; si no, uno de PRECIOS según el id
+// (y 1 de cada 5 en oferta con 30 % de descuento)
 function calcularPrecio(juego) {
   if (typeof juego.id !== "number" || FREE_TO_PLAY.test(juego.name)) {
     return { gratis: true, final: 0 };
@@ -73,6 +75,7 @@ function calcularPrecio(juego) {
 // alcanza para el slider y el banner, y en mobile carga mucho más rápido.
 const achicarImagen = (url) => url?.replace("media.rawg.io/media/games/", "media.rawg.io/media/resize/1280/-/games/");
 
+// Pasa un juego del formato de la API (en inglés) al formato que usa el sitio
 function normalizar(juego) {
   return {
     id: juego.id,
@@ -88,6 +91,7 @@ function normalizar(juego) {
   };
 }
 
+// Pide la lista de juegos a la API; si tarda más de TIMEOUT_API se corta (AbortController)
 async function pedirApi() {
   const control = new AbortController();
   const corte = setTimeout(() => control.abort(), TIMEOUT_API);
@@ -112,6 +116,7 @@ async function obtenerJuegos() {
   return [PEG_SOLITAIRE, BLOCKA, ...crudos].map(normalizar);
 }
 
+// 45 → "U$D 45"; 19.99 → "U$D 19,99"
 function formatearPrecio(valor) {
   // Como en el Figma ("U$D 45"): decimales solo si el precio los tiene
   const decimales = Number.isInteger(valor) ? 0 : 2;

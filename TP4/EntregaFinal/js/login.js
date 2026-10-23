@@ -56,11 +56,13 @@ const reglas = {
   "reg-captcha": (_, input) => input.checked,
 };
 
+// Valida un campo con su regla y muestra u oculta su error; devuelve si es válido
 function validarCampo(input) {
   const regla = reglas[input.id];
   return regla ? marcarError(input, !regla(input.value, input)) : true;
 }
 
+// Valida todos los campos del formulario; devuelve true solo si todos son válidos
 function validarFormulario(form) {
   const inputs = form.querySelectorAll("input");
   let valido = true;
@@ -78,6 +80,7 @@ document.querySelectorAll(".formulario input").forEach((input) => {
   });
 });
 
+// Sacude el recuadro del formulario (feedback de error al enviar con datos inválidos)
 function sacudir() {
   recuadro.classList.remove("recuadro--sacudir");
   void recuadro.offsetWidth; // reinicia la animación si se repite

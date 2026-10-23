@@ -18,6 +18,7 @@ function iniciarCompartir(texto) {
   document.getElementById("compartir-x").href = `https://x.com/intent/post?text=${encodeURIComponent(texto)}&url=${url}`;
   document.getElementById("compartir-facebook").href = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
 
+  // Muestra u oculta el popover de compartir (abrir = true lo muestra)
   const alternar = (abrir) => {
     popover.hidden = !abrir;
     boton.setAttribute("aria-expanded", abrir);

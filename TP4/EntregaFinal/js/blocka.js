@@ -102,6 +102,7 @@ const azar = (max) => Math.floor(Math.random() * max);
 // try/catch porque en modo incógnito o con el almacenamiento bloqueado puede fallar.
 const claveRecord = (nivel, piezas) => `blocka-record-${nivel}-${piezas}`;
 
+// Récord guardado (en segundos) de ese nivel con esa cantidad de piezas, o null si no hay
 function leerRecord(nivel, piezas) {
   try {
     const valor = localStorage.getItem(claveRecord(nivel, piezas));
@@ -111,6 +112,7 @@ function leerRecord(nivel, piezas) {
   }
 }
 
+// Guarda el nuevo récord de ese nivel y cantidad de piezas
 function guardarRecord(nivel, piezas, segundos) {
   try {
     localStorage.setItem(claveRecord(nivel, piezas), segundos);
@@ -255,6 +257,7 @@ function iniciarBlocka() {
     const hasta = pieza.angulo;
     const inicio = performance.now();
 
+    // Un cuadro del giro: acerca anguloVisible al ángulo final según el tiempo que pasó
     function cuadro(ahora) {
       const t = Math.min((ahora - inicio) / DURACION_GIRO, 1);
       const suave = 1 - (1 - t) ** 3; // ease-out: arranca rápido y frena al final
@@ -329,6 +332,7 @@ function iniciarBlocka() {
     }, 1000);
   }
 
+  // En los niveles con tiempo máximo, pierde si el reloj ya llegó a ese tiempo
   function revisarTiempoMaximo() {
     const { tiempoMaximo } = NIVELES[nivel];
     if (tiempoMaximo && segundos >= tiempoMaximo) perder();
@@ -389,6 +393,7 @@ function iniciarBlocka() {
     }).join("");
   }
 
+  // Vuelve al menú principal: frena el reloj y muestra la pantalla del menú
   function abrirMenu() {
     estado = "menu";
     clearInterval(reloj);
@@ -438,6 +443,7 @@ function iniciarBlocka() {
       let paso = 0;
       let espera = 60;
 
+      // Un paso de la ruleta de miniaturas: resalta la siguiente y, al final, marca la elegida
       function saltar() {
         miniaturas.forEach((m, i) => m.classList.toggle("sorteo__miniatura--resaltada", i === paso % IMAGENES.length));
         if (paso === saltos) {
@@ -484,6 +490,7 @@ function iniciarBlocka() {
     arrancarReloj(); // el temporizador arranca cuando la blocka ya está en pantalla
   }
 
+  // Fin del nivel (ganado o perdido): frena el reloj y bloquea las piezas y la ayudita
   function terminar() {
     clearInterval(reloj);
     contenedor.classList.remove("blocka--jugando");
@@ -497,6 +504,7 @@ function iniciarBlocka() {
     resuelta = true;
     const inicio = performance.now();
     return new Promise((resolver) => {
+      // Un cuadro del fundido: sube la opacidad de las piezas originales sobre las filtradas
       function cuadro(ahora) {
         opacidadOriginal = Math.min((ahora - inicio) / DURACION_REVELADO, 1);
         dibujar();
@@ -507,6 +515,7 @@ function iniciarBlocka() {
     });
   }
 
+  // Nivel resuelto: revela la imagen original, guarda el récord si lo es y muestra el cartel
   async function ganar() {
     estado = "ganado";
     terminar();
@@ -525,6 +534,7 @@ function iniciarBlocka() {
     });
   }
 
+  // Se acabó el tiempo máximo: muestra el cartel de derrota
   function perder() {
     estado = "perdido";
     terminar();
@@ -532,6 +542,7 @@ function iniciarBlocka() {
     mostrarFin({ titulo: "¡Se acabó el tiempo!", detalle: "La blocka quedó sin armar", seguir: "Reintentar" });
   }
 
+  // Muestra el cartel de fin de nivel con su título, detalle y texto del botón para seguir
   function mostrarFin({ titulo, detalle, seguir }) {
     document.getElementById("fin-titulo").textContent = titulo;
     document.getElementById("fin-detalle").textContent = detalle;
@@ -569,6 +580,7 @@ const COMENTARIOS = [
   { nick: "manu_rgb", fecha: "hace una semana", texto: "Con 8 piezas y un filtro distinto en cada una es otro juego. Me encanta la ruleta del principio." },
 ];
 
+// Arranca todo lo de la página de Blocka
 function iniciarPaginaBlocka() {
   iniciarComun();
   iniciarBlocka();

@@ -19,6 +19,7 @@ function simularCarga() {
   return new Promise((resolver) => {
     const inicio = performance.now();
 
+    // Un cuadro de la animación de carga: avanza el porcentaje según el tiempo que pasó
     function cuadro(ahora) {
       const avance = Math.min(Math.max(ahora - inicio, 0) / DURACION_CARGA, 1);
       const valor = Math.round(avance * 100);
@@ -71,6 +72,7 @@ function abrirFicha(juego, disparador) {
   ficha.addEventListener("close", () => disparador.focus(), { once: true });
 }
 
+// Engancha el cierre de la ficha de un juego (clic en el fondo oscuro o en la ✕)
 function conectarFicha() {
   const ficha = document.getElementById("ficha");
   ficha.addEventListener("click", (e) => {
@@ -116,8 +118,10 @@ function crearSlider(destacados) {
   let temporizador;
   let animando = false;
 
+  // Índice del slide vecino, dando la vuelta (antes del primero viene el último)
   const vecino = (paso) => (actual + paso + total) % total;
 
+  // Actualiza las imágenes de los costados del slider (anterior y siguiente)
   function actualizarPeeks(animar) {
     [[peekIzq, vecino(-1)], [peekDer, vecino(1)]].forEach(([peek, indice]) => {
       peek.querySelector("img").src = destacados[indice].imagen;
@@ -128,6 +132,7 @@ function crearSlider(destacados) {
     });
   }
 
+  // Marca el puntito del slide que se está viendo
   function marcarIndicador() {
     puntos.forEach((punto, i) => {
       punto.classList.toggle("indicador--activo", i === actual);
@@ -135,6 +140,7 @@ function crearSlider(destacados) {
     });
   }
 
+  // Pasa al slide destino con la animación hacia el lado que indica sentido (1 o -1)
   function irA(destino, sentido) {
     if (destino === actual || animando) return;
     animando = true;
@@ -162,9 +168,12 @@ function crearSlider(destacados) {
     reiniciarAutoplay();
   }
 
+  // Avanza un slide
   const siguiente = () => irA(vecino(1), 1);
+  // Retrocede un slide
   const anterior = () => irA(vecino(-1), -1);
 
+  // Vuelve a arrancar el pase automático de slides (si el slider no está pausado)
   function reiniciarAutoplay() {
     clearInterval(temporizador);
     if (!slider.classList.contains("slider--pausado")) temporizador = setInterval(siguiente, DURACION_SLIDE);
@@ -223,7 +232,9 @@ function crearSlider(destacados) {
 /* ---------- Filas de carruseles ---------- */
 
 const POR_FILA = 8;
+// Arma un filtro: deja pasar los juegos que tengan alguno de esos géneros
 const tieneGenero = (...generos) => (j) => generos.some((g) => j.generos.includes(g));
+// Para sort: primero el de mayor puntaje
 const porRating = (a, b) => b.rating - a.rating;
 // Mezcla fija (siempre igual) para que "Recomendados" no repita el orden de "Mejores puntuados"
 const mezclaFija = (a, b) => ((a.id * 7919) % 97) - ((b.id * 7919) % 97);
@@ -233,6 +244,7 @@ const mezclaFija = (a, b) => ((a.id * 7919) % 97) - ((b.id * 7919) % 97);
 function armarFilas(juegos) {
   const [peg, blocka, ...resto] = juegos;
   const usados = new Set();
+  // Toma los primeros juegos de la lista que no se usaron en otra fila y los marca como usados
   const tomar = (lista, cantidad = POR_FILA) => {
     const elegidos = lista.filter((j) => !usados.has(j.id)).slice(0, cantidad);
     elegidos.forEach((j) => usados.add(j.id));

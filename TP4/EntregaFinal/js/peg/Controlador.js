@@ -80,6 +80,14 @@ class Controlador {
     };
   }
 
+  // "Barrera invisible": deja el valor entre r y (maximo - r), con r = radio de la ficha
+  // levantada (1.15 veces el normal, como en Vista.dibujarFicha). Así la ficha arrastrada
+  // queda siempre entera adentro del canvas aunque el mouse salga afuera.
+  limitar(valor, maximo) {
+    const r = this.vista.radioFicha * 1.15;
+    return Math.min(Math.max(valor, r), maximo - r);
+  }
+
   // La ficha que está bajo el punto (x, y) del canvas, o null
   fichaEn(x, y) {
     if (!this.tablero) return null;
@@ -122,9 +130,9 @@ class Controlador {
     const { x, y } = this.posicionMouse(e);
 
     if (this.arrastre) {
-      this.arrastre.x = x;
-      this.arrastre.y = y;
-      this.arrastre.sobre = this.destinoEn(x, y);
+      this.arrastre.x = this.limitar(x, this.canvas.width);
+      this.arrastre.y = this.limitar(y, this.canvas.height);
+      this.arrastre.sobre = this.destinoEn(this.arrastre.x, this.arrastre.y);
       return;
     }
 

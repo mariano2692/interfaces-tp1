@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nave Pixel: Cinturón de Asteroides — NeoArcade</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Orbitron:wght@600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/base.css?v=6">
+  <link rel="stylesheet" href="css/comun.css?v=22">
+  <link rel="stylesheet" href="css/juego.css?v=17">
+  <link rel="stylesheet" href="css/nave.css?v=2">
+</head>
+<body>
+
+  <header id="header"></header>
+
+  <!-- Misma estructura que las páginas de Peg Solitaire y Blocka: migas, título,
+       zona de juego con instrucciones al costado, ficha del juego y comunidad -->
+  <main class="juego contenedor">
+    <nav class="migas texto-chico" aria-label="Estás en">
+      <a href="home.html">Inicio</a>
+      <span aria-hidden="true">›</span>
+      <a href="home.html#accion">Acción</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">Nave Pixel</span>
+    </nav>
+
+    <h1 class="titulo-h1 juego__titulo">Nave Pixel: Cinturón de Asteroides</h1>
+
+    <!-- Zona de juego: escenario + instrucciones a la derecha -->
+    <section class="juego__zona">
+      <div class="juego__principal">
+        <div class="tablero nave-juego">
+          <!-- El escenario mide 960 × 540; si no entra, el JS lo achica entero (--escala) -->
+          <div class="nave-marco" id="nave-marco">
+            <div class="escenario" id="escenario" aria-label="Nave Pixel: hacé clic o apretá Espacio para impulsar la nave">
+              <!-- Acá el JS crea las capas del fondo, las columnas, los elementos y la nave -->
+              <div class="mundo" id="mundo"></div>
+
+              <!-- HUD: vidas, puntos y récord -->
+              <div class="nave-hud">
+                <div class="hud__bloque">
+                  <span class="hud__titulo">VIDAS</span>
+                  <div class="hud__vidas" id="hud-vidas"></div>
+                </div>
+                <div class="hud__bloque hud__bloque--centro">
+                  <span class="hud__titulo">PUNTOS</span>
+                  <span class="hud__puntos" id="hud-puntos" aria-live="polite"></span>
+                </div>
+                <div class="hud__bloque hud__bloque--derecha">
+                  <span class="hud__titulo">MEJOR</span>
+                  <span id="hud-record"></span>
+                </div>
+              </div>
+              <p class="hud__aviso" id="hud-aviso">¡METEORITO! MOTORES AL 45 %</p>
+
+              <!-- Pantalla de inicio -->
+              <div class="nave-pantalla" id="pantalla-inicio">
+                <div class="nave-pantalla__nave" aria-hidden="true"></div>
+                <h2 class="nave-pantalla__titulo">Nave Pixel</h2>
+                <p>Atravesá el cinturón de asteroides y sumá 60 puntos para llegar a la base.</p>
+                <button class="boton boton--primario" type="button" id="boton-jugar" disabled>Cargando…</button>
+                <p class="nave-pantalla__tecla">Clic, <span class="ayuda__tecla">Espacio</span> o <span class="ayuda__tecla">↑</span> para impulsar la nave</p>
+              </div>
+
+              <!-- Pantalla de fin: llegó a la base o se quedó sin vidas -->
+              <div class="nave-pantalla nave-pantalla--fin" id="pantalla-fin" role="status" hidden>
+                <h2 class="nave-pantalla__titulo" id="fin-titulo"></h2>
+                <p id="fin-detalle"></p>
+                <button class="boton boton--primario" type="button" id="boton-otra">Jugar de nuevo</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="juego__botones">
+          <button class="boton boton--secundario" id="reiniciar" type="button" disabled>Reiniciar</button>
+          <div class="compartir">
+            <button class="boton boton--secundario" id="abrir-compartir" type="button" aria-expanded="false" aria-controls="popover-compartir">Compartir</button>
+            <div class="compartir__popover" id="popover-compartir" hidden>
+              <p class="texto-chico compartir__titulo">Compartir Nave Pixel</p>
+              <button class="compartir__opcion" type="button" id="copiar-enlace">🔗 Copiar enlace</button>
+              <a class="compartir__opcion" id="compartir-whatsapp" target="_blank" rel="noopener">💬 WhatsApp</a>
+              <a class="compartir__opcion" id="compartir-email">✉️ Email</a>
+              <a class="compartir__opcion" id="compartir-x" target="_blank" rel="noopener">𝕏 X</a>
+              <a class="compartir__opcion" id="compartir-facebook" target="_blank" rel="noopener">📘 Facebook</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Instrucciones al costado del juego, siempre visibles mientras se juega
+           (reconocer antes que recordar, Nielsen #6). Cada elemento con su imagen. -->
+      <aside class="ayuda" aria-label="Cómo se juega">
+        <section class="ayuda__bloque">
+          <h2 class="ayuda__titulo">Controles</h2>
+          <div class="ayuda__fila">
+            <svg class="ayuda__mouse" viewBox="0 0 24 36" aria-hidden="true">
+              <rect x="1.5" y="1.5" width="21" height="33" rx="10.5" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M12 1.5v12H1.5V12A10.5 10.5 0 0 1 12 1.5z" fill="var(--primario-luz-40)"/>
+              <path d="M12 2v11M2 13h20" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <p><b>Clic</b> sobre el juego, <span class="ayuda__tecla">Espacio</span> o <span class="ayuda__tecla">↑</span>: impulsa la nave hacia arriba. Si no hacés nada, cae.</p>
+          </div>
+        </section>
+
+        <section class="ayuda__bloque">
+          <h2 class="ayuda__titulo">Objetivo</h2>
+          <p>La nave avanza sola. Pasá por los huecos de las columnas de asteroides: cada columna suma 1 punto. Con <b>60 puntos</b> llegás a la base.</p>
+        </section>
+
+        <section class="ayuda__bloque">
+          <h2 class="ayuda__titulo">En el camino</h2>
+          <div class="ayuda__fila">
+            <span class="ayuda__icono ayuda__icono--cristal" aria-hidden="true"></span>
+            <p><b>Cristal de energía</b>: aparece en algunos huecos y suma <b>+5 puntos</b>.</p>
+          </div>
+          <div class="ayuda__fila">
+            <span class="ayuda__icono ayuda__icono--meteorito" aria-hidden="true"></span>
+            <p><b>Meteorito</b>: viene más rápido. Si te pega, los motores fallan y la nave va <b>más lenta</b> por unos segundos.</p>
+          </div>
+          <div class="ayuda__fila">
+            <span class="ayuda__icono ayuda__icono--columna" aria-hidden="true"></span>
+            <p><b>Columnas y suelo</b>: si chocás, perdés <b>una vida</b> (tenés 3). Los huecos se achican a medida que avanzás.</p>
+          </div>
+        </section>
+      </aside>
+    </section>
+
+    <!-- De qué trata: descripción, galería y video -->
+    <section class="ficha">
+      <h2 class="titulo-seccion">¿De qué trata este juego?</h2>
+      <div class="ficha__texto">
+        <p>
+          Sos la última nave de reparto de NeoArcade y tenés que cruzar el cinturón de asteroides para llegar a la base.
+          El problema: el camino está lleno de columnas de roca flotante y los huecos para pasar son cada vez más angostos.
+        </p>
+        <p>
+          Mantené la nave en el aire a puro impulso, juntá cristales de energía para llegar antes y esquivá los meteoritos,
+          que te dejan los motores andando a media máquina. Tenés tres vidas. ¿Llegás a la base?
+        </p>
+      </div>
+
+      <div class="galeria">
+        <figure class="galeria__item">
+          <img src="img/nave/galeria-1.png" alt="Nave violeta pasando entre dos columnas de asteroides, con el fondo de estrellas y montañas lunares" loading="lazy">
+          <figcaption class="texto-chico">Atravesando el cinturón</figcaption>
+        </figure>
+        <figure class="galeria__item">
+          <img src="img/nave/galeria-2.png" alt="La nave agarra un cristal de energía en el hueco de una columna y suma 5 puntos" loading="lazy">
+          <figcaption class="texto-chico">Cristal de energía +5</figcaption>
+        </figure>
+        <figure class="galeria__item">
+          <img src="img/nave/galeria-3.png" alt="Cartel ¡Llegaste a la base! con los puntos y el tiempo de la partida" loading="lazy">
+          <figcaption class="texto-chico">¡Llegaste a la base!</figcaption>
+        </figure>
+      </div>
+
+      <div class="ficha__media">
+        <figure class="video">
+          <button class="video__marco" type="button" id="video" aria-label="Reproducir trailer">
+            <img src="img/nave/trailer.png" alt="" loading="lazy">
+            <span class="video__play" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="56" height="56"><circle cx="12" cy="12" r="11" fill="rgba(14,11,22,.6)" stroke="#EDECF5" stroke-width="1.5"/><path d="M10 8l6 4-6 4z" fill="#EDECF5"/></svg>
+            </span>
+          </button>
+          <figcaption class="texto-chico">Trailer — Nave Pixel: Cinturón de Asteroides</figcaption>
+        </figure>
+
+        <div class="relacionados">
+          <h3 class="texto-enfasis">Enlaces relacionados</h3>
+          <ul class="relacionados__links">
+            <li><a href="juego.html">Peg Solitaire: Invasión Pixel</a></li>
+            <li><a href="blocka.html">Blocka: Pixel Puzzle</a></li>
+            <li><a href="home.html#accion">Más juegos de acción</a></li>
+            <li><a href="home.html">Otros juegos de NeoArcade Studio</a></li>
+          </ul>
+
+          <h3 class="texto-enfasis">Detalles del juego</h3>
+          <dl class="relacionados__detalles">
+            <div><dt>Desarrollador:</dt> <dd>NeoArcade Studio</dd></div>
+            <div><dt>Categoría:</dt> <dd>Acción · Arcade</dd></div>
+            <div><dt>Lanzamiento:</dt> <dd>2026</dd></div>
+            <div><dt>Jugadores:</dt> <dd>1</dd></div>
+            <div><dt>Plataforma:</dt> <dd>Navegador (PC)</dd></div>
+            <div><dt>Idioma:</dt> <dd>Español</dd></div>
+            <div><dt>Clasificación:</dt> <dd>Apto para todo público</dd></div>
+          </dl>
+
+          <h3 class="texto-enfasis">Etiquetas</h3>
+          <ul class="etiquetas">
+            <li>Arcade</li>
+            <li>Runner</li>
+            <li>Espacio</li>
+            <li>Pixel art</li>
+            <li>Un jugador</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comunidad (igual que en los otros juegos) -->
+    <section class="comunidad">
+      <h2 class="titulo-seccion">Comunidad</h2>
+
+      <form class="resena" id="form-resena" novalidate>
+        <p class="texto-enfasis">Dejá tu reseña</p>
+        <div class="estrellas" id="estrellas" role="radiogroup" aria-label="Puntaje">
+          <button type="button" role="radio" aria-checked="false" aria-label="1 estrella">☆</button>
+          <button type="button" role="radio" aria-checked="false" aria-label="2 estrellas">☆</button>
+          <button type="button" role="radio" aria-checked="false" aria-label="3 estrellas">☆</button>
+          <button type="button" role="radio" aria-checked="false" aria-label="4 estrellas">☆</button>
+          <button type="button" role="radio" aria-checked="false" aria-label="5 estrellas">☆</button>
+        </div>
+        <div class="campo">
+          <div class="campo__caja">
+            <textarea id="resena-texto" rows="3" placeholder="Contanos qué te pareció el juego..." aria-label="Tu reseña"></textarea>
+          </div>
+          <p class="campo__error">ⓘ Elegí un puntaje y escribí al menos 10 caracteres</p>
+        </div>
+        <button class="boton boton--secundario boton--chico" type="submit">Publicar reseña</button>
+      </form>
+
+      <ul class="comentarios" id="comentarios"></ul>
+    </section>
+  </main>
+
+
+  <footer id="footer"></footer>
+
+  <script src="data/juegos-respaldo.js?v=2"></script>
+  <script src="js/datos.js?v=7"></script>
+  <script src="js/comun.js?v=14"></script>
+  <script src="js/pagina-juego.js?v=1"></script>
+  <script src="js/nave/utiles.js?v=1"></script>
+  <script src="js/nave/Parallax.js?v=1"></script>
+  <script src="js/nave/Nave.js?v=1"></script>
+  <script src="js/nave/Columnas.js?v=1"></script>
+  <script src="js/nave/Elementos.js?v=1"></script>
+  <script src="js/nave/Juego.js?v=1"></script>
+  <script src="js/pagina-nave.js?v=1"></script>
+</body>
+</html>

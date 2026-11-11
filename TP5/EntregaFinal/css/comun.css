@@ -1,0 +1,1210 @@
+/* =========================================================
+   Partes compartidas (Home y Juego) — mobile first
+   ========================================================= */
+
+.contenedor {
+  padding-inline: 16px;
+}
+
+@media (min-width: 768px) {
+  .contenedor {
+    padding-inline: 32px;
+  }
+}
+
+/* ---------- Header ---------- */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 64px;
+  padding-inline: 8px;
+  background: rgba(14, 11, 22, 0.92);
+  backdrop-filter: blur(8px);
+}
+
+.header__marca {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header__logo {
+  font-size: 14px;
+}
+
+.header__acciones {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.header__icono {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  background: none;
+  border: none;
+  border-radius: var(--radio);
+  color: var(--texto);
+  cursor: pointer;
+  transition: background-color var(--transicion), color var(--transicion);
+}
+
+.header__icono:hover {
+  background: var(--superficie);
+  color: var(--secundario);
+}
+
+.contador {
+  position: absolute;
+  top: 4px;
+  right: 2px;
+  min-width: 18px;
+  height: 18px;
+  padding-inline: 4px;
+  border-radius: 9px;
+  background: var(--acento);
+  color: var(--fondo);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 18px;
+}
+
+.contador--latido {
+  animation: latido 500ms ease-out;
+}
+
+@keyframes latido {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.5); }
+  100% { transform: scale(1); }
+}
+
+/* Buscador: en desktop va centrado en el header; en mobile se despliega debajo con la lupa */
+.buscador {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: var(--superficie);
+  border: 1px solid var(--superficie);
+  border-radius: 3px; /* casi recto, como en el Figma */
+  color: var(--texto-secundario);
+  transition: border-color var(--transicion);
+}
+
+.buscador:hover {
+  border-color: var(--texto-secundario);
+}
+
+.buscador:focus-within {
+  border-color: var(--texto-secundario); /* mismo borde que el Campo en focus */
+}
+
+.buscador svg {
+  width: 20px;
+  height: 20px;
+}
+
+.buscador input {
+  flex: 1;
+  min-width: 0;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+
+.buscador input::placeholder {
+  color: var(--texto-secundario);
+}
+
+.header--buscando .buscador {
+  display: flex;
+  position: absolute;
+  top: 64px;
+  left: 16px;
+  right: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  animation: desplegar-buscador 200ms ease-out;
+}
+
+@keyframes desplegar-buscador {
+  0% { opacity: 0; transform: translateY(-8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@media (min-width: 768px) {
+  .header {
+    gap: 16px;
+    padding-inline: 24px;
+  }
+
+  .header__logo {
+    font-size: 18px;
+  }
+
+  /* Desde tablet: marca a la izquierda, buscador centrado y acciones a la derecha (como en el Figma) */
+  .header {
+    display: grid;
+    grid-template-columns: 1fr minmax(200px, 300px) 1fr;
+  }
+
+  .buscador,
+  .header--buscando .buscador {
+    display: flex;
+    position: static;
+    box-shadow: none;
+    animation: none;
+  }
+
+  .header__lupa {
+    display: none;
+  }
+
+  .header__acciones {
+    justify-self: end;
+    margin-left: 0;
+  }
+}
+
+/* Botón de cuenta: avatar + flecha (hover solo visual, se abre con clic) */
+.cuenta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px 4px 4px;
+  background: none;
+  border: none;
+  border-radius: 24px;
+  color: var(--texto-secundario);
+  cursor: pointer;
+  transition: background-color var(--transicion), color var(--transicion);
+}
+
+.cuenta:hover,
+.cuenta[aria-expanded="true"] {
+  background: var(--superficie);
+  color: var(--primario-luz-40);
+}
+
+.cuenta__flecha svg {
+  width: 18px;
+  height: 18px;
+  transition: transform var(--transicion);
+}
+
+.cuenta[aria-expanded="true"] .cuenta__flecha svg {
+  transform: rotate(180deg);
+}
+
+.avatar {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primario), var(--secundario-sombra-20));
+  color: #FFF;
+  font-weight: 600;
+}
+
+.avatar img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar--grande {
+  width: 44px;
+  height: 44px;
+  font-size: 18px;
+}
+
+/* ---------- Paneles ---------- */
+
+/* Menú y carrito se abren debajo del header: el scrim tampoco lo tapa */
+.scrim {
+  position: fixed;
+  inset: 64px 0 0;
+  z-index: 30;
+  background: rgba(0, 0, 0, 0.4);
+  animation: fundido 200ms ease-out;
+}
+
+.scrim[hidden],
+.panel[hidden],
+.menu-cuenta[hidden] {
+  display: none;
+}
+
+.panel {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  z-index: 40;
+  width: min(320px, 85vw);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 24px 16px;
+  overflow-y: auto;
+  background: var(--superficie);
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Menú de categorías: se abre debajo del header (como en el Figma) para que la ✕ quede a mano */
+.panel--izquierda {
+  top: 64px;
+  left: 0;
+  width: min(250px, 85vw);
+  padding: 24px 16px 16px;
+  animation: entrar-izquierda 300ms ease-out;
+}
+
+.panel__redes {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+.panel__redes a {
+  display: grid;
+  place-items: center;
+  color: var(--texto);
+  transition: color var(--transicion), transform var(--transicion);
+}
+
+.panel__redes a:hover {
+  color: var(--secundario);
+  transform: translateY(-2px);
+}
+
+.panel__redes svg {
+  width: 20px;
+  height: 20px;
+}
+
+.panel--derecha {
+  top: 64px; /* debajo del header, como el menú de categorías */
+  right: 0;
+  width: min(400px, 92vw);
+  animation: entrar-derecha 300ms ease-out;
+}
+
+@keyframes entrar-izquierda {
+  0% { transform: translateX(-100%); }
+}
+
+@keyframes entrar-derecha {
+  0% { transform: translateX(100%); }
+}
+
+@keyframes fundido {
+  0% { opacity: 0; }
+}
+
+.panel__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radio);
+  text-decoration: none;
+  transition: background-color var(--transicion), color var(--transicion);
+}
+
+.panel__item svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.panel__item:hover {
+  background: var(--borde);
+  color: var(--secundario);
+}
+
+.panel__divisor {
+  height: 1px;
+  margin: 8px 0;
+  background: var(--borde);
+}
+
+.panel__grupo {
+  padding: 4px 12px;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--texto-secundario);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Menú de cuenta: pegado al borde derecho, debajo del header (como en el Figma) */
+.menu-cuenta {
+  position: fixed;
+  top: 64px;
+  right: 0;
+  z-index: 40;
+  width: min(268px, 92vw);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 24px 16px 16px;
+  background: var(--superficie);
+  border-bottom-left-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  transform-origin: top right;
+  animation: desplegar 200ms ease-out;
+}
+
+.menu-cuenta__usuario {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px 8px;
+}
+
+.menu-cuenta__grupo {
+  padding: 0 12px;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--texto-secundario);
+}
+
+.menu-cuenta__redes {
+  display: flex;
+  gap: 24px;
+  padding: 12px 12px 4px;
+}
+
+.menu-cuenta__redes a {
+  display: grid;
+  place-items: center;
+  color: var(--texto);
+  transition: color var(--transicion), transform var(--transicion);
+}
+
+.menu-cuenta__redes a:hover {
+  color: var(--secundario);
+  transform: translateY(-2px);
+}
+
+.menu-cuenta__redes svg {
+  width: 20px;
+  height: 20px;
+}
+
+.menu-cuenta__salir {
+  color: var(--texto-secundario);
+}
+
+@keyframes desplegar {
+  0% { opacity: 0; transform: scale(0.95) translateY(-8px); }
+}
+
+/* ---------- Carrito ---------- */
+
+.carrito {
+  gap: 16px;
+}
+
+.carrito__cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.carrito__lista {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  list-style: none;
+  overflow-y: auto;
+}
+
+.carrito__item {
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  background: var(--fondo);
+  border-radius: var(--radio);
+  animation: subir-item 250ms ease-out;
+}
+
+.carrito__item img {
+  width: 72px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.carrito__datos {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.carrito__nombre {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.carrito__quitar:hover {
+  color: var(--error);
+}
+
+.carrito__vacio {
+  color: var(--texto-secundario);
+}
+
+.carrito__pie {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--borde);
+}
+
+.carrito__total {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+}
+
+.boton:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+@keyframes subir-item {
+  0% { opacity: 0; transform: translateY(8px); }
+}
+
+/* ---------- Toast ---------- */
+
+/* En mobile aparece arriba, debajo del header, para no tapar el total ni "Finalizar compra" del carrito */
+.toast {
+  position: fixed;
+  left: 50%;
+  top: 76px;
+  z-index: 60;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  padding: 12px 20px;
+  background: var(--superficie);
+  border: 1px solid var(--secundario);
+  border-radius: var(--radio);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transform: translate(-50%, -16px); /* baja desde el header */
+  pointer-events: none;
+  transition: opacity 250ms ease-out, transform 250ms ease-out;
+}
+
+.toast--visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+@media (min-width: 768px) {
+  .toast {
+    top: auto;
+    bottom: 24px;
+  }
+
+  .toast:not(.toast--visible) {
+    transform: translate(-50%, 16px); /* en desktop sube desde abajo */
+  }
+}
+
+/* ---------- Card de juego ---------- */
+
+.card {
+  flex: 0 0 auto;
+  width: 240px;
+  display: flex;
+  flex-direction: column;
+  background: var(--superficie);
+  border: 1px solid transparent;
+  border-radius: 12px;
+  overflow: hidden;
+  scroll-snap-align: start;
+  transition: transform var(--transicion), border-color var(--transicion), box-shadow var(--transicion);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: var(--primario);
+  box-shadow: 0 8px 24px rgba(123, 47, 247, 0.35);
+}
+
+.card__imagen {
+  position: relative;
+  display: block;
+  aspect-ratio: 292 / 170; /* proporción de la card del Figma */
+  overflow: hidden;
+  background: var(--borde);
+}
+
+.card__imagen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 400ms ease-out;
+}
+
+.card:hover .card__imagen img {
+  transform: scale(1.06);
+}
+
+.card__contenido {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 12px 2px; /* compacta como en el Figma: la card mide 247 de alto */
+}
+
+/* Títulos largos: una línea con puntos suspensivos (el nombre completo va en el tooltip) */
+.card__titulo {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 42px; /* lugar para las 2 líneas de la Oferta: todas las cards miden igual, como en el Figma (H 247) */
+}
+
+.precio {
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  /* violeta como en el Figma, en luz 40: el primario base sobre la card da 2.94:1 y no pasa WCAG AA (4.5:1) */
+  color: var(--primario-luz-40);
+}
+
+.precio s {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 18px;
+  color: var(--texto-secundario);
+}
+
+/* Oferta: el precio final en acento (el amarillo sobre la card pasa AA de sobra) */
+.precio--oferta {
+  color: var(--acento);
+}
+
+.precio--gratis {
+  color: var(--texto-secundario);
+}
+
+/* CardButton: el color del hover del Figma (sombra 40) no aparece de golpe, se va llenando.
+   Comprar se llena de abajo hacia arriba; Jugar con un círculo que crece desde el centro.
+   Al presionar, el botón "se hunde". */
+.card-boton {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  flex-shrink: 0;
+  padding: 3px 10px;
+  border: none;
+  border-radius: 3px;
+  font-size: 15px; /* Botón del DS: Inter 15 SemiBold */
+  font-weight: 600;
+  line-height: 18px;
+  cursor: pointer;
+  transition: color 250ms ease-out, transform 100ms ease-out;
+}
+
+.card-boton::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card-boton:active {
+  transform: scale(0.94);
+}
+
+.card-boton--comprar {
+  background: var(--primario);
+  color: #FFF;
+}
+
+.card-boton--comprar::before {
+  inset: 0;
+  background: var(--primario-sombra-40);
+  transform: scaleY(0);
+  transform-origin: bottom;
+}
+
+.card-boton--comprar:hover::before {
+  transform: scaleY(1);
+}
+
+.card-boton--jugar {
+  background: var(--secundario);
+  color: var(--fondo);
+}
+
+/* Círculo más grande que el botón (el overflow lo recorta) para que cubra las esquinas */
+.card-boton--jugar::before {
+  top: 50%;
+  left: 50%;
+  width: 150%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--secundario-sombra-40);
+  transform: translate(-50%, -50%) scale(0);
+}
+
+.card-boton--jugar:hover {
+  color: #FFF;
+}
+
+.card-boton--jugar:hover::before {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+@media (min-width: 768px) {
+  .card {
+    width: 292px;
+  }
+}
+
+/* ---------- Carrusel ---------- */
+
+.carrusel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  scroll-margin-top: 80px;
+}
+
+.carrusel__cabecera {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-inline: 16px;
+}
+
+.carrusel__cabecera .titulo-seccion {
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.carrusel__ver-todos {
+  flex-shrink: 0;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--texto-secundario);
+  text-decoration: none;
+  transition: color var(--transicion);
+}
+
+/* Igual que el resto de los links: gris y cyan solo en hover */
+.carrusel__ver-todos:hover {
+  color: var(--secundario);
+}
+
+.carrusel__cuerpo {
+  position: relative;
+}
+
+/* En mobile se desliza con el dedo; las flechas aparecen desde tablet */
+.carrusel__pista {
+  position: relative;
+  perspective: 1200px;
+  display: flex;
+  gap: 16px;
+  padding: 8px 16px 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 16px;
+  scrollbar-width: none;
+}
+
+/* Entrada de cards al avanzar con las flechas (keyframes con %, permitidos por el enunciado).
+   Llegan inclinadas hacia donde se avanza, se pasan un poco para el otro lado y se acomodan:
+   simula la inercia del movimiento. */
+.card--entra-der {
+  animation: card-entra-der 750ms ease-out both;
+}
+
+.card--entra-izq {
+  animation: card-entra-izq 750ms ease-out both;
+}
+
+@keyframes card-entra-der {
+  0% { opacity: 0; transform: translateX(64px) scale(0.9) rotateY(-12deg) skewX(-10deg); }
+  45% { opacity: 1; transform: translateX(-6px) scale(1) rotateY(0) skewX(5deg); }
+  70% { transform: translateX(2px) skewX(-2deg); }
+  85% { transform: translateX(0) skewX(1deg); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes card-entra-izq {
+  0% { opacity: 0; transform: translateX(-64px) scale(0.9) rotateY(12deg) skewX(10deg); }
+  45% { opacity: 1; transform: translateX(6px) scale(1) rotateY(0) skewX(-5deg); }
+  70% { transform: translateX(-2px) skewX(2deg); }
+  85% { transform: translateX(0) skewX(-1deg); }
+  100% { opacity: 1; transform: none; }
+}
+
+/* Deslizando con el dedo: las cards se inclinan hacia donde se mueven (como si tuvieran inercia) */
+.carrusel__pista--deslizando .card {
+  transform: skewX(-6deg);
+}
+
+.carrusel__pista--deslizando.carrusel__pista--hacia-izq .card {
+  transform: skewX(6deg);
+}
+
+/* Al soltar, se enderezan pasándose un poco para el otro lado */
+.card--asienta-der {
+  animation: card-asienta-der 500ms ease-out;
+}
+
+.card--asienta-izq {
+  animation: card-asienta-izq 500ms ease-out;
+}
+
+@keyframes card-asienta-der {
+  0% { transform: skewX(-6deg); }
+  40% { transform: skewX(3deg); }
+  70% { transform: skewX(-1deg); }
+  100% { transform: skewX(0); }
+}
+
+@keyframes card-asienta-izq {
+  0% { transform: skewX(6deg); }
+  40% { transform: skewX(-3deg); }
+  70% { transform: skewX(1deg); }
+  100% { transform: skewX(0); }
+}
+
+.carrusel__pista::-webkit-scrollbar {
+  display: none;
+}
+
+.carrusel__flecha {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .carrusel__cabecera {
+    padding-inline: 32px;
+  }
+
+  .carrusel__cabecera .titulo-seccion {
+    font-size: 24px;
+    line-height: 32px;
+  }
+
+  .carrusel__pista {
+    padding-inline: 32px;
+    scroll-padding-inline: 32px;
+  }
+
+  .carrusel__flecha {
+    position: absolute;
+    top: calc(50% - 32px);
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    background: rgba(14, 11, 22, 0.85);
+    border: 1px solid var(--borde);
+    border-radius: 50%;
+    color: var(--texto);
+    cursor: pointer;
+    transition: opacity var(--transicion), background-color var(--transicion), border-color var(--transicion);
+  }
+
+  .carrusel__flecha:hover {
+    background: var(--primario);
+    border-color: var(--primario);
+  }
+
+  .carrusel__flecha:disabled {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .carrusel__flecha--izq {
+    left: 8px;
+  }
+
+  .carrusel__flecha--der {
+    right: 8px;
+  }
+}
+
+/* ---------- Footer (fat footer, igual al Figma: 3 bloques) ---------- */
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  margin-top: 64px;
+  padding: 48px 16px 32px;
+  background: var(--superficie);
+  color: var(--texto-secundario);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.footer__bloque {
+  width: 100%;
+  max-width: 1320px;
+  margin-inline: auto;
+}
+
+/* Mobile: las 3 columnas de links son acordeones apilados; debajo, newsletter, apps y redes */
+.footer__principal {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.footer__columna {
+  border-bottom: 1px solid var(--borde);
+}
+
+.footer__columna summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 48px;
+  margin: 0;
+  list-style: none;
+  cursor: pointer;
+}
+
+.footer__columna summary::-webkit-details-marker {
+  display: none;
+}
+
+.footer__flecha {
+  display: grid;
+  color: var(--texto-secundario);
+  transition: transform var(--transicion);
+}
+
+.footer__flecha svg {
+  width: 20px;
+  height: 20px;
+}
+
+.footer__columna[open] .footer__flecha {
+  transform: rotate(180deg);
+}
+
+.footer__links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 20px;
+}
+
+.footer__lateral {
+  margin-top: 40px;
+}
+
+@media (min-width: 768px) {
+  .footer__principal {
+    gap: 40px 32px;
+  }
+
+  .footer__columna {
+    border-bottom: none;
+  }
+
+  /* En desktop no se pliega: el título es solo un título */
+  .footer__columna summary {
+    min-height: 0;
+    margin-bottom: 16px;
+    pointer-events: none;
+  }
+
+  .footer__flecha {
+    display: none;
+  }
+
+  .footer__links {
+    padding-bottom: 0;
+  }
+
+  .footer__lateral {
+    margin-top: 0;
+  }
+}
+
+.footer__titulo,
+.footer__subtitulo {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 20px;
+  color: var(--texto);
+}
+
+.footer a {
+  color: var(--texto-secundario);
+  text-decoration: none;
+  transition: color var(--transicion);
+}
+
+.footer a:hover {
+  color: var(--secundario);
+}
+
+.footer__lateral {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+/* Newsletter */
+.newsletter__fila {
+  display: flex;
+  gap: 4px;
+  max-width: 340px;
+  padding: 4px;
+  background: var(--fondo);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  transition: border-color var(--transicion);
+}
+
+.newsletter__fila:focus-within {
+  border-color: var(--primario);
+}
+
+.newsletter--error .newsletter__fila {
+  border-color: var(--error);
+}
+
+.newsletter__fila input {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 8px;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+
+.newsletter__fila input::placeholder {
+  color: var(--texto-secundario);
+}
+
+.newsletter__boton {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  background: var(--acento);
+  color: var(--fondo);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 100ms ease-out;
+}
+
+/* Hover: la sombra 40 (como el Figma) se abre desde el centro hacia los costados */
+.newsletter__boton::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--acento-sombra-40);
+  transform: scaleX(0);
+  transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.newsletter__boton:hover::before {
+  transform: scaleX(1);
+}
+
+.newsletter__boton:active {
+  transform: scale(0.95);
+}
+
+.newsletter__error {
+  margin-top: 6px;
+  color: var(--error);
+}
+
+/* Tiendas */
+.tiendas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.footer .tienda {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--fondo);
+  font-size: 13px;
+  font-weight: 600;
+  transition: border-color var(--transicion), color var(--transicion);
+}
+
+.footer .tienda:hover {
+  border-color: var(--secundario);
+}
+
+.footer__redes {
+  display: flex;
+  gap: 16px;
+}
+
+.footer__redes svg {
+  width: 28px;
+  height: 28px;
+}
+
+/* Métodos de pago */
+.footer__pagos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 24px;
+  padding-block: 28px;
+  border-block: 1px solid var(--borde);
+}
+
+.footer__pagos .footer__subtitulo {
+  margin: 0;
+}
+
+.pagos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+}
+
+.pago {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 36px;
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  background: var(--fondo);
+}
+
+.pago svg {
+  width: 36px;
+  height: 24px;
+}
+
+.footer__logo {
+  font-size: 18px;
+}
+
+/* Copyright + legales */
+.footer__legales {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px 24px;
+  font-size: 13px;
+}
+
+/* Mobile: grilla de 2 columnas sin separadores (al cortar renglón los "|" quedaban sueltos) */
+.footer__links-legales {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 16px;
+}
+
+@media (min-width: 768px) {
+  .footer__links-legales {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+  }
+
+  .footer__links-legales a + a::before {
+    content: "|";
+    margin-inline: 8px;
+    color: var(--borde);
+  }
+}
+
+@media (min-width: 768px) {
+  .footer {
+    padding: 72px 48px 40px;
+  }
+
+  .footer__principal {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1100px) {
+  .footer__principal {
+    grid-template-columns: 1fr 1fr 1fr 1.4fr;
+    column-gap: 64px;
+  }
+
+  .footer__lateral {
+    grid-column: auto;
+  }
+
+  .footer__logo {
+    margin-left: auto;
+    margin-right: 25%;
+  }
+}
+
+/* Con "reducir movimiento" solo se frena el zoom lento del slider (decorativo).
+   El loading, los hovers y la galería se mantienen: son parte de la consigna y dan feedback. */
+@media (prefers-reduced-motion: reduce) {
+  .slide--activo .slide__fondo {
+    animation: none;
+  }
+}

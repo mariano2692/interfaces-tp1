@@ -1,0 +1,636 @@
+/* =========================================================
+   Home — mobile first
+   ========================================================= */
+
+.cargando {
+  overflow: hidden;
+}
+
+/* ---------- Loading ---------- */
+
+.carga {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 16px;
+  background:
+    radial-gradient(600px 400px at 50% 40%, rgba(123, 47, 247, 0.25), transparent 70%),
+    var(--fondo);
+}
+
+.carga--fin {
+  pointer-events: none;
+  animation: salir-carga 500ms ease-in forwards;
+}
+
+@keyframes salir-carga {
+  100% { opacity: 0; transform: scale(1.05); visibility: hidden; }
+}
+
+.carga__logo {
+  font-size: 18px;
+}
+
+/* 9 "píxeles" que se encienden en onda: animación por keyframes %, sin GIF ni spritesheet */
+.carga__pixeles {
+  display: grid;
+  grid-template-columns: repeat(3, 20px);
+  gap: 6px;
+}
+
+.carga__pixeles span {
+  width: 20px;
+  height: 20px;
+  background: var(--primario);
+  animation: pixel 1.2s ease-in-out infinite;
+}
+
+.carga__pixeles span:nth-child(1) { animation-delay: 0s; }
+.carga__pixeles span:nth-child(2),
+.carga__pixeles span:nth-child(4) { animation-delay: 0.1s; }
+.carga__pixeles span:nth-child(3),
+.carga__pixeles span:nth-child(5),
+.carga__pixeles span:nth-child(7) { animation-delay: 0.2s; }
+.carga__pixeles span:nth-child(6),
+.carga__pixeles span:nth-child(8) { animation-delay: 0.3s; }
+.carga__pixeles span:nth-child(9) { animation-delay: 0.4s; }
+
+@keyframes pixel {
+  0%, 60%, 100% {
+    transform: scale(1);
+    background: var(--primario);
+    box-shadow: none;
+  }
+  30% {
+    transform: scale(0.6) rotate(45deg);
+    background: var(--secundario);
+    box-shadow: 0 0 12px var(--secundario);
+  }
+}
+
+.carga__porcentaje {
+  font-family: var(--fuente-titulos);
+  font-weight: 700;
+  font-size: 48px;
+  line-height: 48px;
+  font-variant-numeric: tabular-nums;
+}
+
+.carga__barra {
+  width: min(320px, 80vw);
+  height: 8px;
+  background: var(--superficie);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.carga__relleno {
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--primario), var(--secundario));
+  box-shadow: 0 0 12px var(--secundario);
+}
+
+.carga__texto {
+  color: var(--texto-secundario);
+  font-size: 13px;
+}
+
+/* ---------- Slider principal (galería animada) ----------
+   Mismo diseño que el mainSlider del Figma: título abajo a la izquierda,
+   "Ver info" en amarillo a la derecha, indicadores debajo y peeks a los costados */
+
+.slider {
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: 12px;
+  margin: 16px 0 32px;
+  padding-inline: 16px;
+}
+
+.slider__peek {
+  display: none;
+}
+
+.slider__escenario {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--superficie);
+  touch-action: pan-y;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+}
+
+.slide--activo {
+  visibility: visible;
+}
+
+.slide__fondo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Zoom lento mientras el slide está activo */
+.slide--activo .slide__fondo {
+  animation: acercar 7s linear forwards;
+}
+
+@keyframes acercar {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.08); }
+}
+
+/* Degradé abajo para que el título se lea sobre cualquier imagen */
+.slide::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(14, 11, 22, 0.9) 0%, rgba(14, 11, 22, 0.4) 22%, transparent 40%);
+}
+
+.slide__info {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 12px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.slide__titulo {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+/* El título y el botón entran escalonados cada vez que cambia el slide */
+.slide--activo .slide__info > * {
+  animation: subir-texto 500ms ease-out both;
+}
+
+.slide--activo .slide__info > :nth-child(2) {
+  animation-delay: 120ms;
+}
+
+@keyframes subir-texto {
+  0% { opacity: 0; transform: translateY(16px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* "Ver info": botón chico en acento. Hover propio: un brillo que cruza el botón */
+.boton-info {
+  position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 3px;
+  background: var(--acento);
+  color: var(--fondo);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+  cursor: pointer;
+  transition: background-color var(--transicion);
+}
+
+.boton-info::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -60%;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+  transform: skewX(-20deg);
+}
+
+.boton-info:hover {
+  background: var(--acento-sombra-40); /* hover del Figma: se oscurece */
+}
+
+.boton-info:hover::after {
+  animation: brillo 600ms ease-out;
+}
+
+@keyframes brillo {
+  0% { left: -60%; }
+  100% { left: 130%; }
+}
+
+/* Transiciones entre slides: el que sale se aleja y se desenfoca, el que entra llega desde el costado */
+.slide--entra-der { animation: entra-der 700ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.slide--entra-izq { animation: entra-izq 700ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.slide--sale-izq { visibility: visible; animation: sale-izq 700ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.slide--sale-der { visibility: visible; animation: sale-der 700ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+@keyframes entra-der {
+  0% { transform: translateX(60%) scale(0.85); opacity: 0; filter: blur(8px); }
+  100% { transform: none; opacity: 1; filter: blur(0); }
+}
+
+@keyframes entra-izq {
+  0% { transform: translateX(-60%) scale(0.85); opacity: 0; filter: blur(8px); }
+  100% { transform: none; opacity: 1; filter: blur(0); }
+}
+
+@keyframes sale-izq {
+  0% { transform: none; opacity: 1; filter: blur(0); }
+  100% { transform: translateX(-40%) scale(0.8); opacity: 0; filter: blur(8px); }
+}
+
+@keyframes sale-der {
+  0% { transform: none; opacity: 1; filter: blur(0); }
+  100% { transform: translateX(40%) scale(0.8); opacity: 0; filter: blur(8px); }
+}
+
+/* Indicadores debajo de la imagen: activo largo en primario, el resto en texto secundario */
+.slider__indicadores {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.indicador {
+  position: relative;
+  width: 16px;
+  height: 4px;
+  padding: 0;
+  border: none;
+  border-radius: 2px;
+  background: var(--texto-secundario);
+  overflow: hidden;
+  cursor: pointer;
+  transition: width 300ms ease-out, background-color var(--transicion);
+}
+
+.indicador:hover {
+  background: var(--texto);
+}
+
+.indicador--activo {
+  width: 32px;
+  background: var(--primario-sombra-40);
+}
+
+/* El indicador activo se llena como barra de tiempo del autoplay */
+.indicador--activo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--primario);
+  transform-origin: left;
+  animation: llenar var(--duracion-slide, 6s) linear forwards;
+}
+
+.slider--pausado .indicador--activo::after {
+  animation-play-state: paused;
+}
+
+@keyframes llenar {
+  0% { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
+}
+
+@media (min-width: 768px) {
+  .slider {
+    padding-inline: 32px;
+  }
+
+  .slider__escenario {
+    aspect-ratio: 16 / 6;
+  }
+
+  .slide__info {
+    left: 24px;
+    right: 24px;
+    bottom: 16px;
+  }
+}
+
+/* Desktop: peeks de los destacados vecinos, con degradé hacia el centro y desenfoque (como en el Figma) */
+@media (min-width: 1024px) {
+  .slider {
+    grid-template-columns: 1fr 6fr 1fr;
+    column-gap: 16px;
+    padding-inline: 0;
+  }
+
+  .slider__peek {
+    position: relative;
+    display: block;
+    padding: 0;
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--superficie);
+    cursor: pointer;
+  }
+
+  .slider__peek img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(3px);
+    transition: transform 400ms ease-out;
+  }
+
+  .slider__peek::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(14, 11, 22, 0.9), rgba(14, 11, 22, 0.3));
+  }
+
+  .slider__peek--der::after {
+    background: linear-gradient(270deg, rgba(14, 11, 22, 0.9), rgba(14, 11, 22, 0.3));
+  }
+
+  .slider__peek:hover img {
+    transform: scale(1.05);
+  }
+
+  .peek--cambio img {
+    animation: cambio-peek 600ms ease-out;
+  }
+
+  @keyframes cambio-peek {
+    0% { opacity: 0; transform: scale(1.15); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  .slider__escenario {
+    aspect-ratio: auto;
+    height: 400px;
+  }
+
+  .slider__indicadores {
+    grid-column: 2;
+  }
+}
+
+/* ---------- Ficha rápida ("Ver info") ---------- */
+
+.ficha-rapida {
+  position: fixed;
+  inset: 0;
+  width: min(720px, calc(100vw - 32px));
+  max-height: calc(100vh - 32px);
+  margin: auto;
+  padding: 0;
+  overflow: auto;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  color: var(--texto);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+}
+
+.ficha-rapida[open] {
+  display: grid;
+  grid-template-columns: 1fr;
+  animation: abrir-ficha 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ficha-rapida::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+@keyframes abrir-ficha {
+  0% { opacity: 0; transform: translateY(24px) scale(0.96); }
+  100% { opacity: 1; transform: none; }
+}
+
+.ficha-rapida__imagen {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+
+.ficha-rapida__cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+}
+
+/* El título deja libre el lugar de la ✕ (44 + 8 de margen − 24 de padding = 28, redondeado a 32) */
+.ficha-rapida__cuerpo .titulo-seccion {
+  padding-right: 32px;
+}
+
+.ficha-rapida__datos {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 16px;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.ficha-rapida__datos dt {
+  color: var(--texto-secundario);
+}
+
+.ficha-rapida__rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ficha-rapida__rating svg {
+  width: 16px;
+  height: 16px;
+  color: var(--acento);
+}
+
+/* En mobile los dos botones van a todo el ancho (más fáciles de tocar, ley de Fitts) */
+.ficha-rapida__acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: auto;
+}
+
+@media (min-width: 768px) {
+  .ficha-rapida__acciones {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+.ficha-rapida__cerrar {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(14, 11, 22, 0.7);
+}
+
+@media (min-width: 768px) {
+  .ficha-rapida[open] {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ficha-rapida__imagen {
+    height: 100%;
+    aspect-ratio: auto;
+  }
+}
+
+/* ---------- Carruseles ---------- */
+
+.home__carruseles {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+@media (min-width: 768px) {
+  .home__carruseles {
+    gap: 56px;
+  }
+}
+
+/* ---------- Fila de cards grandes (Card de juego grande del Figma) ---------- */
+
+/* Título + fila, con el mismo espacio que un carrusel */
+.seccion-grandes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  scroll-margin-top: 80px;
+}
+
+/* En mobile se desliza de a una; desde tablet las 3 entran a lo ancho */
+.fila-grandes {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 85%;
+  gap: 16px;
+  padding: 8px 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 16px;
+  scrollbar-width: none;
+}
+
+.fila-grandes::-webkit-scrollbar {
+  display: none;
+}
+
+.card--grande {
+  width: auto;
+}
+
+.card--grande .card__imagen {
+  aspect-ratio: 7 / 3; /* más apaisada que la card común, como en el Figma */
+}
+
+/* Precio en un recuadro oscuro arriba a la derecha de la imagen */
+.card-grande__precio {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(14, 11, 22, 0.85);
+  text-align: right;
+}
+
+.card-grande__precio .precio {
+  align-items: flex-end;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.card-grande__precio .precio s {
+  font-size: 13px;
+  line-height: 16px;
+}
+
+.card-grande__pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+}
+
+@media (min-width: 768px) {
+  .fila-grandes {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(3, 1fr);
+    padding-inline: 32px;
+    overflow: visible;
+  }
+}
+
+/* ---------- Banner "Próximamente" (Card próximamente del Figma) ---------- */
+
+.banner {
+  position: relative;
+  margin-inline: 16px;
+  overflow: hidden;
+  border-radius: 12px;
+  aspect-ratio: 16 / 5;
+  background: var(--superficie);
+}
+
+.banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 600ms ease-out;
+}
+
+.banner:hover img:not(.banner__logo) {
+  transform: scale(1.03);
+}
+
+/* Logo del juego abajo a la izquierda, sobre la imagen (.banner .banner__logo le gana a .banner img) */
+.banner .banner__logo {
+  position: absolute;
+  left: 16px;
+  bottom: 12px;
+  width: 45%;
+  max-width: 360px;
+  height: auto;
+  max-height: 60%;
+  object-fit: contain;
+  object-position: left bottom;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6));
+}
+
+.banner__etiqueta {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  background: rgba(14, 11, 22, 0.85);
+  color: var(--acento);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+}
+
+@media (min-width: 768px) {
+  .banner {
+    margin-inline: 32px;
+    aspect-ratio: 27 / 5;
+  }
+}

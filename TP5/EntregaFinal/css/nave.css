@@ -1,0 +1,517 @@
+/* =========================================================
+   Página de juego — Nave Pixel (TPE5)
+   Usa el layout de juego.css (migas, zona, ayuda, ficha, comunidad);
+   acá va lo propio del juego: escenario, capas del parallax, nave,
+   columnas, elementos, HUD y pantallas.
+
+   Animaciones por estado: el JS solo pone y saca clases
+   (nave--impulso, nave--golpe, ...); los @keyframes de acá definen
+   cómo se ve cada una.
+   ========================================================= */
+
+/* ---------- Contenedor ---------- */
+
+/* Reusa .tablero (fondo superficie + borde primario) */
+.nave-juego {
+  padding: 16px;
+}
+
+/* El marco ocupa el ancho disponible (como mucho 960) y toma la altura del escenario achicado */
+.nave-marco {
+  --escala: 1;
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  height: calc(540px * var(--escala));
+  margin-inline: auto;
+  overflow: hidden;
+  border-radius: var(--radio);
+}
+
+/* El escenario mide siempre 960 × 540 (las medidas del JS) y se achica entero con scale */
+.escenario {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 960px;
+  height: 540px;
+  overflow: hidden;
+  background: var(--fondo);
+  transform: scale(var(--escala));
+  transform-origin: 0 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+.mundo {
+  position: absolute;
+  inset: 0;
+}
+
+/* ---------- Parallax: 4 capas (Parallax.js las mueve con transform) ---------- */
+
+.capa {
+  position: absolute;
+  left: 0;
+  background-repeat: repeat-x;
+  will-change: transform; /* el navegador la prepara para moverse sin redibujar */
+}
+
+.capa--estrellas {
+  top: 0;
+  height: 540px;
+  background-image: url("../img/nave/capa-estrellas.svg");
+}
+
+.capa--nebulosa {
+  top: 0;
+  height: 540px;
+  background-image: url("../img/nave/capa-nebulosa.svg");
+}
+
+.capa--montanas {
+  bottom: 48px;
+  height: 220px;
+  background-image: url("../img/nave/capa-montanas.svg");
+}
+
+.capa--suelo {
+  bottom: 0;
+  height: 64px;
+  background-image: url("../img/nave/capa-suelo.svg");
+}
+
+/* ---------- Columnas de asteroides ---------- */
+
+.columna {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 72px;
+  will-change: transform;
+}
+
+/* box-sizing: border-box (base.css): el borde de la punta queda adentro de la altura,
+   así el div mide lo mismo que la caja de choque */
+.columna__parte {
+  position: absolute;
+  left: 0;
+  width: 72px;
+  background: url("../img/nave/roca.svg") repeat-y;
+}
+
+.columna__parte--arriba {
+  top: 0;
+  background-position: bottom; /* la roca "termina" prolija contra el hueco */
+  border-bottom: 8px solid var(--primario-luz-40);
+}
+
+.columna__parte--abajo {
+  border-top: 8px solid var(--primario-luz-40);
+}
+
+/* Al chocar: la columna tiembla y se pone roja */
+.columna--golpeada .columna__parte {
+  animation: columna-golpe 0.4s ease-out;
+}
+
+@keyframes columna-golpe {
+  0%, 100% { transform: translateX(0); filter: none; }
+  20% { transform: translateX(-5px); filter: brightness(1.4) drop-shadow(0 0 8px var(--error)); border-color: var(--error); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(2px); }
+}
+
+/* ---------- Nave ---------- */
+
+/* .nave se mueve desde JS (transform: translate + rotate) */
+.nave {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 72px;
+  height: 44px;
+  transform-origin: 40px 22px;
+  will-change: transform;
+}
+
+/* .nave__sprite tiene el spritesheet: 4 cuadros de 72 × 44 (la llama del motor).
+   steps(4) salta de cuadro en cuadro en vez de deslizar la imagen.
+   En todos los spritesheets, después de cada cuadro hay 4 px transparentes: cuando el
+   escenario se achica (scale), el navegador puede tomar un píxel de más en el borde, y así
+   ese píxel es transparente en vez de un pedazo del cuadro de al lado. Por eso cada salto
+   es de "ancho del cuadro + 4" (acá 72 + 4 = 76 px). */
+.nave__sprite {
+  width: 72px;
+  height: 44px;
+  background: url("../img/nave/nave.svg") 0 0 no-repeat;
+  animation: nave-llama 0.32s steps(4) infinite;
+}
+
+@keyframes nave-llama {
+  from { background-position: 0 0; }
+  to { background-position: -304px 0; } /* 4 cuadros × (72 + 4) px */
+}
+
+/* Animación 1 — impulso (clic / Espacio): se estira hacia adelante y la llama va más rápido */
+.nave--impulso .nave__sprite {
+  animation: nave-llama 0.16s steps(4) infinite, nave-impulso 0.3s ease-out;
+}
+
+@keyframes nave-impulso {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.18, 0.86) translateX(4px); }
+  100% { transform: scale(1); }
+}
+
+/* Animación 2 — golpe contra una columna o el suelo: se sacude y se pone roja */
+.nave--golpe .nave__sprite {
+  animation: nave-llama 0.32s steps(4) infinite, nave-golpe 0.45s ease-out;
+}
+
+@keyframes nave-golpe {
+  0%, 100% { transform: translateX(0); filter: none; }
+  20% { transform: translateX(-6px); filter: brightness(1.5) drop-shadow(0 0 8px var(--error)); }
+  40% { transform: translateX(6px); filter: brightness(1.5) drop-shadow(0 0 8px var(--error)); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(3px); }
+}
+
+/* Animación 3 — agarró un cristal: brilla celeste y se agranda un poco */
+.nave--brillo .nave__sprite {
+  animation: nave-llama 0.32s steps(4) infinite, nave-brillo 0.5s ease-out;
+}
+
+@keyframes nave-brillo {
+  0%, 100% { transform: scale(1); filter: none; }
+  40% { transform: scale(1.2); filter: brightness(1.6) drop-shadow(0 0 12px var(--secundario)); }
+}
+
+/* Animación 4 — la golpeó un meteorito: tambalea y la llama va lenta (el motor falla) */
+.nave--aturdida .nave__sprite {
+  animation: nave-llama 0.7s steps(4) infinite, nave-aturdida 0.9s ease-in-out;
+}
+
+@keyframes nave-aturdida {
+  0%, 100% { transform: rotate(0); filter: none; }
+  20% { transform: rotate(-22deg); filter: drop-shadow(0 0 8px #FF8A3D); }
+  45% { transform: rotate(16deg); }
+  70% { transform: rotate(-9deg); }
+}
+
+/* Animación 5 — sin vidas: explota (otro spritesheet, 6 cuadros de 72 × 72, se queda en el último) */
+.nave--explota .nave__sprite {
+  height: 72px;
+  margin-top: -14px;
+  background-image: url("../img/nave/explosion.svg");
+  animation: nave-explota 0.7s steps(6) forwards;
+}
+
+@keyframes nave-explota {
+  from { background-position: 0 0; }
+  to { background-position: -456px 0; } /* 6 cuadros × (72 + 4) px */
+}
+
+/* Invulnerable después de un golpe: parpadea (va en .nave y no en el sprite,
+   así puede convivir con cualquier animación de estado) */
+.nave--invulnerable {
+  animation: nave-parpadeo 0.16s steps(2) infinite;
+}
+
+@keyframes nave-parpadeo {
+  50% { opacity: 0.3; }
+}
+
+/* ---------- Elementos con spritesheet ---------- */
+
+.elemento {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+}
+
+.elemento__sprite {
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+}
+
+/* Cristal: 6 cuadros de 36 × 42 (gira sobre sí mismo) */
+.elemento--cristal {
+  width: 36px;
+  height: 42px;
+}
+
+.elemento--cristal .elemento__sprite {
+  background-image: url("../img/nave/cristal.svg");
+  animation: cristal-gira 0.7s steps(6) infinite;
+}
+
+@keyframes cristal-gira {
+  from { background-position: 0 0; }
+  to { background-position: -240px 0; } /* 6 × (36 + 4) */
+}
+
+/* Meteorito: 4 cuadros de 66 × 42 (la roca gira y la cola de fuego titila) */
+.elemento--meteorito {
+  width: 66px;
+  height: 42px;
+}
+
+.elemento--meteorito .elemento__sprite {
+  background-image: url("../img/nave/meteorito.svg");
+  animation: meteorito-arde 0.3s steps(4) infinite;
+}
+
+@keyframes meteorito-arde {
+  from { background-position: 0 0; }
+  to { background-position: -280px 0; } /* 4 × (66 + 4) */
+}
+
+/* Tomado: el cristal se agranda y desaparece, y sube un "+5" */
+.elemento--cristal.elemento--tomado .elemento__sprite {
+  animation: cristal-gira 0.2s steps(6) infinite, cristal-tomado 0.4s ease-out forwards;
+}
+
+@keyframes cristal-tomado {
+  to { transform: scale(1.8); opacity: 0; }
+}
+
+.elemento--cristal.elemento--tomado::after {
+  content: "+5";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  font-family: var(--fuente-logo);
+  font-size: 14px;
+  color: var(--secundario);
+  text-shadow: 0 2px 0 var(--fondo);
+  transform: translateX(-50%);
+  animation: puntos-suben 0.8s ease-out forwards;
+}
+
+@keyframes puntos-suben {
+  to { top: -40px; opacity: 0; }
+}
+
+/* Tomado: el meteorito se rompe con un destello */
+.elemento--meteorito.elemento--tomado .elemento__sprite {
+  animation: meteorito-rompe 0.35s ease-out forwards;
+}
+
+@keyframes meteorito-rompe {
+  40% { transform: scale(1.3); filter: brightness(2); }
+  100% { transform: scale(0.4); opacity: 0; }
+}
+
+/* ---------- Cajas de choque (solo con ?hitbox en la URL, para probarlas) ---------- */
+
+.hitbox {
+  position: absolute;
+  outline: 2px solid var(--exito);
+  pointer-events: none;
+}
+
+.escenario--hitbox .columna__parte {
+  outline: 2px solid var(--exito);
+  outline-offset: -2px;
+}
+
+/* ---------- HUD ---------- */
+
+.nave-hud {
+  position: absolute;
+  top: 14px;
+  left: 18px;
+  right: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-family: var(--fuente-logo);
+  font-size: 16px;
+  color: var(--texto);
+  text-shadow: 0 2px 0 var(--fondo);
+  pointer-events: none;
+}
+
+.hud__bloque {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hud__bloque--centro {
+  align-items: center;
+}
+
+.hud__bloque--derecha {
+  align-items: flex-end;
+}
+
+.hud__titulo {
+  font-size: 10px;
+  color: var(--texto-secundario);
+}
+
+.hud__vidas {
+  display: flex;
+  gap: 6px;
+}
+
+/* Cada vida es el primer cuadro del spritesheet de la nave, a la mitad de tamaño
+   (la imagen entera mide 304 × 44 → a la mitad, 152 × 22) */
+.vida {
+  width: 36px;
+  height: 22px;
+  background: url("../img/nave/nave.svg") 0 0 / 152px 22px no-repeat;
+}
+
+.vida--perdida {
+  opacity: 0.25;
+  filter: grayscale(1);
+}
+
+.hud__puntos {
+  color: var(--secundario);
+}
+
+.hud__puntos--sube {
+  animation: puntos-pop 0.3s ease-out;
+}
+
+@keyframes puntos-pop {
+  40% { transform: scale(1.35); color: var(--acento); }
+}
+
+/* Aviso del meteorito: titila mientras dura el frenado */
+.hud__aviso {
+  position: absolute;
+  top: 70px;
+  left: 0;
+  right: 0;
+  font-family: var(--fuente-logo);
+  font-size: 12px;
+  color: #FF8A3D;
+  text-align: center;
+  text-shadow: 0 2px 0 var(--fondo);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.hud__aviso--visible {
+  animation: aviso-titila 0.5s steps(2) infinite;
+}
+
+@keyframes aviso-titila {
+  0% { opacity: 1; }
+  100% { opacity: 0.3; }
+}
+
+/* ---------- Pantallas de inicio y fin ---------- */
+
+.nave-pantalla {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 32px;
+  text-align: center;
+  background: rgba(14, 11, 22, 0.7);
+  cursor: default;
+  animation: pantalla-entra 0.35s ease-out;
+}
+
+/* display: flex le gana al atributo hidden: hay que ocultarla a mano */
+.nave-pantalla[hidden] {
+  display: none;
+}
+
+@keyframes pantalla-entra {
+  from { opacity: 0; transform: translateY(12px); }
+}
+
+.nave-pantalla__titulo {
+  font-family: var(--fuente-logo);
+  font-size: 28px;
+  line-height: 1.4;
+  color: var(--secundario);
+  text-shadow: 0 4px 0 var(--primario-sombra-40);
+}
+
+.nave-pantalla--fin .nave-pantalla__titulo {
+  color: var(--error);
+}
+
+.nave-pantalla--gano .nave-pantalla__titulo {
+  color: var(--acento);
+}
+
+.nave-pantalla p {
+  max-width: 520px;
+  color: var(--texto);
+}
+
+.nave-pantalla__tecla {
+  font-size: 13px;
+  color: var(--texto-secundario);
+}
+
+/* La nave del cartel de inicio flota (la misma del spritesheet, el doble de grande:
+   la imagen entera pasa a 608 × 88 y cada salto a 152 px) */
+.nave-pantalla__nave {
+  width: 144px;
+  height: 88px;
+  background: url("../img/nave/nave.svg") 0 0 / 608px 88px no-repeat;
+  animation: nave-llama-grande 0.32s steps(4) infinite, flota 1.6s ease-in-out infinite;
+}
+
+@keyframes nave-llama-grande {
+  from { background-position: 0 0; }
+  to { background-position: -608px 0; } /* 4 × (144 + 8) */
+}
+
+@keyframes flota {
+  50% { transform: translateY(-10px); }
+}
+
+/* ---------- Ayuda: los elementos con su imagen ---------- */
+
+.ayuda__icono {
+  flex-shrink: 0;
+  width: 36px;
+  height: 42px;
+  background-repeat: no-repeat;
+}
+
+.ayuda__icono--cristal {
+  background-image: url("../img/nave/cristal.svg");
+}
+
+.ayuda__icono--meteorito {
+  width: 66px;
+  background-image: url("../img/nave/meteorito.svg");
+}
+
+.ayuda__icono--columna {
+  width: 36px;
+  background: url("../img/nave/roca.svg") center / 54px 36px;
+  border-bottom: 4px solid var(--primario-luz-40);
+}
+
+.ayuda__tecla {
+  display: inline-block;
+  min-width: 28px;
+  padding: 2px 6px;
+  border: 1px solid var(--borde);
+  border-bottom-width: 3px;
+  border-radius: 6px;
+  font-family: var(--fuente-titulos);
+  font-size: 11px;
+  text-align: center;
+  color: var(--texto);
+}

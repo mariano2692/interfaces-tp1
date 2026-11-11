@@ -21,7 +21,7 @@ const ALTO_NAVE = 44;
 const GRAVEDAD = 1500; // px/s² hacia abajo
 const IMPULSO = -470; // px/s hacia arriba al hacer clic
 const CAIDA_MAXIMA = 620; // px/s: tope de la velocidad de caída
-const VIDAS = 3;
+const VIDAS = 10; // el juego no tiene meta: se juega hasta perderlas todas (gana el récord)
 const SEGUNDOS_INVULNERABLE = 1.5; // después de un golpe, para no perder 2 vidas en el mismo choque
 
 // Caja de choque: más chica que el dibujo (sin la llama ni las puntas de las alas)

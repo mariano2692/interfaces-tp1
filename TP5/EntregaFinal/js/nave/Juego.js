@@ -19,7 +19,6 @@
 const VELOCIDAD = 200; // px/s a los que avanza el escenario (velocidad constante)
 const FACTOR_LENTO = 0.45; // con un meteorito encima, el escenario va al 45 %
 const SEGUNDOS_LENTO = 2.5;
-const META = 60; // puntos para llegar a la base y ganar
 const DT_MAXIMO = 0.05; // s: tope de dt
 const CLAVE_RECORD = "nave-pixel-record";
 
@@ -43,7 +42,7 @@ class Juego {
     this.parallax = new Parallax(mundo);
     this.columnas = new Columnas(mundo);
     this.elementos = new Elementos(mundo);
-    this.nave = new Nave(mundo, () => this.terminar(false));
+    this.nave = new Nave(mundo, () => this.terminar());
     if (VER_HITBOX) this.escenario.classList.add("escenario--hitbox");
 
     this.estado = "inicio";
@@ -167,6 +166,10 @@ class Juego {
   // Después de perder una vida: si no quedan más, la nave explota (y al terminar la animación, fin)
   despuesDeGolpe() {
     this.actualizarHud();
+    // El número de vidas titila en rojo (mismo truco del reflow para reiniciar la animación)
+    this.hud.vidas.classList.remove("hud__vidas--pierde");
+    void this.hud.vidas.offsetWidth;
+    this.hud.vidas.classList.add("hud__vidas--pierde");
     if (this.nave.vidas === 0) this.estado = "explotando";
   }
 
@@ -183,18 +186,17 @@ class Juego {
     this.hud.aviso.classList.add("hud__aviso--visible");
   }
 
-  // Suma puntos, hace "saltar" el número del HUD y revisa si se llegó a la meta
+  // Suma puntos y hace "saltar" el número del HUD
   sumarPuntos(cantidad) {
-    this.puntos = Math.min(META, this.puntos + cantidad);
+    this.puntos += cantidad;
     this.actualizarHud();
     this.hud.puntos.classList.remove("hud__puntos--sube");
     void this.hud.puntos.offsetWidth; // reinicia la animación aunque ya estuviera
     this.hud.puntos.classList.add("hud__puntos--sube");
-    if (this.puntos >= META) this.terminar(true);
   }
 
-  // Fin de la partida: gano = true si llegó a la meta, false si se quedó sin vidas
-  terminar(gano) {
+  // Fin de la partida (se quedó sin vidas): muestra los puntos y si superó el récord
+  terminar() {
     this.estado = "fin";
     this.hud.aviso.classList.remove("hud__aviso--visible"); // si terminó frenada, el aviso ya no corresponde
     const nuevoRecord = this.puntos > this.record;
@@ -204,20 +206,18 @@ class Juego {
     }
     this.actualizarHud();
 
-    document.getElementById("fin-titulo").textContent = gano ? "¡Llegaste a la base!" : "Nave destruida";
-    this.pantallaFin.classList.toggle("nave-pantalla--gano", gano);
+    // Con récord nuevo el cartel festeja (amarillo); si no, avisa que se terminó el viaje (rojo)
+    document.getElementById("fin-titulo").textContent = nuevoRecord ? "¡Nuevo récord!" : "Fin del viaje";
+    this.pantallaFin.classList.toggle("nave-pantalla--record", nuevoRecord);
     document.getElementById("fin-detalle").textContent =
-      `${this.puntos} de ${META} puntos en ${Math.round(this.tiempo)} s` + (nuevoRecord ? " · ¡Nuevo récord!" : "");
+      `${this.puntos} puntos en ${Math.round(this.tiempo)} s · Tu mejor marca: ${this.record}`;
     this.pantallaFin.hidden = false;
   }
 
-  // Pasa los números al HUD: una navecita por vida (las perdidas, apagadas), puntos y récord
+  // Pasa los números al HUD: vidas (una navecita y la cantidad al lado), puntos y récord
   actualizarHud() {
-    this.hud.vidas.innerHTML = "";
-    for (let i = 0; i < VIDAS; i++) {
-      crearDiv(i < this.nave.vidas ? "vida" : "vida vida--perdida", this.hud.vidas);
-    }
-    this.hud.puntos.textContent = `${this.puntos} / ${META}`;
+    this.hud.vidas.textContent = `× ${this.nave.vidas}`;
+    this.hud.puntos.textContent = this.puntos;
     this.hud.record.textContent = this.record;
   }
 

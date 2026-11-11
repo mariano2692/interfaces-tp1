@@ -355,12 +355,14 @@
   color: var(--texto-secundario);
 }
 
+/* Una navecita y la cantidad al lado ("× 10"): entra cualquier número de vidas */
 .hud__vidas {
   display: flex;
-  gap: 6px;
+  align-items: center;
+  gap: 8px;
 }
 
-/* Cada vida es el primer cuadro del spritesheet de la nave, a la mitad de tamaño
+/* La navecita es el primer cuadro del spritesheet de la nave, a la mitad de tamaño
    (la imagen entera mide 304 × 44 → a la mitad, 152 × 22) */
 .vida {
   width: 36px;
@@ -368,9 +370,14 @@
   background: url("../img/nave/nave.svg") 0 0 / 152px 22px no-repeat;
 }
 
-.vida--perdida {
-  opacity: 0.25;
-  filter: grayscale(1);
+/* Al perder una vida, el número titila en rojo */
+.hud__vidas--pierde {
+  animation: vidas-pierde 0.6s steps(2) 3;
+}
+
+@keyframes vidas-pierde {
+  0% { color: var(--error); }
+  100% { color: var(--texto); }
 }
 
 .hud__puntos {
@@ -447,7 +454,7 @@
   color: var(--error);
 }
 
-.nave-pantalla--gano .nave-pantalla__titulo {
+.nave-pantalla--record .nave-pantalla__titulo {
   color: var(--acento);
 }
 

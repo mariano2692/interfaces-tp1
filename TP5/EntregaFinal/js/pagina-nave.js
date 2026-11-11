@@ -15,7 +15,7 @@ const IMAGENES_NAVE = [
 // Reseñas de ejemplo de la Comunidad
 const COMENTARIOS = [
   { nick: "AstroGamer", fecha: "hace 2 horas", texto: "El meteorito que te frena es un detalle genial: hay que aprender a esquivarlo y no solo a pasar las columnas." },
-  { nick: "PixelPilot", fecha: "hace 1 día", texto: "Llegué a la base con una sola vida. Los últimos huecos son muy angostos, ¡qué nervios!" },
+  { nick: "PixelPilot", fecha: "hace 1 día", texto: "Pasé los 100 puntos con una sola vida. Cuando los huecos se achican, ¡qué nervios!" },
   { nick: "LunaRetro", fecha: "hace 3 días", texto: "Me encanta cómo se mueven las capas del fondo, se siente la profundidad del espacio." },
 ];
 

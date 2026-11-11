@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="css/base.css?v=6">
   <link rel="stylesheet" href="css/comun.css?v=22">
   <link rel="stylesheet" href="css/juego.css?v=17">
-  <link rel="stylesheet" href="css/nave.css?v=2">
+  <link rel="stylesheet" href="css/nave.css?v=3">
 </head>
 <body>
 
@@ -43,7 +43,11 @@
               <div class="nave-hud">
                 <div class="hud__bloque">
                   <span class="hud__titulo">VIDAS</span>
-                  <div class="hud__vidas" id="hud-vidas"></div>
+                  <!-- Una sola navecita y la cantidad al lado: entra cualquier número de vidas -->
+                  <div class="hud__vidas">
+                    <span class="vida" aria-hidden="true"></span>
+                    <span id="hud-vidas"></span>
+                  </div>
                 </div>
                 <div class="hud__bloque hud__bloque--centro">
                   <span class="hud__titulo">PUNTOS</span>
@@ -60,12 +64,12 @@
               <div class="nave-pantalla" id="pantalla-inicio">
                 <div class="nave-pantalla__nave" aria-hidden="true"></div>
                 <h2 class="nave-pantalla__titulo">Nave Pixel</h2>
-                <p>Atravesá el cinturón de asteroides y sumá 60 puntos para llegar a la base.</p>
+                <p>Atravesá el cinturón de asteroides y llegá lo más lejos que puedas. Tenés 10 vidas.</p>
                 <button class="boton boton--primario" type="button" id="boton-jugar" disabled>Cargando…</button>
                 <p class="nave-pantalla__tecla">Clic, <span class="ayuda__tecla">Espacio</span> o <span class="ayuda__tecla">↑</span> para impulsar la nave</p>
               </div>
 
-              <!-- Pantalla de fin: llegó a la base o se quedó sin vidas -->
+              <!-- Pantalla de fin: se quedó sin vidas (puntos de la partida y récord) -->
               <div class="nave-pantalla nave-pantalla--fin" id="pantalla-fin" role="status" hidden>
                 <h2 class="nave-pantalla__titulo" id="fin-titulo"></h2>
                 <p id="fin-detalle"></p>
@@ -108,7 +112,7 @@
 
         <section class="ayuda__bloque">
           <h2 class="ayuda__titulo">Objetivo</h2>
-          <p>La nave avanza sola. Pasá por los huecos de las columnas de asteroides: cada columna suma 1 punto. Con <b>60 puntos</b> llegás a la base.</p>
+          <p>La nave avanza sola. Pasá por los huecos de las columnas de asteroides: cada columna suma 1 punto. Llegá lo más lejos posible y superá tu <b>mejor marca</b>: la partida termina cuando te quedás sin vidas.</p>
         </section>
 
         <section class="ayuda__bloque">
@@ -123,7 +127,7 @@
           </div>
           <div class="ayuda__fila">
             <span class="ayuda__icono ayuda__icono--columna" aria-hidden="true"></span>
-            <p><b>Columnas y suelo</b>: si chocás, perdés <b>una vida</b> (tenés 3). Los huecos se achican a medida que avanzás.</p>
+            <p><b>Columnas y suelo</b>: si chocás, perdés <b>una vida</b> (tenés 10). Los huecos se achican a medida que avanzás.</p>
           </div>
         </section>
       </aside>
@@ -134,12 +138,12 @@
       <h2 class="titulo-seccion">¿De qué trata este juego?</h2>
       <div class="ficha__texto">
         <p>
-          Sos la última nave de reparto de NeoArcade y tenés que cruzar el cinturón de asteroides para llegar a la base.
+          Sos la última nave de reparto de NeoArcade y tenés que cruzar el cinturón de asteroides. ¿Hasta dónde llegás?
           El problema: el camino está lleno de columnas de roca flotante y los huecos para pasar son cada vez más angostos.
         </p>
         <p>
-          Mantené la nave en el aire a puro impulso, juntá cristales de energía para llegar antes y esquivá los meteoritos,
-          que te dejan los motores andando a media máquina. Tenés tres vidas. ¿Llegás a la base?
+          Mantené la nave en el aire a puro impulso, juntá cristales de energía para sumar más puntos y esquivá los meteoritos,
+          que te dejan los motores andando a media máquina. Tenés diez vidas para batir tu récord.
         </p>
       </div>
 
@@ -153,8 +157,8 @@
           <figcaption class="texto-chico">Cristal de energía +5</figcaption>
         </figure>
         <figure class="galeria__item">
-          <img src="img/nave/galeria-3.png" alt="Cartel ¡Llegaste a la base! con los puntos y el tiempo de la partida" loading="lazy">
-          <figcaption class="texto-chico">¡Llegaste a la base!</figcaption>
+          <img src="img/nave/galeria-3.png" alt="Cartel ¡Nuevo récord! con los puntos y el tiempo de la partida" loading="lazy">
+          <figcaption class="texto-chico">¡Nuevo récord!</figcaption>
         </figure>
       </div>
 
@@ -236,10 +240,10 @@
   <script src="js/pagina-juego.js?v=1"></script>
   <script src="js/nave/utiles.js?v=1"></script>
   <script src="js/nave/Parallax.js?v=1"></script>
-  <script src="js/nave/Nave.js?v=1"></script>
+  <script src="js/nave/Nave.js?v=2"></script>
   <script src="js/nave/Columnas.js?v=1"></script>
   <script src="js/nave/Elementos.js?v=1"></script>
-  <script src="js/nave/Juego.js?v=1"></script>
-  <script src="js/pagina-nave.js?v=1"></script>
+  <script src="js/nave/Juego.js?v=3"></script>
+  <script src="js/pagina-nave.js?v=2"></script>
 </body>
 </html>
